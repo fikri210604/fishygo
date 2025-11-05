@@ -16,21 +16,26 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+            <x-navbar />
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+            <div class="flex">
+                <x-sidebar />
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <div class="flex-1">
+                    @if (isset($header))
+                        <header class="bg-white shadow">
+                            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                                {{ $header }}
+                            </div>
+                        </header>
+                    @endif
+
+                    <main>
+                        {{ $slot }}
+                    </main>
+                </div>
+            </div>
         </div>
+        <x-flash-toast />
     </body>
 </html>

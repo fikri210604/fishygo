@@ -2,45 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Village extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'code';   // primary key pakai code
-    public $incrementing = false;     // bukan auto increment
-    protected $keyType = 'string';    // tipe data string
-
-    protected $fillable = ['code', 'name', 'district_code'];
+    public $incrementing = false;
+    protected $keyType = 'string';
+    protected $fillable = ['id', 'district_id', 'name'];
 
     public function district()
     {
-        return $this->belongsTo(District::class, 'district_code', 'code');
-    }
-
-    public function regency()
-    {
-        return $this->hasOneThrough(
-            Regency::class,
-            District::class,
-            'code',         // PK di districts
-            'code',         // PK di regencies
-            'district_code',// FK di villages → districts
-            'regency_code'  // FK di districts → regencies
-        );
-    }
-
-    public function province()
-    {
-        return $this->hasOneThrough(
-            Province::class,
-            Regency::class,
-            'code',          // PK di regencies
-            'code',          // PK di provinces
-            'regency_code',  // FK di districts → regencies
-            'province_code'  // FK di regencies → provinces
-        );
+        return $this->belongsTo(District::class);
     }
 }
+

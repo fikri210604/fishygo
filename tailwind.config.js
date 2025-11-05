@@ -1,21 +1,32 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
+const defaultTheme = require('tailwindcss/defaultTheme');
+const forms = require('@tailwindcss/forms');
 
-/** @type {import('tailwindcss').Config} */
-export default {
-    content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-    ],
-
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
-        },
+module.exports = {
+  content: [
+    "./resources/**/*.blade.php",
+    "./resources/**/*.js",
+    "./resources/**/*.vue",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+      },
     },
-
-    plugins: [forms],
+  },
+  plugins: [
+    forms,
+    require("daisyui"), 
+  ],
+  daisyui: {
+    themes: ["light", "dark", "corporate", "dracula","cupcake"], // optional
+    darkTheme: "dark",
+    lightTheme: "light",
+    base: true,
+    styled: true,
+    utils: true,
+    rtl: false,
+    prefix: "",
+    logs: true
+  },
 };

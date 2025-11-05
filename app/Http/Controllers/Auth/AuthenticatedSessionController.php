@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -29,7 +30,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = Auth::user();
+
+        if (method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        $route = $user->dashboardRoute();
+
+        if (Route::has($route)) {
+            return redirect()->route($route)->with('success', 'Berhasil masuk.');
+        }
+
+        // Fallback to app home resolution
+        return redirect()->intended(RouteServiceProvider::home())->with('success', 'Berhasil masuk.');
+        
     }
 
     /**

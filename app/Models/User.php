@@ -2,15 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Role;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany as EloquentBelongsToMany;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    protected $table = 'pengguna';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_KURIR = 'kurir';
+    public const ROLE_USER = 'user';
 
     /**
      * The attributes that are mass assignable.
@@ -18,13 +32,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'nama',
+        'username',
         'email',
         'password',
-        'role_id',
+        'email_verified_at',
+        'role_slug',
+        'address',
         'phone',
         'avatar',
-        
     ];
 
     /**
@@ -45,4 +61,100 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'pengguna_role', 'pengguna_id', 'role_id')->withTimestamps();
+    }
+
+    /**
+     * Mengecek apakah pengguna memiliki permission tertentu via roles.
+     */
+    public function hasPermission(string $slug): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // Cek permission aktif melalui relasi roles -> permissions
+        return $this->roles()
+            ->whereHas('permissions', function ($q) use ($slug) {
+                $q->where('slug', $slug)->where('aktif', '1');
+            })
+            ->exists();
+    }
+
+    public function hasRole(string $slug): bool
+    {
+        if ($this->relationLoaded('roles')) {
+            return $this->roles->contains(fn ($r) => $r->slug === $slug);
+        }
+        // Fallback to single role column for backward compatibility
+        if ($this->role_slug === $slug) {
+            return true;
+        }
+        return $this->roles()->where('slug', $slug)->exists();
+    }
+
+    public function assignRole(string $slug): void
+    {
+        $role = Role::query()->where('slug', $slug)->first();
+        if (! $role) { return; }
+        $attached = $this->roles()->where('roles.id', $role->id)->exists();
+        if (! $attached) {
+            $this->roles()->attach($role->id);
+        }
+        // Keep legacy column in sync if it's empty
+        if (! $this->role_slug) {
+            $this->role_slug = $slug;
+            $this->save();
+        }
+    }
+
+    public function roleKey(): string
+    {
+        return $this->role_slug ?: self::ROLE_USER;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isKurir(): bool
+    {
+        return $this->hasRole('kurir');
+    }
+
+    public function isUser(): bool
+    {
+        return $this->hasRole('user');
+    }
+
+    public function dashboardRoute(): string
+    {
+        if ($this->isAdmin()) { return 'admin.dashboard'; }
+        if ($this->isKurir()) { return 'kurir.dashboard'; }
+        return 'dashboard';
+    }
+
+    public static function defaultRoleSlug(): string
+    {
+        return self::ROLE_USER;
+    }
+
+    public function alamats(): HasMany
+    {
+        return $this->hasMany(Alamat::class, 'pengguna_id');
+    }
 }

@@ -10,28 +10,19 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'username' => 'superadmin',
-            'role_id' => 1,
-            'email' => 'superadmin@example.com',
-            'password' => Hash::make('superadmin'),
-            'address' => 'Jl. Raya Kediri',
-        ]);
+        $user = User::updateOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'nama' => 'User',
+                'username' => 'user',
+                'role_slug' => User::ROLE_USER,
+                'password' => Hash::make('user'),
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::create([
-            'username' => 'admin',
-            'role_id' => 2,
-            'email' => 'admin@example.com',
-            'password' => Hash::make('admin'),
-            'address' => 'Jl. Raya Kediri',
-        ]);
-
-        User::create([
-            'username' => 'user',
-            'role_id' => 3,
-            'email' => 'user@example.com',
-            'password' => Hash::make('user'),
-            'address' => 'Jl. Raya Kediri',
-        ]);
+        if (method_exists($user, 'assignRole')) {
+            $user->assignRole(User::ROLE_USER);
+        }
     }
 }

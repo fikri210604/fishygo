@@ -9,15 +9,23 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        if(DB::table('roles')->count() > 0) {
-            return;
-        }
-        DB::table('roles')->insert([
-            ['id' => 1, 'name' => 'super admin'],
-            ['id' => 2, 'name' => 'admin'],
-            ['id' => 3, 'name' => 'user'],
-        ]);
+        $roles = [
+            ['slug' => 'admin', 'nama' => 'Admin'],
+            ['slug' => 'kurir', 'nama' => 'Kurir'],
+            ['slug' => 'user',  'nama' => 'User'],
+        ];
 
-        
+        foreach ($roles as $r) {
+            DB::table('roles')->updateOrInsert(
+                ['slug' => $r['slug']],
+                [
+                    'nama' => $r['nama'],
+                    'aktif' => '1',
+                    'updated_at' => now(),
+                    'created_at' => now(),
+                ]
+            );
+        }
     }
 }
+

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -23,6 +24,26 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // Gate dinamis berbasis permission slug
+        Gate::before(function (User $user, string $ability) {
+            // Admin lolos semua
+            if ($user->isAdmin()) {
+                return true;
+            }
+            // Jika user memiliki permission bernama $ability, izinkan
+            return $user->hasPermission($ability) ? true : null;
+        });
+
+        Gate::define('access-admin', function (User $user) {
+            return $user->hasRole(User::ROLE_ADMIN);
+        });
+
+        Gate::define('access-kurir', function (User $user) {
+            return $user->hasRole(User::ROLE_KURIR);
+        });
+
+        Gate::define('access-user', function (User $user) {
+            return $user->hasRole(User::ROLE_USER);
+        });
     }
 }

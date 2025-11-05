@@ -26,5 +26,6 @@
                 {{ $slot }}
             </div>
         </div>
+        <x-flash-toast />
     </body>
 </html>

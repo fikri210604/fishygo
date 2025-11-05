@@ -2,26 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class District extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'code';
     public $incrementing = false;
     protected $keyType = 'string';
-
-    protected $fillable = ['code', 'name', 'regency_code'];
+    protected $fillable = ['id', 'regency_id', 'name'];
 
     public function regency()
     {
-        return $this->belongsTo(Regency::class, 'regency_code', 'code');
+        return $this->belongsTo(Regency::class);
     }
 
     public function villages()
     {
-        return $this->hasMany(Village::class, 'district_code', 'code');
+        return $this->hasMany(Village::class);
     }
 }
+

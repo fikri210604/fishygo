@@ -143,11 +143,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole('user');
     }
 
-    public function dashboardRoute(): string
+    public function Route(): string
     {
         if ($this->isAdmin()) { return 'admin.dashboard'; }
         if ($this->isKurir()) { return 'kurir.dashboard'; }
-        return 'dashboard';
+        return 'home';
     }
 
     public static function defaultRoleSlug(): string

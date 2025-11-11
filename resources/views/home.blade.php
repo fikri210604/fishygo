@@ -42,7 +42,7 @@
     <h2 class="text-xl font-bold mb-4">Kategori Produk</h2>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         @foreach($kategori as $k)
-            <a href="{{ route('dashboard', ['kategori' => $k->kategori_produk_id] + request()->only('q', 'jenis')) }}"
+            <a href="{{ route('home', ['kategori' => $k->kategori_produk_id] + request()->only('q', 'jenis')) }}"
                 class="block">
                 <div class="card bg-white shadow-sm hover:shadow-md transition p-3">
                     <figure class="h-28 w-full overflow-hidden rounded relative">
@@ -60,25 +60,30 @@
 
     {{-- Filter Jenis Ikan --}}
     <h2 class="text-xl font-bold mb-4">Temukan Berbagai Produk Ikan</h2>
-    <div class="flex flex-wrap gap-2 mb-8">
-        @php($active = request('jenis') === null)
-        <a href="{{ route('dashboard', request()->except('jenis')) }}" class="px-4 py-1.5 text-sm rounded-full border transition-all duration-200
-       {{ $active
+
+    {{-- scroll horizontal --}}
+    <div class="mb-8 overflow-x-auto scrollbar-hide mt-4"> 
+        <div class="flex gap-2 w-max">
+
+            @php($active = request('jenis') === null)
+            <a href="{{ route('home', request()->except('jenis')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
+           {{ $active
     ? 'bg-[#6A453B] border-[#6A453B] text-white'
     : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
-            Semua
-        </a>
-        @foreach($jenis_ikan as $j)
-        @php($active = (string) request('jenis') === (string) $j->jenis_ikan_id)
-        <a href="{{ route('dashboard', ['jenis' => $j->jenis_ikan_id] + request()->except('page')) }}" class="px-4 py-1.5 text-sm rounded-full border transition-all duration-200
-           {{ $active
+                Semua
+            </a>
+            @foreach($jenis_ikan as $j)
+            @php($active = (string) request('jenis') === (string) $j->jenis_ikan_id)
+            <a href="{{ route('home', ['jenis' => $j->jenis_ikan_id] + request()->except('page')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
+               {{ $active
         ? 'bg-[#6A453B] border-[#6A453B] text-white'
         : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
-            {{ $j->jenis_ikan }}
-        </a>
-        @endforeach
-
+                {{ $j->jenis_ikan }}
+            </a>
+            @endforeach
+        </div>
     </div>
+
 
 
 
@@ -97,7 +102,12 @@
                     <p class="font-semibold text-sm">{{ $p->nama_produk }}</p>
                     <p class="text-sm text-primary font-bold">Rp {{ number_format($p->harga ?? 0, 0, ',', '.') }}</p>
                     <div class="card-actions justify-between mt-2">
-                        <a href="#" class="btn btn-xs bg-gray-200">Detail</a>
+                        @if(!empty($p->slug))
+                            <a href="{{ route('produk.show', ['produk' => $p->slug]) }}"
+                                class="btn btn-xs bg-gray-200">Detail</a>
+                        @else
+                            <span class="btn btn-xs bg-gray-200 btn-disabled" title="Slug tidak tersedia">Detail</span>
+                        @endif
                         <a href="#" class="btn btn-xs btn-primary">Beli</a>
                     </div>
                 </div>

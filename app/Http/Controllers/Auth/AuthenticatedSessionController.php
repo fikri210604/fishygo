@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('verification.notice');
         }
 
-        $route = $user->dashboardRoute();
+        $route = $user->Route();
 
         $needsProfile = method_exists($user, 'isProfileComplete') ? ! $user->isProfileComplete() : false;
         $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';

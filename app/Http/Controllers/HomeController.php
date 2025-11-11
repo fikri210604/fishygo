@@ -21,7 +21,7 @@ class HomeController extends Controller
             ->limit(7)
             ->get();
 
-        $produk = Produk::select('produk_id', 'nama_produk', 'gambar_produk', 'harga', 'kategori_produk_id', 'jenis_ikan_id')
+            $produk = Produk::select('produk_id', 'slug', 'nama_produk', 'gambar_produk', 'harga', 'kategori_produk_id', 'jenis_ikan_id')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where('nama_produk', 'ILIKE', "%{$q}%");
             })

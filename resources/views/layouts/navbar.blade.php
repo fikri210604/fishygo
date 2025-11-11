@@ -11,19 +11,36 @@
                         </svg>
                     </button>
                 </div>
-                @php
-                    $dashboardRoute = optional(Auth::user())->dashboardRoute() ?? 'dashboard';
-                @endphp
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route($dashboardRoute) }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+                    @can('access-admin')
+                        <a href="{{ route('admin.dashboard') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @elsecan('access-kurir')
+                        <a href="{{ route('kurir.dashboard') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}">
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        </a>
+                    @endcan
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route($dashboardRoute)" :active="request()->routeIs($dashboardRoute)">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @can('access-admin')
+                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @elsecan('access-kurir')
+                        <x-nav-link :href="route('kurir.dashboard')" :active="request()->routeIs('kurir.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endcan
 
                     @can('access-admin')
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
@@ -79,9 +96,19 @@
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route($dashboardRoute)" :active="request()->routeIs($dashboardRoute)">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @can('access-admin')
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @elsecan('access-kurir')
+                <x-responsive-nav-link :href="route('kurir.dashboard')" :active="request()->routeIs('kurir.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @endcan
             @can('access-admin')
             <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                 {{ __('Users') }}

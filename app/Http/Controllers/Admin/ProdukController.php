@@ -26,6 +26,15 @@ class ProdukController extends Controller
         return view('admin.produk.index', compact('items', 'q'));
     }
 
+    public function show(Produk $produk)
+    {
+        $produk->load(['kategori', 'jenisIkan']);
+        $rekomendasi = Produk::where('jenis_ikan_id', $produk->jenis_ikan_id)
+            ->where('produk_id', '!=', $produk->produk_id)
+            ->limit(8)
+            ->get();
+        return view('detail-produk', compact('produk', 'rekomendasi'));
+    }
     public function create()
     {
         return view('admin.produk.create');

@@ -23,7 +23,10 @@ Route::get('/articles', [ArticlePublicController::class, 'index'])->name('articl
 Route::get('/articles/{article:slug}', [ArticlePublicController::class, 'show'])->name('articles.show');
 
 // Dashboard user
-Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+
+// Detail produk publik (pakai slug)
+Route::get('/produk/{produk:slug}', [ProdukController::class, 'show'])->name('produk.show');
 
 // Profil user
 Route::middleware('auth')->group(function () {

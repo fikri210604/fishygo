@@ -60,11 +60,18 @@ class Produk extends Model
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
-            if (empty($model->slug) && ! empty($model->nama_produk)) {
+            if (empty($model->slug) && !empty($model->nama_produk)) {
+                $model->slug = Str::slug($model->nama_produk) . '-' . Str::lower(Str::random(6));
+            }
+        });
+
+        static::updating(function ($model) {
+            if ($model->isDirty('nama_produk')) { // hanya update slug kalau nama berubah
                 $model->slug = Str::slug($model->nama_produk) . '-' . Str::lower(Str::random(6));
             }
         });
     }
+
 
     // Relasi
     public function kategori(): BelongsTo
@@ -115,10 +122,11 @@ class Produk extends Model
 
     public function scopeCari($query, ?string $q)
     {
-        if (!$q) return $query;
+        if (!$q)
+            return $query;
         return $query->where(function ($w) use ($q) {
             $w->where('nama_produk', 'like', "%{$q}%")
-              ->orWhere('kode_produk', 'like', "%{$q}%");
+                ->orWhere('kode_produk', 'like', "%{$q}%");
         });
     }
 }

@@ -26,7 +26,7 @@ class RouteServiceProvider extends ServiceProvider
              return route('login');
          }
 
-         $route = $user->dashboardRoute();
+         $route = $user->Route();
          return route($route);
      }
      

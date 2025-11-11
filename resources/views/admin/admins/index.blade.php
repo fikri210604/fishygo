@@ -1,4 +1,5 @@
-<x-admin-layout>
+@extends('layouts.admin')
+@section('content')
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-medium text-gray-900">Admins</h3>
         <a href="{{ route('admin.admins.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">Create Admin</a>
@@ -45,4 +46,4 @@
     </div>
 
     <div class="mt-4">{{ $admins->links() }}</div>
-</x-admin-layout>
+@endsection

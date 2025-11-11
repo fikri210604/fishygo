@@ -55,7 +55,7 @@
         </div>
 
         <div>
-            <x-input-label for="address" :value="__('Alamat')" />
+            <x-input-label for="address" :value="__('Alamat Lengkap (Jalan, RT/RW, No Rumah)')" />
             <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-900">{{ old('address', $user->address) }}</textarea>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
@@ -66,11 +66,16 @@
                 <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full text-gray-900" :value="old('phone', $user->phone)" autocomplete="tel" />
                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
             </div>
+            <div>
+                <x-input-label for="kode_pos" :value="__('Kode Pos')" />
+                <x-text-input id="kode_pos" name="kode_pos" type="text" class="mt-1 block w-full text-gray-900" :value="old('kode_pos', optional($primaryAddress ?? null)->kode_pos)" />
+                <x-input-error class="mt-2" :messages="$errors->get('kode_pos')" />
+            </div>
         </div>
 
         <div>
             <x-input-label for="avatar" :value="__('Avatar')" />
-            @if ($user->$avatar)
+            @if ($user->avatar)
                 <div class="mb-2">
                     <img src="{{ asset('storage/'.$user->avatar) }}" alt="avatar" class="h-16 w-16 rounded-full object-cover">
                 </div>
@@ -94,8 +99,8 @@
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="province_id" name="province_id" value="{{ old('province_id', optional(Auth::user())->province_id) }}">
-                <input type="hidden" id="province_name" name="province_name" value="{{ old('province_name', optional(Auth::user())->province_name) }}">
+                <input type="hidden" id="province_id" name="province_id" value="{{ old('province_id', optional($primaryAddress ?? null)->province_id) }}">
+                <input type="hidden" id="province_name" name="province_name" value="{{ old('province_name', optional($primaryAddress ?? null)->province_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('province_id')" />
             </div>
 
@@ -112,8 +117,8 @@
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="regency_id" name="regency_id" value="{{ old('regency_id', optional(Auth::user())->regency_id) }}">
-                <input type="hidden" id="regency_name" name="regency_name" value="{{ old('regency_name', optional(Auth::user())->regency_name) }}">
+                <input type="hidden" id="regency_id" name="regency_id" value="{{ old('regency_id', optional($primaryAddress ?? null)->regency_id) }}">
+                <input type="hidden" id="regency_name" name="regency_name" value="{{ old('regency_name', optional($primaryAddress ?? null)->regency_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('regency_id')" />
             </div>
 
@@ -130,8 +135,8 @@
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="district_id" name="district_id" value="{{ old('district_id', optional(Auth::user())->district_id) }}">
-                <input type="hidden" id="district_name" name="district_name" value="{{ old('district_name', optional(Auth::user())->district_name) }}">
+                <input type="hidden" id="district_id" name="district_id" value="{{ old('district_id', optional($primaryAddress ?? null)->district_id) }}">
+                <input type="hidden" id="district_name" name="district_name" value="{{ old('district_name', optional($primaryAddress ?? null)->district_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('district_id')" />
             </div>
 
@@ -148,9 +153,22 @@
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="village_id" name="village_id" value="{{ old('village_id', optional(Auth::user())->village_id) }}">
-                <input type="hidden" id="village_name" name="village_name" value="{{ old('village_name', optional(Auth::user())->village_name) }}">
+                <input type="hidden" id="village_id" name="village_id" value="{{ old('village_id', optional($primaryAddress ?? null)->village_id) }}">
+                <input type="hidden" id="village_name" name="village_name" value="{{ old('village_name', optional($primaryAddress ?? null)->village_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('village_id')" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="rt" :value="__('RT')" />
+                    <x-text-input id="rt" name="rt" type="text" class="mt-1 block w-full text-gray-900" :value="old('rt', optional($primaryAddress ?? null)->rt)" />
+                    <x-input-error class="mt-2" :messages="$errors->get('rt')" />
+                </div>
+                <div>
+                    <x-input-label for="rw" :value="__('RW')" />
+                    <x-text-input id="rw" name="rw" type="text" class="mt-1 block w-full text-gray-900" :value="old('rw', optional($primaryAddress ?? null)->rw)" />
+                    <x-input-error class="mt-2" :messages="$errors->get('rw')" />
+                </div>
             </div>
         </div>
 

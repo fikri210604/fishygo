@@ -1,1020 +1,382 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="corporate">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FishyGo - Fresh Fish, Fast</title>
 
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 
-    <!-- Styles -->
+
     <style>
-        /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */
-        *,
-        ::after,
-        ::before {
-            box-sizing: border-box;
-            border-width: 0;
-            border-style: solid;
-            border-color: #e5e7eb
-        }
-
-        ::after,
-        ::before {
-            --tw-content: ''
-        }
-
         html {
-            line-height: 1.5;
-            -webkit-text-size-adjust: 100%;
-            -moz-tab-size: 4;
-            tab-size: 4;
-            font-family: Figtree, sans-serif;
-            font-feature-settings: normal
-        }
-
-        body {
-            margin: 0;
-            line-height: inherit
-        }
-
-        hr {
-            height: 0;
-            color: inherit;
-            border-top-width: 1px
-        }
-
-        abbr:where([title]) {
-            -webkit-text-decoration: underline dotted;
-            text-decoration: underline dotted
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            font-size: inherit;
-            font-weight: inherit
-        }
-
-        a {
-            color: inherit;
-            text-decoration: inherit
-        }
-
-        b,
-        strong {
-            font-weight: bolder
-        }
-
-        code,
-        kbd,
-        pre,
-        samp {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 1em
-        }
-
-        small {
-            font-size: 80%
-        }
-
-        sub,
-        sup {
-            font-size: 75%;
-            line-height: 0;
-            position: relative;
-            vertical-align: baseline
-        }
-
-        sub {
-            bottom: -.25em
-        }
-
-        sup {
-            top: -.5em
-        }
-
-        table {
-            text-indent: 0;
-            border-color: inherit;
-            border-collapse: collapse
-        }
-
-        button,
-        input,
-        optgroup,
-        select,
-        textarea {
-            font-family: inherit;
-            font-size: 100%;
-            font-weight: inherit;
-            line-height: inherit;
-            color: inherit;
-            margin: 0;
-            padding: 0
-        }
-
-        button,
-        select {
-            text-transform: none
-        }
-
-        [type=button],
-        [type=reset],
-        [type=submit],
-        button {
-            -webkit-appearance: button;
-            background-color: transparent;
-            background-image: none
-        }
-
-        :-moz-focusring {
-            outline: auto
-        }
-
-        :-moz-ui-invalid {
-            box-shadow: none
-        }
-
-        progress {
-            vertical-align: baseline
-        }
-
-        ::-webkit-inner-spin-button,
-        ::-webkit-outer-spin-button {
-            height: auto
-        }
-
-        [type=search] {
-            -webkit-appearance: textfield;
-            outline-offset: -2px
-        }
-
-        ::-webkit-search-decoration {
-            -webkit-appearance: none
-        }
-
-        ::-webkit-file-upload-button {
-            -webkit-appearance: button;
-            font: inherit
-        }
-
-        summary {
-            display: list-item
-        }
-
-        blockquote,
-        dd,
-        dl,
-        figure,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        hr,
-        p,
-        pre {
-            margin: 0
-        }
-
-        fieldset {
-            margin: 0;
-            padding: 0
-        }
-
-        legend {
-            padding: 0
-        }
-
-        menu,
-        ol,
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0
-        }
-
-        textarea {
-            resize: vertical
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            opacity: 1;
-            color: #9ca3af
-        }
-
-        [role=button],
-        button {
-            cursor: pointer
-        }
-
-        :disabled {
-            cursor: default
-        }
-
-        audio,
-        canvas,
-        embed,
-        iframe,
-        img,
-        object,
-        svg,
-        video {
-            display: block;
-            vertical-align: middle
-        }
-
-        img,
-        video {
-            max-width: 100%;
-            height: auto
-        }
-
-        [hidden] {
-            display: none
-        }
-
-        *,
-        ::before,
-        ::after {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        ::-webkit-backdrop {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        ::backdrop {
-            --tw-border-spacing-x: 0;
-            --tw-border-spacing-y: 0;
-            --tw-translate-x: 0;
-            --tw-translate-y: 0;
-            --tw-rotate: 0;
-            --tw-skew-x: 0;
-            --tw-skew-y: 0;
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            --tw-pan-x: ;
-            --tw-pan-y: ;
-            --tw-pinch-zoom: ;
-            --tw-scroll-snap-strictness: proximity;
-            --tw-ordinal: ;
-            --tw-slashed-zero: ;
-            --tw-numeric-figure: ;
-            --tw-numeric-spacing: ;
-            --tw-numeric-fraction: ;
-            --tw-ring-inset: ;
-            --tw-ring-offset-width: 0px;
-            --tw-ring-offset-color: #fff;
-            --tw-ring-color: rgb(59 130 246 / 0.5);
-            --tw-ring-offset-shadow: 0 0 #0000;
-            --tw-ring-shadow: 0 0 #0000;
-            --tw-shadow: 0 0 #0000;
-            --tw-shadow-colored: 0 0 #0000;
-            --tw-blur: ;
-            --tw-brightness: ;
-            --tw-contrast: ;
-            --tw-grayscale: ;
-            --tw-hue-rotate: ;
-            --tw-invert: ;
-            --tw-saturate: ;
-            --tw-sepia: ;
-            --tw-drop-shadow: ;
-            --tw-backdrop-blur: ;
-            --tw-backdrop-brightness: ;
-            --tw-backdrop-contrast: ;
-            --tw-backdrop-grayscale: ;
-            --tw-backdrop-hue-rotate: ;
-            --tw-backdrop-invert: ;
-            --tw-backdrop-opacity: ;
-            --tw-backdrop-saturate: ;
-            --tw-backdrop-sepia:
-        }
-
-        .relative {
-            position: relative
-        }
-
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto
-        }
-
-        .mx-6 {
-            margin-left: 1.5rem;
-            margin-right: 1.5rem
-        }
-
-        .ml-4 {
-            margin-left: 1rem
-        }
-
-        .mt-16 {
-            margin-top: 4rem
-        }
-
-        .mt-6 {
-            margin-top: 1.5rem
-        }
-
-        .mt-4 {
-            margin-top: 1rem
-        }
-
-        .-mt-px {
-            margin-top: -1px
-        }
-
-        .mr-1 {
-            margin-right: 0.25rem
-        }
-
-        .flex {
-            display: flex
-        }
-
-        .inline-flex {
-            display: inline-flex
-        }
-
-        .grid {
-            display: grid
-        }
-
-        .h-16 {
-            height: 4rem
-        }
-
-        .h-7 {
-            height: 1.75rem
-        }
-
-        .h-6 {
-            height: 1.5rem
-        }
-
-        .h-5 {
-            height: 1.25rem
-        }
-
-        .min-h-screen {
-            min-height: 100vh
-        }
-
-        .w-auto {
-            width: auto
-        }
-
-        .w-16 {
-            width: 4rem
-        }
-
-        .w-7 {
-            width: 1.75rem
-        }
-
-        .w-6 {
-            width: 1.5rem
-        }
-
-        .w-5 {
-            width: 1.25rem
-        }
-
-        .max-w-7xl {
-            max-width: 80rem
-        }
-
-        .shrink-0 {
-            flex-shrink: 0
-        }
-
-        .scale-100 {
-            --tw-scale-x: 1;
-            --tw-scale-y: 1;
-            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
-        }
-
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr))
-        }
-
-        .items-center {
-            align-items: center
-        }
-
-        .justify-center {
-            justify-content: center
-        }
-
-        .gap-6 {
-            gap: 1.5rem
-        }
-
-        .gap-4 {
-            gap: 1rem
-        }
-
-        .self-center {
-            align-self: center
-        }
-
-        .rounded-lg {
-            border-radius: 0.5rem
-        }
-
-        .rounded-full {
-            border-radius: 9999px
-        }
-
-        .bg-gray-100 {
-            --tw-bg-opacity: 1;
-            background-color: rgb(243 244 246 / var(--tw-bg-opacity))
-        }
-
-        .bg-white {
-            --tw-bg-opacity: 1;
-            background-color: rgb(255 255 255 / var(--tw-bg-opacity))
-        }
-
-        .bg-red-50 {
-            --tw-bg-opacity: 1;
-            background-color: rgb(254 242 242 / var(--tw-bg-opacity))
-        }
-
-        .bg-dots-darker {
-            background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")
-        }
-
-        .from-gray-700\/50 {
-            --tw-gradient-from: rgb(55 65 81 / 0.5);
-            --tw-gradient-to: rgb(55 65 81 / 0);
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
-        }
-
-        .via-transparent {
-            --tw-gradient-to: rgb(0 0 0 / 0);
-            --tw-gradient-stops: var(--tw-gradient-from), transparent, var(--tw-gradient-to)
-        }
-
-        .bg-center {
-            background-position: center
-        }
-
-        .stroke-red-500 {
-            stroke: #ef4444
-        }
-
-        .stroke-gray-400 {
-            stroke: #9ca3af
-        }
-
-        .p-6 {
-            padding: 1.5rem
-        }
-
-        .px-6 {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem
-        }
-
-        .text-center {
-            text-align: center
-        }
-
-        .text-right {
-            text-align: right
-        }
-
-        .text-xl {
-            font-size: 1.25rem;
-            line-height: 1.75rem
-        }
-
-        .text-sm {
-            font-size: 0.875rem;
-            line-height: 1.25rem
-        }
-
-        .font-semibold {
-            font-weight: 600
-        }
-
-        .leading-relaxed {
-            line-height: 1.625
-        }
-
-        .text-gray-600 {
-            --tw-text-opacity: 1;
-            color: rgb(75 85 99 / var(--tw-text-opacity))
-        }
-
-        .text-gray-900 {
-            --tw-text-opacity: 1;
-            color: rgb(17 24 39 / var(--tw-text-opacity))
-        }
-
-        .text-gray-500 {
-            --tw-text-opacity: 1;
-            color: rgb(107 114 128 / var(--tw-text-opacity))
-        }
-
-        .underline {
-            -webkit-text-decoration-line: underline;
-            text-decoration-line: underline
-        }
-
-        .antialiased {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale
-        }
-
-        .shadow-2xl {
-            --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-            --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
-            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
-        }
-
-        .shadow-gray-500\/20 {
-            --tw-shadow-color: rgb(107 114 128 / 0.2);
-            --tw-shadow: var(--tw-shadow-colored)
-        }
-
-        .transition-all {
-            transition-property: all;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms
-        }
-
-        .selection\:bg-red-500 *::selection {
-            --tw-bg-opacity: 1;
-            background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-        }
-
-        .selection\:text-white *::selection {
-            --tw-text-opacity: 1;
-            color: rgb(255 255 255 / var(--tw-text-opacity))
-        }
-
-        .selection\:bg-red-500::selection {
-            --tw-bg-opacity: 1;
-            background-color: rgb(239 68 68 / var(--tw-bg-opacity))
-        }
-
-        .selection\:text-white::selection {
-            --tw-text-opacity: 1;
-            color: rgb(255 255 255 / var(--tw-text-opacity))
-        }
-
-        .hover\:text-gray-900:hover {
-            --tw-text-opacity: 1;
-            color: rgb(17 24 39 / var(--tw-text-opacity))
-        }
-
-        .hover\:text-gray-700:hover {
-            --tw-text-opacity: 1;
-            color: rgb(55 65 81 / var(--tw-text-opacity))
-        }
-
-        .focus\:rounded-sm:focus {
-            border-radius: 0.125rem
-        }
-
-        .focus\:outline:focus {
-            outline-style: solid
-        }
-
-        .focus\:outline-2:focus {
-            outline-width: 2px
-        }
-
-        .focus\:outline-red-500:focus {
-            outline-color: #ef4444
-        }
-
-        .group:hover .group-hover\:stroke-gray-600 {
-            stroke: #4b5563
-        }
-
-        @media (prefers-reduced-motion: no-preference) {
-            .motion-safe\:hover\:scale-\[1\.01\]:hover {
-                --tw-scale-x: 1.01;
-                --tw-scale-y: 1.01;
-                transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .dark\:bg-gray-900 {
-                --tw-bg-opacity: 1;
-                background-color: rgb(17 24 39 / var(--tw-bg-opacity))
-            }
-
-            .dark\:bg-gray-800\/50 {
-                background-color: rgb(31 41 55 / 0.5)
-            }
-
-            .dark\:bg-red-800\/20 {
-                background-color: rgb(153 27 27 / 0.2)
-            }
-
-            .dark\:bg-dots-lighter {
-                background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")
-            }
-
-            .dark\:bg-gradient-to-bl {
-                background-image: linear-gradient(to bottom left, var(--tw-gradient-stops))
-            }
-
-            .dark\:stroke-gray-600 {
-                stroke: #4b5563
-            }
-
-            .dark\:text-gray-400 {
-                --tw-text-opacity: 1;
-                color: rgb(156 163 175 / var(--tw-text-opacity))
-            }
-
-            .dark\:text-white {
-                --tw-text-opacity: 1;
-                color: rgb(255 255 255 / var(--tw-text-opacity))
-            }
-
-            .dark\:shadow-none {
-                --tw-shadow: 0 0 #0000;
-                --tw-shadow-colored: 0 0 #0000;
-                box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
-            }
-
-            .dark\:ring-1 {
-                --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-                --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-                box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
-            }
-
-            .dark\:ring-inset {
-                --tw-ring-inset: inset
-            }
-
-            .dark\:ring-white\/5 {
-                --tw-ring-color: rgb(255 255 255 / 0.05)
-            }
-
-            .dark\:hover\:text-white:hover {
-                --tw-text-opacity: 1;
-                color: rgb(255 255 255 / var(--tw-text-opacity))
-            }
-
-            .group:hover .dark\:group-hover\:stroke-gray-400 {
-                stroke: #9ca3af
-            }
-        }
-
-        @media (min-width: 640px) {
-            .sm\:fixed {
-                position: fixed
-            }
-
-            .sm\:top-0 {
-                top: 0px
-            }
-
-            .sm\:right-0 {
-                right: 0px
-            }
-
-            .sm\:ml-0 {
-                margin-left: 0px
-            }
-
-            .sm\:flex {
-                display: flex
-            }
-
-            .sm\:items-center {
-                align-items: center
-            }
-
-            .sm\:justify-center {
-                justify-content: center
-            }
-
-            .sm\:justify-between {
-                justify-content: space-between
-            }
-
-            .sm\:text-left {
-                text-align: left
-            }
-
-            .sm\:text-right {
-                text-align: right
-            }
-        }
-
-        @media (min-width: 768px) {
-            .md\:grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr))
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .lg\:gap-8 {
-                gap: 2rem
-            }
-
-            .lg\:p-8 {
-                padding: 2rem
-            }
+            scroll-behavior: smooth;
         }
     </style>
 </head>
 
-<body class="antialiased">
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-        @if (Route::has('login'))
-            <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
-                @auth
-                    <a href="{{ url('/dashboard') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
+
+<body class="bg-white">
+
+    {{-- NAVBAR --}}
+    <div class="navbar bg-base-100/70 backdrop-blur-md shadow-sm fixed top-0 left-0 z-50 px-4 md:px-10">
+        <div class="navbar-start">
+            <a href="#home" class="btn btn-ghost text-xl flex items-center gap-2">
+                @if(file_exists(public_path('assets/images/logo.png')))
+                    <img src="{{ asset('assets/images/logo.png') }}" class="h-9 md:h-10" alt="FishyGo Logo" loading="lazy" />
                 @else
-                    <a href="{{ route('login') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log
-                        in</a>
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">F</div>
+                @endif
+                <span class="font-bold text-primary">FishyGo</span>
+            </a>
+        </div>
 
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}"
-                            class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                    @endif
-                    <button
-                        class="inline-block cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-center text-sm font-semibold uppercase text-white transition duration-200 ease-in-out hover:bg-gray-900">
-                        Button
-                    </button>
+        <div class="navbar-center hidden lg:flex">
+            <ul id="navbarMenu" class="menu menu-horizontal px-1 text-lg text-gray-700 font-medium">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#kategori" class="nav-link">Kategori</a></li>
+                <li><a href="#produk" class="nav-link">Produk</a></li>
+                <li><a href="#tentang" class="nav-link">Tentang</a></li>
+                <li><a href="#kontak" class="nav-link">Kontak</a></li>
+            </ul>            
+        </div>
 
+        <div class="navbar-end">
+            <div class="hidden lg:block mr-2">
+                @auth
+                    <a href="/dashboard" class="btn btn-warning btn-sm">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Login</a>
                 @endauth
             </div>
-        @endif
 
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="flex justify-center">
-                <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
-                    <path
-                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                        fill="#FF2D20" />
-                </svg>
-            </div>
-
-            <div class="mt-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    <a href="https://laravel.com/docs"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel has wonderful documentation covering every aspect of the framework. Whether you
-                                are a newcomer or have prior experience with Laravel, we recommend reading our
-                                documentation from beginning to end.
-                            </p>
-                        </div>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
-
-                    <a href="https://laracasts.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round"
-                                        d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript
-                                development. Check them out, see for yourself, and massively level up your development
-                                skills in the process.
-                            </p>
-                        </div>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
-
-                    <a href="https://laravel-news.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel News is a community driven portal and newsletter aggregating all of the latest
-                                and most important news in the Laravel ecosystem, including new package releases and
-                                tutorials.
-                            </p>
-                        </div>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                        </svg>
-                    </a>
-
-                    <div
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel's robust library of first-party tools and libraries, such as <a
-                                    href="https://forge.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>,
-                                <a href="https://vapor.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>,
-                                <a href="https://nova.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>,
-                                and <a href="https://envoyer.io"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a>
-                                help you take your projects to the next level. Pair them with powerful open source
-                                libraries like <a href="https://laravel.com/docs/billing"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>,
-                                <a href="https://laravel.com/docs/dusk"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>,
-                                <a href="https://laravel.com/docs/broadcasting"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>,
-                                <a href="https://laravel.com/docs/horizon"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>,
-                                <a href="https://laravel.com/docs/sanctum"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>,
-                                <a href="https://laravel.com/docs/telescope"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>,
-                                and more.
-                            </p>
-                        </div>
-                    </div>
+            <div class="dropdown dropdown-end lg:hidden">
+                <div tabindex="0" role="button" class="btn btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
                 </div>
-            </div>
-
-            <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
-                <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-left">
-                    <div class="flex items-center gap-4">
-                        <a href="https://github.com/sponsors/taylorotwell"
-                            class="group inline-flex items-center hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                class="-mt-px mr-1 w-5 h-5 stroke-gray-400 dark:stroke-gray-600 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-400">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-                            Sponsor
-                        </a>
-                    </div>
-                </div>
-
-                <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                </div>
+                <ul class="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-48 p-2 shadow text-gray-700 font-medium">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#kategori" class="nav-link">Kategori</a></li>
+                    <li><a href="#produk" class="nav-link">Produk</a></li>
+                    <li><a href="#tentang" class="nav-link">Tentang</a></li>
+                    <li><a href="#kontak" class="nav-link">Kontak</a></li>
+                    <li class="mt-2 border-t pt-2">
+                        @auth
+                            <a href="/dashboard" class="btn btn-warning btn-sm w-full">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-primary btn-sm w-full">Login</a>
+                        @endauth
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
+
+    {{-- HERO --}}
+    <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6"
+        @if(file_exists(public_path('assets/images/background.png')))
+            style="background:url('{{ asset('assets/images/background.png') }}') center/cover no-repeat;"
+        @else
+            class="bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500"
+        @endif
+    >
+        @if(file_exists(public_path('assets/images/logo-fishygo.png')))
+            <img src="{{ asset('assets/images/logo-fishygo.png') }}" loading="lazy" class="w-56 md:w-80 mb-6 drop-shadow-lg" alt="FishyGo">
+        @else
+            <div class="w-56 h-56 md:w-80 md:h-80 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm">
+                <div class="text-8xl md:text-9xl">🐟</div>
+            </div>
+        @endif
+        <h1 class="text-3xl md:text-5xl font-bold text-primary drop-shadow-lg">Fresh Fish, Fast</h1>
+        <p class="mt-3 text-base md:text-lg font-light">Ikan segar langsung dari nelayan ke meja Anda</p>
+        <a href="#produk" class="btn btn-neutral mt-6 px-8">Lihat Produk</a>
+    </section>
+
+    {{-- KATEGORI --}}
+    <section id="kategori" class="px-6 md:px-10 py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Pilih Kategori</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-3 text-gray-800">Kategori Ikan</h2>
+                <p class="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">Temukan berbagai jenis ikan segar berkualitas</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                @php
+                    $kategoris = isset($kategoris) ? $kategoris : [
+                        (object)['id' => 1, 'nama' => 'Ikan Laut', 'deskripsi' => 'Tangkapan segar dari laut', 'icon' => '🌊'],
+                        (object)['id' => 2, 'nama' => 'Ikan Air Tawar', 'deskripsi' => 'Budidaya air tawar', 'icon' => '🏞️'],
+                        (object)['id' => 3, 'nama' => 'Seafood', 'deskripsi' => 'Udang, cumi, kerang', 'icon' => '🦐'],
+                        (object)['id' => 4, 'nama' => 'Ikan Premium', 'deskripsi' => 'Pilihan spesial', 'icon' => '⭐'],
+                    ];
+                @endphp
+
+                @foreach($kategoris as $kategori)
+                    <a href="#produk" class="card bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        <div class="card-body items-center text-center p-6">
+                            <div class="text-5xl mb-3">
+                                {{ $kategori->icon ?? '🐟' }}
+                            </div>
+                            <h3 class="font-bold text-lg">{{ $kategori->nama ?? 'Kategori' }}</h3>
+                            <p class="text-sm text-gray-600">{{ $kategori->deskripsi ?? 'Deskripsi kategori' }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- PRODUK --}}
+    <section id="produk" class="px-6 md:px-10 py-24 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Pilihan Terbaik</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-3 text-gray-800">Produk Kami</h2>
+                <p class="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">Ikan segar pilihan dengan kualitas terbaik</p>
+            </div>
+
+            @php
+                $produks = isset($produks) ? $produks : [
+                    (object)[
+                        'id' => 1,
+                        'nama' => 'Ikan Kerapu',
+                        'deskripsi' => 'Segar langsung dari nelayan',
+                        'harga' => 85000,
+                        'stok' => 10,
+                        'gambar' => 'ikan1.jpg',
+                        'rating' => 4.9,
+                        'badge' => 'Best Seller'
+                    ],
+                    (object)[
+                        'id' => 2,
+                        'nama' => 'Ikan Tuna',
+                        'deskripsi' => 'Kualitas premium untuk sushi',
+                        'harga' => 120000,
+                        'stok' => 5,
+                        'gambar' => 'ikan2.jpg',
+                        'rating' => 5.0,
+                        'badge' => 'Fresh'
+                    ],
+                    (object)[
+                        'id' => 3,
+                        'nama' => 'Ikan Kakap',
+                        'deskripsi' => 'Rasa lezat untuk keluarga',
+                        'harga' => 95000,
+                        'stok' => 8,
+                        'gambar' => 'ikan3.jpg',
+                        'rating' => 4.8,
+                        'badge' => 'Popular'
+                    ],
+                ];
+            @endphp
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                @forelse($produks as $produk)
+                    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        <figure class="relative h-64 overflow-hidden">
+                            @if(isset($produk->gambar) && file_exists(public_path('assets/img/' . $produk->gambar)))
+                                <img src="{{ asset('assets/img/' . $produk->gambar) }}" 
+                                     alt="{{ $produk->nama ?? 'Produk' }}" 
+                                     class="h-full w-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                                    <span class="text-8xl">🐠</span>
+                                </div>
+                            @endif
+                            
+                            @if(isset($produk->badge))
+                                <div class="badge badge-warning absolute top-4 right-4 font-semibold">
+                                    {{ $produk->badge }}
+                                </div>
+                            @endif
+
+                            @if(isset($produk->stok) && $produk->stok <= 5)
+                                <div class="badge badge-error absolute top-4 left-4 font-semibold">
+                                    Stok Terbatas
+                                </div>
+                            @endif
+                        </figure>
+                        
+                        <div class="card-body">
+                            <h3 class="card-title text-2xl text-gray-800">
+                                {{ $produk->nama ?? 'Nama Produk' }}
+                            </h3>
+                            <p class="text-gray-600">
+                                {{ $produk->deskripsi ?? 'Deskripsi produk' }}
+                            </p>
+                            
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-2xl font-bold text-primary">
+                                    Rp {{ isset($produk->harga) ? number_format($produk->harga, 0, ',', '.') : '0' }}
+                                </span>
+                                <span class="text-sm text-gray-500">/kg</span>
+                            </div>
+                            
+                            @if(isset($produk->rating))
+                                <div class="flex gap-1 mt-2">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <span class="text-warning">{{ $i < floor($produk->rating) ? '⭐' : '☆' }}</span>
+                                    @endfor
+                                    <span class="text-sm text-gray-600">({{ $produk->rating }})</span>
+                                </div>
+                            @endif
+                            
+                            @if(isset($produk->stok))
+                                <div class="text-sm text-gray-600 mt-2">
+                                    Stok: <span class="font-semibold">{{ $produk->stok }} kg</span>
+                                </div>
+                            @endif
+                            
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-primary btn-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                                    </svg>
+                                    Pesan Sekarang
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-6xl mb-4">🐟</div>
+                        <p class="text-gray-500 text-lg">Belum ada produk tersedia</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    {{-- TENTANG --}}
+    <section id="tentang" class="px-6 md:px-10 py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Kenali Kami</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-3 text-gray-800">Tentang FishyGo</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-8 text-white shadow-2xl">
+                        <h3 class="text-3xl font-bold mb-4">Misi Kami</h3>
+                        <p class="text-lg leading-relaxed mb-6">
+                            FishyGo menghubungkan nelayan lokal langsung kepada konsumen untuk pengiriman ikan segar cepat dan berkualitas. Kami berkomitmen untuk mendukung ekonomi lokal sambil menyediakan produk laut terbaik untuk keluarga Indonesia.
+                        </p>
+                        <div class="stats stats-vertical shadow-xl bg-white/10 backdrop-blur-sm text-white">
+                            <div class="stat">
+                                <div class="stat-value text-warning">500+</div>
+                                <div class="stat-title text-white/80">Nelayan Partner</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value text-warning">10K+</div>
+                                <div class="stat-title text-white/80">Pelanggan Puas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-1 md:order-2">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="card bg-white shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+                            <div class="text-5xl mb-3">🚚</div>
+                            <h4 class="font-bold text-lg">Pengiriman Cepat</h4>
+                            <p class="text-sm text-gray-600 mt-2">Diantar dalam 2 jam</p>
+                        </div>
+                        <div class="card bg-white shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+                            <div class="text-5xl mb-3">❄️</div>
+                            <h4 class="font-bold text-lg">Tetap Segar</h4>
+                            <p class="text-sm text-gray-600 mt-2">Cold chain system</p>
+                        </div>
+                        <div class="card bg-white shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+                            <div class="text-5xl mb-3">✅</div>
+                            <h4 class="font-bold text-lg">Kualitas Terjamin</h4>
+                            <p class="text-sm text-gray-600 mt-2">100% quality check</p>
+                        </div>
+                        <div class="card bg-white shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+                            <div class="text-5xl mb-3">🌊</div>
+                            <h4 class="font-bold text-lg">Langsung Nelayan</h4>
+                            <p class="text-sm text-gray-600 mt-2">Tanpa perantara</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- KONTAK --}}
+    <section id="kontak" class="px-6 md:px-10 py-24 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-primary font-semibold text-sm uppercase tracking-wider">Hubungi Kami</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-3 text-gray-800">Kontak Kami</h2>
+                <p class="mt-4 text-gray-600 text-lg">Kami siap melayani Anda 24/7</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="card bg-white shadow-xl p-8 text-center hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-300 hover:scale-105">
+                    <div class="text-6xl mb-4">📍</div>
+                    <h3 class="text-xl font-bold mb-3">Lokasi</h3>
+                    <p class="opacity-80">Bandar Lampung</p>
+                    <p class="opacity-80">Lampung</p>
+                    <p class="opacity-80">Indonesia</p>
+                    <button class="btn btn-outline btn-sm mt-4">Lihat Peta</button>
+                </div>
+
+                <div class="card bg-white shadow-xl p-8 text-center hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-300 hover:scale-105">
+                    <div class="text-6xl mb-4">📞</div>
+                    <h3 class="text-xl font-bold mb-3">WhatsApp</h3>
+                    <p class="opacity-80 mb-2">Chat langsung dengan kami</p>
+                    <p class="text-2xl font-bold">08xx-xxxx-xxxx</p>
+                    <button class="btn btn-success btn-sm mt-4 text-white">
+                        Chat WhatsApp
+                    </button>
+                </div>
+
+                <div class="card bg-white shadow-xl p-8 text-center hover:bg-gradient-to-br hover:from-blue-500 hover:to-purple-600 hover:text-white transition-all duration-300 hover:scale-105">
+                    <div class="text-6xl mb-4">✉️</div>
+                    <h3 class="text-xl font-bold mb-3">Email</h3>
+                    <p class="opacity-80 mb-2">Kirim pertanyaan Anda</p>
+                    <p class="text-lg font-bold break-all">support@fishygo.com</p>
+                    <button class="btn btn-outline btn-sm mt-4">Kirim Email</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @include('layouts.footer')
+
+   
+    
+
+    <script>
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-link");
+    
+        function activateLink(id) {
+            navLinks.forEach(link => {
+                link.classList.remove("border-b-2", "border-warning", "text-warning");
+                if (link.getAttribute("href") === `#${id}`) {
+                    link.classList.add("border-b-2", "border-warning", "text-warning");
+                }
+            });
+        }
+    
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    activateLink(entry.target.id);
+                }
+            });
+        }, { threshold: 0.6 });
+    
+        sections.forEach(section => observer.observe(section));
+    </script>
+    
 </body>
 
 </html>

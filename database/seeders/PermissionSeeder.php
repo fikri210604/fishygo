@@ -34,7 +34,6 @@ class PermissionSeeder extends Seeder
             );
         });
 
-        // Role → Permission mapping
         $roleMap = [
             'admin'  => $permissions->pluck('slug')->all(), // semua izin
             'author' => ['article.create', 'article.update'],

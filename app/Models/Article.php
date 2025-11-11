@@ -16,7 +16,7 @@ class Article extends Model
     protected $table = 'artikel';
 
     protected $fillable = [
-        'judul', 'slug', 'isi', 'penulis_id', 'diterbitkan_pada',
+        'judul', 'slug', 'isi', 'thumbnail', 'penulis_id', 'diterbitkan_pada',
     ];
 
     protected $casts = [

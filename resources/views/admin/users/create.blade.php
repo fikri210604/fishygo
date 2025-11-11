@@ -1,4 +1,5 @@
-<x-admin-layout>
+@extends('layouts.admin')
+@section('content')
     <h3 class="text-lg font-medium text-gray-900 mb-4">Create User</h3>
 
     <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-4 max-w-lg">
@@ -29,4 +30,4 @@
             <a href="{{ route('admin.users.index') }}" class="text-gray-600 hover:underline">Cancel</a>
         </div>
     </form>
-</x-admin-layout>
+@endsection

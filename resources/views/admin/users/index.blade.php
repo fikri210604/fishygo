@@ -1,4 +1,5 @@
-<x-admin-layout>
+@extends('layouts.admin')
+@section('content')
     <div class="p-6 space-y-6">
         <!-- =================== HEADER =================== -->
         <div class="flex items-center justify-between">
@@ -166,4 +167,4 @@
             </form>
         </div>
     </dialog>
-</x-admin-layout>
+@endsection

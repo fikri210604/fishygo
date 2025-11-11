@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('judul');
             $table->string('slug')->unique();
             $table->longText('isi');
+            $table->string('thumbnail')->nullable();
             $table->uuid('penulis_id');
             $table->timestamp('diterbitkan_pada')->nullable();
             $table->softDeletes();

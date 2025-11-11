@@ -23,7 +23,7 @@ class Produk extends Model
         'kode_produk',
         'gambar_produk',
         'nama_produk',
-        'kategori_id',
+        'kategori_produk_id',
         'jenis_ikan_id',
         'harga',
         'harga_promo',
@@ -33,7 +33,7 @@ class Produk extends Model
         'satuan',
         'stok',
         'berat_gram',
-        'expired_at',
+        'kadaluarsa',
         'rating_avg',
         'rating_count',
         'aktif',
@@ -46,7 +46,7 @@ class Produk extends Model
         'harga_promo' => 'decimal:2',
         'promo_mulai' => 'datetime',
         'promo_selesai' => 'datetime',
-        'expired_at' => 'date',
+        'kadaluarsa' => 'date',
         'rating_avg' => 'decimal:2',
         'rating_count' => 'integer',
         'stok' => 'integer',
@@ -69,7 +69,7 @@ class Produk extends Model
     // Relasi
     public function kategori(): BelongsTo
     {
-        return $this->belongsTo(KategoriProduk::class, 'kategori_id');
+        return $this->belongsTo(KategoriProduk::class, 'kategori_produk_id');
     }
 
     public function jenisIkan(): BelongsTo
@@ -122,4 +122,3 @@ class Produk extends Model
         });
     }
 }
-

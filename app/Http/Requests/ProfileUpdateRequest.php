@@ -22,7 +22,18 @@ class ProfileUpdateRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
             'avatar' => ['nullable','image','max:2048'],
-            // Wilayah: tidak lagi disimpan di tabel penggunas
+            // Field wilayah untuk tabel alamat (opsional di profil)
+            'province_id' => ['nullable','string','max:50'],
+            'province_name' => ['nullable','string','max:100'],
+            'regency_id' => ['nullable','string','max:50'],
+            'regency_name' => ['nullable','string','max:100'],
+            'district_id' => ['nullable','string','max:50'],
+            'district_name' => ['nullable','string','max:100'],
+            'village_id' => ['nullable','string','max:50'],
+            'village_name' => ['nullable','string','max:100'],
+            'rt' => ['nullable','string','max:10'],
+            'rw' => ['nullable','string','max:10'],
+            'kode_pos' => ['nullable','string','max:10'],
         ];
     }
 
@@ -56,7 +67,13 @@ class ProfileUpdateRequest extends FormRequest
             'avatar' => 'Avatar',
             'address' => 'Alamat',
             'phone' => 'Nomor HP',
-            // Wilayah field names removed from user profile request
+            'province_id' => 'Provinsi',
+            'regency_id' => 'Kabupaten/Kota',
+            'district_id' => 'Kecamatan',
+            'village_id' => 'Kelurahan/Desa',
+            'rt' => 'RT',
+            'rw' => 'RW',
+            'kode_pos' => 'Kode Pos',
         ];
     }
 }

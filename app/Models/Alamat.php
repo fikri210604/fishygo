@@ -16,15 +16,13 @@ class Alamat extends Model
 
     protected $fillable = [
         'pengguna_id',
-        'label_alamat',
         'penerima',
-        'no_telp_penerima',
         'alamat_lengkap',
         'province_id','province_name',
         'regency_id','regency_name',
         'district_id','district_name',
         'village_id','village_name',
-        'kode_pos',
+        'rt','rw','kode_pos',
     ];
 
     public function pengguna()

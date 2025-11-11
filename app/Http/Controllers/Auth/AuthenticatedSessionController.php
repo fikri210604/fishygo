@@ -38,12 +38,19 @@ class AuthenticatedSessionController extends Controller
 
         $route = $user->dashboardRoute();
 
+        $needsProfile = method_exists($user, 'isProfileComplete') ? ! $user->isProfileComplete() : false;
+        $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';
+
         if (Route::has($route)) {
-            return redirect()->route($route)->with('success', 'Berhasil masuk.');
+            $resp = redirect()->route($route)->with('success', 'Berhasil masuk.');
+            if ($needsProfile) { $resp->with('info', $profileMsg); }
+            return $resp;
         }
 
         // Fallback to app home resolution
-        return redirect()->intended(RouteServiceProvider::home())->with('success', 'Berhasil masuk.');
+        $resp = redirect()->intended(RouteServiceProvider::home())->with('success', 'Berhasil masuk.');
+        if ($needsProfile) { $resp->with('info', $profileMsg); }
+        return $resp;
         
     }
 

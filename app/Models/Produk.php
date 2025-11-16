@@ -23,7 +23,7 @@ class Produk extends Model
         'kode_produk',
         'gambar_produk',
         'nama_produk',
-        'kategori_id',
+        'kategori_produk_id',
         'jenis_ikan_id',
         'harga',
         'harga_promo',
@@ -33,7 +33,7 @@ class Produk extends Model
         'satuan',
         'stok',
         'berat_gram',
-        'expired_at',
+        'kadaluarsa',
         'rating_avg',
         'rating_count',
         'aktif',
@@ -46,7 +46,7 @@ class Produk extends Model
         'harga_promo' => 'decimal:2',
         'promo_mulai' => 'datetime',
         'promo_selesai' => 'datetime',
-        'expired_at' => 'date',
+        'kadaluarsa' => 'date',
         'rating_avg' => 'decimal:2',
         'rating_count' => 'integer',
         'stok' => 'integer',
@@ -60,16 +60,23 @@ class Produk extends Model
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
-            if (empty($model->slug) && ! empty($model->nama_produk)) {
+            if (empty($model->slug) && !empty($model->nama_produk)) {
+                $model->slug = Str::slug($model->nama_produk) . '-' . Str::lower(Str::random(6));
+            }
+        });
+
+        static::updating(function ($model) {
+            if ($model->isDirty('nama_produk')) { // hanya update slug kalau nama berubah
                 $model->slug = Str::slug($model->nama_produk) . '-' . Str::lower(Str::random(6));
             }
         });
     }
 
+
     // Relasi
     public function kategori(): BelongsTo
     {
-        return $this->belongsTo(KategoriProduk::class, 'kategori_id');
+        return $this->belongsTo(KategoriProduk::class, 'kategori_produk_id');
     }
 
     public function jenisIkan(): BelongsTo
@@ -115,11 +122,11 @@ class Produk extends Model
 
     public function scopeCari($query, ?string $q)
     {
-        if (!$q) return $query;
+        if (!$q)
+            return $query;
         return $query->where(function ($w) use ($q) {
             $w->where('nama_produk', 'like', "%{$q}%")
-              ->orWhere('kode_produk', 'like', "%{$q}%");
+                ->orWhere('kode_produk', 'like', "%{$q}%");
         });
     }
 }
-

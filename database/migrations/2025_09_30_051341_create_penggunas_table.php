@@ -33,15 +33,9 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
-
-            // Legacy single-role column (kept for compatibility)
             $table->string('role_slug', 32)->nullable()->index();
-
-            // Profile
             $table->string('nomor_telepon')->nullable();
             $table->string('avatar')->nullable();
-
-
             $table->char('aktif', 1)->default('1');
             $table->softDeletes();
             $table->timestamps();
@@ -67,7 +61,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('pengguna_role');
-        Schema::dropIfExists('penggunas');
+        Schema::dropIfExists('pengguna');
         Schema::dropIfExists('roles');
     }
 };

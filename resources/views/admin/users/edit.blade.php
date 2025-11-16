@@ -1,4 +1,5 @@
-<x-admin-layout>
+@extends('layouts.admin')
+@section('content')
     <h3 class="text-lg font-medium text-gray-900 mb-4">Edit User</h3>
 
     <form method="POST" action="{{ route('admin.users.update', $user) }}" class="space-y-4 max-w-lg">
@@ -35,4 +36,4 @@
             </form>
         </div>
     </form>
-</x-admin-layout>
+@endsection

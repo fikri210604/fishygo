@@ -18,7 +18,11 @@ class GoogleAuthController extends Controller
      */
     public function redirect(): RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        $driver = Socialite::driver('google');
+        if (config('services.google.stateless')) {
+            $driver = $driver->stateless();
+        }
+        return $driver->redirect();
     }
 
     /**
@@ -27,7 +31,11 @@ class GoogleAuthController extends Controller
     public function callback(): RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $driver = Socialite::driver('google');
+            if (config('services.google.stateless')) {
+                $driver = $driver->stateless();
+            }
+            $googleUser = $driver->user();
         } catch (Exception $e) {
             return redirect()->route('login')
                 ->withErrors(['google' => 'Login Google gagal: ' . $e->getMessage()]);
@@ -47,15 +55,19 @@ class GoogleAuthController extends Controller
                 'password' => Hash::make(Str::random(16)),
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
-                'role_slug' => 'user', // role default
+                'role_slug' => User::ROLE_USER, // role default
                 'email_verified_at' => now(),
             ]);
+            // Pastikan role di pivot terset agar muncul di admin
+            $user->assignRole(User::ROLE_USER);
         } else {
             // Jika user sudah ada, update data penting
             $user->update([
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar() ?? $user->avatar,
             ]);
+            // Pastikan role terpasang
+            $user->assignRole(User::ROLE_USER);
         }
 
         // Login user

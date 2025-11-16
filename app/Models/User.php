@@ -40,6 +40,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'role_slug',
         'address',
         'phone',
+        'nomor_telepon',
+        'google_id',
         'avatar',
     ];
 
@@ -114,7 +116,7 @@ class User extends Authenticatable implements MustVerifyEmail
         if (! $attached) {
             $this->roles()->attach($role->id);
         }
-        // Keep legacy column in sync if it's empty
+
         if (! $this->role_slug) {
             $this->role_slug = $slug;
             $this->save();
@@ -141,11 +143,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole('user');
     }
 
-    public function dashboardRoute(): string
+    public function Route(): string
     {
         if ($this->isAdmin()) { return 'admin.dashboard'; }
         if ($this->isKurir()) { return 'kurir.dashboard'; }
-        return 'dashboard';
+        return 'home';
     }
 
     public static function defaultRoleSlug(): string
@@ -156,5 +158,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function alamats(): HasMany
     {
         return $this->hasMany(Alamat::class, 'pengguna_id');
+    }
+
+    // Ada alamat utama lengkap sesuai tabel alamat
+    public function hasCompleteAddress(): bool
+    {
+        return $this->alamats()
+            ->whereNotNull('province_id')->where('province_id', '!=', '')
+            ->whereNotNull('regency_id')->where('regency_id', '!=', '')
+            ->whereNotNull('district_id')->where('district_id', '!=', '')
+            ->whereNotNull('village_id')->where('village_id', '!=', '')
+            ->whereNotNull('alamat_lengkap')->where('alamat_lengkap', '!=', '')
+            ->exists();
+    }
+
+    // Profil lengkap jika nomor HP terisi dan punya alamat lengkap
+    public function isProfileComplete(): bool
+    {
+        return filled($this->phone) && $this->hasCompleteAddress();
     }
 }

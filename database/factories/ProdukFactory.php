@@ -45,8 +45,8 @@ class ProdukFactory extends Factory
             'slug' => Str::slug($nama).'-'.Str::lower(Str::random(6)),
             'nama_produk' => $nama,
             'gambar_produk' => 'images/produk/'.Str::uuid().'.jpg',
-            'kategori_id' => $kategori->id,
-            'jenis_ikan_id' => $jenis->id,
+            'kategori_produk_id' => $kategori->getKey(),
+            'jenis_ikan_id' => $jenis->getKey(),
             'harga' => $harga,
             'harga_promo' => $isPromo ? $harga * 0.9 : null,
             'promo_mulai' => $promoMulai,
@@ -55,7 +55,7 @@ class ProdukFactory extends Factory
             'satuan' => $this->faker->randomElement(['pcs', 'kg', 'gram']),
             'stok' => $this->faker->numberBetween(0, 500),
             'berat_gram' => $this->faker->numberBetween(100, 2500),
-            'expired_at' => $this->faker->optional(0.2)->dateTimeBetween('+10 days', '+12 months'),
+            'kadaluarsa' => $this->faker->optional(0.2)->dateTimeBetween('+10 days', '+12 months'),
             'rating_avg' => $this->faker->randomFloat(2, 0, 5),
             'rating_count' => $this->faker->numberBetween(0, 500),
             'aktif' => '1',
@@ -64,4 +64,3 @@ class ProdukFactory extends Factory
         ];
     }
 }
-

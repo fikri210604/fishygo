@@ -1,10 +1,12 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('content')
     <div class="max-w-5xl mx-auto">
         <h1 class="text-xl font-semibold mb-4 text-gray-800">Edit Artikel</h1>
 
         <form id="article-form" 
               action="{{ route('admin.articles.update', $article) }}" 
-              method="POST" 
+              method="POST" enctype="multipart/form-data"
               class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             @csrf
             @method('PUT')
@@ -69,4 +71,4 @@
         </div>
         <form method="dialog" class="modal-backdrop"><button>close</button></form>
     </dialog>
-</x-admin-layout>
+@endsection

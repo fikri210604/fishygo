@@ -51,10 +51,10 @@ class AdminManagementController extends Controller
         ]);
 
         $admin = User::create([
-            'nama' => $validated['nama'],
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'nama' => $request->input('nama'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
             'role_slug' => User::ROLE_ADMIN,
         ]);
         $admin->assignRole(User::ROLE_ADMIN);
@@ -90,14 +90,16 @@ class AdminManagementController extends Controller
             'email' => 'Email',
         ]);
 
-        $admin->nama = $validated['nama'];
-        $admin->username = $validated['username'];
-        $admin->email = $validated['email'];
-        if (!empty($validated['password'])) {
-            $admin->password = Hash::make($validated['password']);
+        $payload = [
+            'nama' => $request->input('nama'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'role_slug' => User::ROLE_ADMIN,
+        ];
+        if ($request->filled('password')) {
+            $payload['password'] = Hash::make($request->input('password'));
         }
-        $admin->role_slug = User::ROLE_ADMIN; // keep legacy column coherent
-        $admin->save();
+        $admin->update($payload);
         $admin->assignRole(User::ROLE_ADMIN);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diperbarui.');

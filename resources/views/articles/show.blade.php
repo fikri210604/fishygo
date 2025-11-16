@@ -5,6 +5,11 @@
             <div class="text-sm text-gray-500 mb-6">
                 Diterbitkan: {{ optional($article->diterbitkan_pada)->format('d M Y H:i') }}
             </div>
+            @if(!empty($article->thumbnail))
+                <div class="mb-6">
+                    <img src="{{ asset('storage/'.$article->thumbnail) }}" alt="Thumbnail {{ $article->judul }}" class="w-full max-h-96 object-cover rounded">
+                </div>
+            @endif
             <div class="content">
                 {!! $article->isi !!}
             </div>

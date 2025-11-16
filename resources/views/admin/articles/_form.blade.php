@@ -16,6 +16,17 @@
     </div>
 
     <div>
+        <x-input-label for="thumbnail" :value="__('Thumbnail (opsional)')" />
+        @if(!empty($article->thumbnail ?? null))
+            <div class="mb-2">
+                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="h-24 rounded border" />
+            </div>
+        @endif
+        <input id="thumbnail" name="thumbnail" type="file" accept="image/*" class="mt-1 block w-full" />
+        <x-input-error class="mt-2" :messages="$errors->get('thumbnail')" />
+    </div>
+
+    <div>
         <x-input-label for="isi" :value="__('Konten')" />
         <input type="hidden" id="isi" name="isi" value="{{ old('isi', $article->isi ?? '') }}">
 

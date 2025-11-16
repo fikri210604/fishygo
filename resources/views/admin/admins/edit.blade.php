@@ -1,4 +1,5 @@
-<x-admin-layout>
+@extends('layouts.admin')
+@section('content')
     <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Admin</h3>
 
     <form id="admin-edit-form" method="POST" action="{{ route('admin.admins.update', $admin) }}" class="space-y-4 max-w-lg">
@@ -61,4 +62,4 @@
         </div>
         <form method="dialog" class="modal-backdrop"><button>close</button></form>
     </dialog>
-</x-admin-layout>
+@endsection

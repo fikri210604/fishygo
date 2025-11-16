@@ -17,9 +17,14 @@ class UserManagementController extends Controller
 
     public function index()
     {
-        $users = User::whereHas('roles', function ($q) {
-            $q->where('slug', User::ROLE_USER);
-        })->orderBy('username')->paginate(10);
+        $users = User::query()
+            ->where(function ($q) {
+                $q->whereHas('roles', function ($rq) {
+                    $rq->where('slug', User::ROLE_USER);
+                })->orWhere('role_slug', User::ROLE_USER);
+            })
+            ->orderBy('username')
+            ->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -32,8 +37,8 @@ class UserManagementController extends Controller
     {
         $validated = $request->validate([
             'nama' => ['required','string','max:255'],
-            'username' => ['required','string','max:255','unique:penggunas,username'],
-            'email' => ['required','string','lowercase','email','max:255','unique:penggunas,email'],
+            'username' => ['required','string','max:255','unique:pengguna,username'],
+            'email' => ['required','string','lowercase','email','max:255','unique:pengguna,email'],
             'password' => ['required','string','min:6'],
         ], [
             'nama.required' => 'Nama wajib diisi.',
@@ -51,10 +56,10 @@ class UserManagementController extends Controller
         ]);
 
         $user = User::create([
-            'nama' => $validated['nama'],
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'nama' => $request->input('nama'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
             'role_slug' => User::ROLE_USER,
         ]);
         $user->assignRole(User::ROLE_USER);
@@ -74,8 +79,8 @@ class UserManagementController extends Controller
 
         $validated = $request->validate([
             'nama' => ['required','string','max:255'],
-            'username' => ['required','string','max:255', Rule::unique('penggunas','username')->ignore($user->id, 'id')],
-            'email' => ['required','string','lowercase','email','max:255', Rule::unique('penggunas','email')->ignore($user->id, 'id')],
+            'username' => ['required','string','max:255', Rule::unique('pengguna','username')->ignore($user->id, 'id')],
+            'email' => ['required','string','lowercase','email','max:255', Rule::unique('pengguna','email')->ignore($user->id, 'id')],
             'password' => ['nullable','string','min:6'],
         ], [
             'nama.required' => 'Nama wajib diisi.',
@@ -91,14 +96,17 @@ class UserManagementController extends Controller
             'email' => 'Email',
         ]);
 
-        $user->nama = $validated['nama'];
-        $user->username = $validated['username'];
-        $user->email = $validated['email'];
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
+        $payload = [
+            'nama' => $request->input('nama'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'role_slug' => User::ROLE_USER,
+        ];
+        if ($request->filled('password')) {
+            $payload['password'] = Hash::make($request->input('password'));
         }
-        $user->role_slug = User::ROLE_USER; // keep legacy column coherent
-        $user->save();
+
+        $user->update($payload);
         $user->assignRole(User::ROLE_USER);
 
         return redirect()->route('admin.users.index')->with('success', 'User berhasil diperbarui.');

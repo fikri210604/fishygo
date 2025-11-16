@@ -17,38 +17,27 @@ return new class extends Migration
             $table->string('kode_produk')->unique();
             $table->string('gambar_produk');
             $table->string('nama_produk');
-            $table->foreignId('kategori_id')->constrained('kategori_produk')->cascadeOnDelete();
-            $table->foreignId('jenis_ikan_id')->constrained('table_jenis_ikan')->cascadeOnDelete();
+            $table->foreignId('kategori_produk_id')->constrained('kategori_produk', 'kategori_produk_id')->cascadeOnDelete();
+            $table->foreignId('jenis_ikan_id')->constrained('jenis_ikan', 'jenis_ikan_id')->cascadeOnDelete();
             $table->decimal('harga', 12, 2);
             $table->decimal('harga_promo', 12, 2)->nullable();
             $table->dateTime('promo_mulai')->nullable();
             $table->dateTime('promo_selesai')->nullable();
-
             $table->text('deskripsi');
             $table->string('satuan', 10);
             $table->unsignedInteger('stok');
             $table->unsignedInteger('berat_gram')->nullable();
-            $table->date('expired_at')->nullable();
-
-            // Cache rating (opsional)
+            $table->date('kadaluarsa')->nullable();
             $table->decimal('rating_avg', 3, 2)->default(0);
             $table->unsignedInteger('rating_count')->default(0);
-
-            // Status & audit
             $table->char('aktif', 1)->default('1');
             $table->uuid('created_by');
             $table->uuid('updated_by')->nullable();
-
-            // Soft delete & timestamps
             $table->softDeletes();
             $table->timestamps();
-
-            // Index tambahan
-            $table->index(['kategori_id', 'jenis_ikan_id']);
+            $table->index(['kategori_produk_id', 'jenis_ikan_id']);
             $table->index('aktif');
             $table->index('created_by');
-
-            // Relasi ke penggunas (pembuat & pengubah)
             $table->foreign('created_by')->references('id')->on('pengguna')->cascadeOnDelete();
             $table->foreign('updated_by')->references('id')->on('pengguna')->cascadeOnDelete();
         });

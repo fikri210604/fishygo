@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('district_name', 100)->nullable();
             $table->string('village_id', 32)->nullable();
             $table->string('village_name', 150)->nullable();
+            $table->string('rt', 10)->nullable();
+            $table->string('rw', 10)->nullable();
             $table->string('kode_pos', 10)->nullable();
             
             $table->timestamps();

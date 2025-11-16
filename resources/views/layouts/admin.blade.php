@@ -17,7 +17,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100" x-data>
+        <div class="min-h-screen bg-gray-100 pt-16" x-data>
             @include('layouts.navbar')
 
             <div class="md:flex">

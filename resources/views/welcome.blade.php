@@ -19,63 +19,9 @@
 </head>
 
 
-<body class="bg-white">
+<body class="bg-white pt-16">
 
-    {{-- NAVBAR --}}
-    <div class="navbar bg-base-100/70 backdrop-blur-md shadow-sm fixed top-0 left-0 z-50 px-4 md:px-10">
-        <div class="navbar-start">
-            <a href="#home" class="btn btn-ghost text-xl flex items-center gap-2">
-                @if(file_exists(public_path('assets/images/logo.png')))
-                    <img src="{{ asset('assets/images/logo.png') }}" class="h-9 md:h-10" alt="FishyGo Logo" loading="lazy" />
-                @else
-                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">F</div>
-                @endif
-                <span class="font-bold text-primary">FishyGo</span>
-            </a>
-        </div>
-
-        <div class="navbar-center hidden lg:flex">
-            <ul id="navbarMenu" class="menu menu-horizontal px-1 text-lg text-gray-700 font-medium">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#kategori" class="nav-link">Kategori</a></li>
-                <li><a href="#produk" class="nav-link">Produk</a></li>
-                <li><a href="#tentang" class="nav-link">Tentang</a></li>
-                <li><a href="#kontak" class="nav-link">Kontak</a></li>
-            </ul>            
-        </div>
-
-        <div class="navbar-end">
-            <div class="hidden lg:block mr-2">
-                @auth
-                    <a href="/dashboard" class="btn btn-warning btn-sm">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Login</a>
-                @endauth
-            </div>
-
-            <div class="dropdown dropdown-end lg:hidden">
-                <div tabindex="0" role="button" class="btn btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </div>
-                <ul class="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-48 p-2 shadow text-gray-700 font-medium">
-                    <li><a href="#home" class="nav-link">Home</a></li>
-                    <li><a href="#kategori" class="nav-link">Kategori</a></li>
-                    <li><a href="#produk" class="nav-link">Produk</a></li>
-                    <li><a href="#tentang" class="nav-link">Tentang</a></li>
-                    <li><a href="#kontak" class="nav-link">Kontak</a></li>
-                    <li class="mt-2 border-t pt-2">
-                        @auth
-                            <a href="/dashboard" class="btn btn-warning btn-sm w-full">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-primary btn-sm w-full">Login</a>
-                        @endauth
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    @include('layouts.navbar')
 
     {{-- HERO --}}
     <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6"

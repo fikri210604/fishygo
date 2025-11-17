@@ -14,12 +14,17 @@ class EmailVerificationNotificationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(RouteServiceProvider::home());
+        try {
+            if ($request->user()->hasVerifiedEmail()) {
+                return redirect()->intended(RouteServiceProvider::home());
+            }
+
+            $request->user()->sendEmailVerificationNotification();
+
+            return back()->with('status', 'verification-link-sent');
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'EmailVerificationNotificationController@store']); }
+            return back()->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal mengirim tautan verifikasi.') : 'Terjadi kesalahan.');
         }
-
-        $request->user()->sendEmailVerificationNotification();
-
-        return back()->with('status', 'verification-link-sent');
     }
 }

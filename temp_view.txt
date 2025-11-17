@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', $produk->nama_produk . ' - FishyGo')
 @section('content')
@@ -17,38 +17,17 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            {{-- Galeri Foto Produk --}}
-            @if (empty($photoUrls))
-                <div class="space-y-3">
-                    <div class="skeleton w-full h-80 rounded-lg"></div>
-                    <div class="flex gap-2">
-                        <div class="skeleton h-16 w-16 rounded"></div>
-                        <div class="skeleton h-16 w-16 rounded"></div>
-                        <div class="skeleton h-16 w-16 rounded"></div>
-                        <div class="skeleton h-16 w-16 rounded hidden md:block"></div>
-                    </div>
-                </div>
-            @else
-                <div x-data="{ i: {{ $primaryIndex }}, imgs: @json($photoUrls) }" class="w-full">
-                    <div class="relative w-full h-80 md:h-96 overflow-hidden rounded-lg shadow-md">
-                        <template x-if="imgs.length">
-                            <img :src="imgs[i]" alt="{{ $produk->nama_produk }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
-                        </template>
-                        <button type="button" class="btn btn-circle btn-sm absolute left-2 top-1/2 -translate-y-1/2"
-                                @click="i = (i - 1 + imgs.length) % imgs.length" aria-label="Sebelumnya">‹</button>
-                        <button type="button" class="btn btn-circle btn-sm absolute right-2 top-1/2 -translate-y-1/2"
-                                @click="i = (i + 1) % imgs.length" aria-label="Berikutnya">›</button>
-                    </div>
-                    <div class="mt-3 flex gap-2 overflow-x-auto pb-1">
-                        <template x-for="(src, idx) in imgs" :key="idx">
-                            <button type="button" @click="i = idx"
-                                    :class="'h-16 w-16 rounded overflow-hidden border ' + (idx === i ? 'border-primary' : 'border-base-200')">
-                                <img :src="src" alt="thumb" class="w-full h-full object-cover" loading="lazy">
-                            </button>
-                        </template>
-                    </div>
-                </div>
-            @endif
+            {{-- Gambar Produk --}}
+            <div class="relative w-full overflow-hidden rounded-lg shadow-md">
+                {{-- Skeleton --}}
+                <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
+
+                {{-- Gambar --}}
+                <img src="{{ $produk->gambar_produk ? asset('storage/' . $produk->gambar_produk) : asset('img/no-image.jpg') }}"
+                    alt="{{ $produk->nama_produk }}"
+                    class="w-full h-full object-cover opacity-0 transition-opacity duration-500" loading="lazy"
+                    onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('hidden');">
+            </div>
 
 
             {{-- Informasi Produk --}}
@@ -56,7 +35,7 @@
                 <h1 class="text-3xl font-bold">{{ $produk->nama_produk }}</h1>
 
                 <p class="text-sm text-gray-500 mt-1">
-                    Kategori: <span class="font-medium text-gray-800">{{ $produk->kategori->nama_kategori }}</span> •
+                    Kategori: <span class="font-medium text-gray-800">{{ $produk->kategori->nama_kategori }}</span> â€¢
                     Jenis: <span class="font-medium text-gray-800">{{ $produk->jenisIkan->jenis_ikan }}</span>
                 </p>
 
@@ -89,11 +68,11 @@
                         @forelse($produk->reviews ?? [] as $rev)
                             <div class="border rounded-lg p-4 mb-3 bg-gray-50">
                                 <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-semibold">{{ $rev->pengguna->username ?? 'Pengguna' }}</span>
+                                    <span class="font-semibold">{{ $rev->user->username }}</span>
                                     <span class="text-sm text-gray-500">{{ $rev->created_at->diffForHumans() }}</span>
                                 </div>
                                 <div class="text-yellow-500 text-sm mb-1">
-                                    {{ str_repeat('⭐', $rev->rating) }}
+                                    {{ str_repeat('â­', $rev->rating) }}
                                 </div>
                                 <p class="text-gray-700">{{ $rev->komentar }}</p>
                             </div>
@@ -102,22 +81,22 @@
                         @endforelse
                         {{-- Form Tambah Review --}}
                         @auth
-                            <form action="{{ route('produk.review.store', $produk->produk_id) }}" method="POST"
-                                class="mt-4 space-y-3">
+                            {{-- <form action="{{ route('produk.review.store', $produk->produk_id) }}" method="POST"
+                                class="mt-4 space-y-3"> --}}
                                 @csrf
                                 <div>
                                     <label class="label"><span class="label-text">Rating</span></label>
                                     <select name="rating" class="select select-bordered w-full" required>
-                                        <option value="5">⭐ ⭐ ⭐ ⭐ ⭐ (Sangat Baik)</option>
-                                        <option value="4">⭐ ⭐ ⭐ ⭐ (Baik)</option>
-                                        <option value="3">⭐ ⭐ ⭐ (Cukup)</option>
-                                        <option value="2">⭐ ⭐ (Kurang)</option>
-                                        <option value="1">⭐ (Buruk)</option>
+                                        <option value="5">â­ â­ â­ â­ â­ (Sangat Baik)</option>
+                                        <option value="4">â­ â­ â­ â­ (Baik)</option>
+                                        <option value="3">â­ â­ â­ (Cukup)</option>
+                                        <option value="2">â­ â­ (Kurang)</option>
+                                        <option value="1">â­ (Buruk)</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="label"><span class="label-text">Komentar</span></label>
-                                    <textarea name="review" class="textarea textarea-bordered w-full" rows="3"
+                                    <textarea name="komentar" class="textarea textarea-bordered w-full" rows="3"
                                         required></textarea>
                                 </div>
                                 <button class="btn btn-primary w-full">Kirim Review</button>

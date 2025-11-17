@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 
@@ -10,34 +10,58 @@ class WilayahDbController extends Controller
 {
     public function provinces(): JsonResponse
     {
-        $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
-        $url = "$base/provinces.json";
-        $rows = $this->normalize($this->fetch($url));
-        return response()->json($rows);
+        try {
+            $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
+            $url = "$base/provinces.json";
+            $rows = $this->normalize($this->fetch($url));
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'WilayahDbController@provinces']); }
+            $message = method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal memuat data provinsi.') : 'Gagal memuat data.';
+            return response()->json(['message' => $message], 500);
+        }
     }
 
     public function regencies(string $provinceId): JsonResponse
     {
-        $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
-        $url = "$base/regencies/" . urlencode($provinceId) . ".json";
-        $rows = $this->normalize($this->fetch($url));
-        return response()->json($rows);
+        try {
+            $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
+            $url = "$base/regencies/" . urlencode($provinceId) . ".json";
+            $rows = $this->normalize($this->fetch($url));
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'WilayahDbController@regencies', 'provinceId' => $provinceId]); }
+            $message = method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal memuat data kabupaten/kota.') : 'Gagal memuat data.';
+            return response()->json(['message' => $message], 500);
+        }
     }
 
     public function districts(string $regencyId): JsonResponse
     {
-        $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
-        $url = "$base/districts/" . urlencode($regencyId) . ".json";
-        $rows = $this->normalize($this->fetch($url));
-        return response()->json($rows);
+        try {
+            $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
+            $url = "$base/districts/" . urlencode($regencyId) . ".json";
+            $rows = $this->normalize($this->fetch($url));
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'WilayahDbController@districts', 'regencyId' => $regencyId]); }
+            $message = method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal memuat data kecamatan.') : 'Gagal memuat data.';
+            return response()->json(['message' => $message], 500);
+        }
     }
 
     public function villages(string $districtId): JsonResponse
     {
-        $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
-        $url = "$base/villages/" . urlencode($districtId) . ".json";
-        $rows = $this->normalize($this->fetch($url));
-        return response()->json($rows);
+        try {
+            $base = rtrim(config('services.wilayah.base_url', 'https://wilayah.id/api'), '/');
+            $url = "$base/villages/" . urlencode($districtId) . ".json";
+            $rows = $this->normalize($this->fetch($url));
+            return response()->json($rows);
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'WilayahDbController@villages', 'districtId' => $districtId]); }
+            $message = method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal memuat data kelurahan.') : 'Gagal memuat data.';
+            return response()->json(['message' => $message], 500);
+        }
     }
 
     protected function fetch(string $url)

@@ -26,32 +26,41 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        $user = Auth::user();
+            $user = Auth::user();
 
-        if (method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
+            if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
 
-        $route = $user->Route();
+            $route = $user->Route();
 
-        $needsProfile = method_exists($user, 'isProfileComplete') ? ! $user->isProfileComplete() : false;
-        $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';
+            $needsProfile = method_exists($user, 'isProfileComplete') ? !$user->isProfileComplete() : false;
+            $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';
 
-        if (Route::has($route)) {
-            $resp = redirect()->route($route)->with('success', 'Berhasil masuk.');
-            if ($needsProfile) { $resp->with('info', $profileMsg); }
+            if (Route::has($route)) {
+                $resp = redirect()->route($route)->with('success', 'Berhasil masuk.');
+                if ($needsProfile) {
+                    $resp->with('info', $profileMsg);
+                }
+                return $resp;
+            }
+            $resp = redirect()->intended(RouteServiceProvider::home())->with('success', 'Berhasil masuk.');
+            if ($needsProfile) {
+                $resp->with('info', $profileMsg);
+            }
             return $resp;
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) {
+                $this->logException($e, ['action' => 'AuthenticatedSessionController@store']);
+            }
+            return back()->withInput()->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal masuk. Periksa kredensial Anda.') : 'Terjadi kesalahan.');
         }
 
-        // Fallback to app home resolution
-        $resp = redirect()->intended(RouteServiceProvider::home())->with('success', 'Berhasil masuk.');
-        if ($needsProfile) { $resp->with('info', $profileMsg); }
-        return $resp;
-        
     }
 
     /**
@@ -59,12 +68,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        try {
+            Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
+            $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+            $request->session()->regenerateToken();
 
-        return redirect('/');
+            return redirect('/');
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) {
+                $this->logException($e, ['action' => 'AuthenticatedSessionController@destroy']);
+            }
+            return redirect('/')->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal keluar dari sesi.') : 'Terjadi kesalahan.');
+        }
     }
 }

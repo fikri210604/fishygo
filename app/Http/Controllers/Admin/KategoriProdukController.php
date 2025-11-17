@@ -29,22 +29,26 @@ class KategoriProdukController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kategori' => ['required','string','max:255'],
-            'gambar_kategori' => ['nullable','image','max:2048'],
-        ]);
+        try {
+            $request->validate([
+                'nama_kategori' => ['required', 'string', 'max:255'],
+                'gambar_kategori' => ['nullable', 'image', 'max:2048'],
+            ]);
 
-        $path = null;
-        if ($request->hasFile('gambar_kategori')) {
-            $path = $request->file('gambar_kategori')->store('kategori', 'public');
+            $path = null;
+            if ($request->hasFile('gambar_kategori')) {
+                $path = $request->file('gambar_kategori')->store('kategori', 'public');
+            }
+
+            KategoriProduk::create([
+                'nama_kategori' => $request->input('nama_kategori'),
+                'gambar_kategori' => $path,
+            ]);
+            return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dibuat.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'KategoriProdukController@store']);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal membuat kategori.'));
         }
-
-        KategoriProduk::create([
-            'nama_kategori' => $request->input('nama_kategori'),
-            'gambar_kategori' => $path,
-        ]);
-
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dibuat.');
     }
 
     public function edit(KategoriProduk $kategori)
@@ -54,31 +58,47 @@ class KategoriProdukController extends Controller
 
     public function update(Request $request, KategoriProduk $kategori)
     {
-        $request->validate([
-            'nama_kategori' => ['required','string','max:255'],
-            'gambar_kategori' => ['nullable','image','max:2048'],
-        ]);
+        try {
+            $request->validate([
+                'nama_kategori' => ['required', 'string', 'max:255'],
+                'gambar_kategori' => ['nullable', 'image', 'max:2048'],
+            ]);
 
-        $payload = [ 'nama_kategori' => $request->input('nama_kategori') ];
+            $payload = ['nama_kategori' => $request->input('nama_kategori')];
 
-        if ($request->hasFile('gambar_kategori')) {
-            if (!empty($kategori->gambar_kategori)) {
-                try { Storage::disk('public')->delete($kategori->gambar_kategori); } catch (\Throwable $e) {}
+            if ($request->hasFile('gambar_kategori')) {
+                if (!empty($kategori->gambar_kategori)) {
+                    try {
+                        Storage::disk('public')->delete($kategori->gambar_kategori);
+                    } catch (\Throwable $e) {
+                    }
+                }
+                $payload['gambar_kategori'] = $request->file('gambar_kategori')->store('kategori', 'public');
             }
-            $payload['gambar_kategori'] = $request->file('gambar_kategori')->store('kategori', 'public');
+
+            $kategori->update($payload);
+
+            return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'KategoriProdukController@update', 'kategori_produk_id' => $kategori->kategori_produk_id]);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal memperbarui kategori.'));
         }
-
-        $kategori->update($payload);
-
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(KategoriProduk $kategori)
     {
-        if (!empty($kategori->gambar_kategori)) {
-            try { Storage::disk('public')->delete($kategori->gambar_kategori); } catch (\Throwable $e) {}
+        try {
+            if (!empty($kategori->gambar_kategori)) {
+                try {
+                    Storage::disk('public')->delete($kategori->gambar_kategori);
+                } catch (\Throwable $e) {
+                }
+            }
+            $kategori->delete();
+            return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'KategoriProdukController@destroy', 'kategori_produk_id' => $kategori->kategori_produk_id]);
+            return back()->with('error', $this->errorMessage($e, 'Gagal menghapus kategori.'));
         }
-        $kategori->delete();
-        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

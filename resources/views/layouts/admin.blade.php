@@ -18,7 +18,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 pt-16" x-data>
-            @include('layouts.navbar')
+            @include('layouts.navbars.nav-admin')
 
             <div class="md:flex">
                 @include('layouts.sidebar')

@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\KategoriProduk;
 use App\Models\JenisIkan;
+use App\Models\ProdukFoto;
 
 class ProdukController extends Controller
 {
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q'));
-        $items = Produk::query()
+        $items = Produk::with('photos')
             ->when($q !== '', function ($query) use ($q) {
                 $query->where('nama_produk', 'ILIKE', "%{$q}%");
             })
@@ -26,15 +27,6 @@ class ProdukController extends Controller
         return view('admin.produk.index', compact('items', 'q'));
     }
 
-    public function show(Produk $produk)
-    {
-        $produk->load(['kategori', 'jenisIkan']);
-        $rekomendasi = Produk::where('jenis_ikan_id', $produk->jenis_ikan_id)
-            ->where('produk_id', '!=', $produk->produk_id)
-            ->limit(8)
-            ->get();
-        return view('detail-produk', compact('produk', 'rekomendasi'));
-    }
     public function create()
     {
         return view('admin.produk.create');
@@ -42,11 +34,12 @@ class ProdukController extends Controller
 
     public function store(Request $request)
     {
+        try {
         $request->validate([
             'kode_produk' => ['nullable', 'string', 'max:50', 'unique:produk,kode_produk'],
             'nama_produk' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:produk,slug'],
-            'gambar_produk' => ['nullable', 'image', 'max:4096'],
+            'photos.*' => ['nullable','image','max:4096'],
             'kategori_produk_id' => ['required', 'integer', 'exists:kategori_produk,kategori_produk_id'],
             'jenis_ikan_id' => ['required', 'integer', 'exists:jenis_ikan,jenis_ikan_id'],
             'harga' => ['required', 'numeric', 'min:0'],
@@ -93,17 +86,11 @@ class ProdukController extends Controller
         }
         $slug = $request->input('slug') ?: Str::slug($request->input('nama_produk')) . '-' . Str::lower(Str::random(6));
 
-        $img = null;
-        if ($request->hasFile('gambar_produk')) {
-            $img = $request->file('gambar_produk')->store('produk', 'public');
-        }
-
-        Produk::create([
+        $produk = Produk::create([
             'produk_id' => (string) Str::uuid(),
             'kode_produk' => $kode,
             'slug' => $slug,
             'nama_produk' => $request->input('nama_produk'),
-            'gambar_produk' => $img,
             'kategori_produk_id' => $request->input('kategori_produk_id'),
             'jenis_ikan_id' => $request->input('jenis_ikan_id'),
             'harga' => $request->input('harga'),
@@ -122,7 +109,36 @@ class ProdukController extends Controller
             'updated_by' => Auth::id(),
         ]);
 
+        // Simpan galeri foto jika ada
+        if ($request->hasFile('photos')) {
+            $files = $request->file('photos');
+            $orderBase = (int) ($produk->photos()->max('urutan') ?? 0);
+            $i = 0; $firstPath = null;
+            foreach ($files as $file) {
+                if (!$file || ! $file->isValid()) { continue; }
+                $path = $file->store('produk', 'public');
+                if ($firstPath === null) { $firstPath = $path; }
+                ProdukFoto::create([
+                    'produk_id' => $produk->produk_id,
+                    'path' => $path,
+                    'is_primary' => false,
+                    'urutan' => $orderBase + ($i++),
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
+                ]);
+            }
+            // Tandai foto pertama sebagai primary
+            if ($firstPath) {
+                $first = $produk->photos()->orderBy('created_at')->first();
+                if ($first) { $first->update(['is_primary' => true]); }
+            }
+        }
+
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dibuat.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'ProdukController@store']);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal membuat produk.'));
+        }
     }
 
     public function edit(Produk $produk)
@@ -132,11 +148,12 @@ class ProdukController extends Controller
 
     public function update(Request $request, Produk $produk)
     {
+        try {
         $request->validate([
             'kode_produk' => ['required', 'string', 'max:50', 'unique:produk,kode_produk,' . $produk->produk_id . ',produk_id'],
             'nama_produk' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:produk,slug,' . $produk->produk_id . ',produk_id'],
-            'gambar_produk' => ['nullable', 'image', 'max:4096'],
+            'photos.*' => ['nullable','image','max:4096'],
             'kategori_produk_id' => ['required', 'integer', 'exists:kategori_produk,kategori_produk_id'],
             'jenis_ikan_id' => ['required', 'integer', 'exists:jenis_ikan,jenis_ikan_id'],
             'harga' => ['required', 'numeric', 'min:0'],
@@ -172,30 +189,81 @@ class ProdukController extends Controller
             'updated_by' => Auth::id(),
         ];
 
-        if ($request->hasFile('gambar_produk')) {
-            if (!empty($produk->gambar_produk)) {
-                try {
-                    Storage::disk('public')->delete($produk->gambar_produk);
-                } catch (\Throwable $e) {
-                }
-            }
-            $payload['gambar_produk'] = $request->file('gambar_produk')->store('produk', 'public');
-        }
+        // Tidak lagi menerima input gambar tunggal; gunakan galeri
 
         $produk->update($payload);
 
+        // Hapus foto yang dipilih
+        $deleteIds = (array) $request->input('delete_photo_ids', []);
+        if (!empty($deleteIds)) {
+            $toDelete = ProdukFoto::whereIn('produk_foto_id', $deleteIds)
+                ->where('produk_id', $produk->produk_id)->get();
+            foreach ($toDelete as $pf) {
+                try { Storage::disk('public')->delete($pf->path); } catch (\Throwable $e) {}
+                $pf->delete();
+            }
+        }
+
+        // Update urutan
+        $orders = (array) $request->input('order', []);
+        if (!empty($orders)) {
+            foreach ($orders as $pid => $ord) {
+                ProdukFoto::where('produk_foto_id', $pid)
+                    ->where('produk_id', $produk->produk_id)
+                    ->update(['urutan' => (int) $ord]);
+            }
+        }
+
+        // Tambah foto baru jika ada
+        if ($request->hasFile('photos')) {
+            $files = $request->file('photos');
+            $orderBase = (int) ($produk->photos()->max('urutan') ?? 0) + 1;
+            $i = 0;
+            foreach ($files as $file) {
+                if (!$file || ! $file->isValid()) { continue; }
+                $path = $file->store('produk', 'public');
+                ProdukFoto::create([
+                    'produk_id' => $produk->produk_id,
+                    'path' => $path,
+                    'is_primary' => false,
+                    'urutan' => $orderBase + ($i++),
+                    'updated_by' => Auth::id(),
+                    'created_by' => Auth::id(),
+                ]);
+            }
+        }
+
+        // Set primary photo jika dipilih
+        $primaryId = $request->input('primary_photo_id');
+        if ($primaryId) {
+            ProdukFoto::where('produk_id', $produk->produk_id)->update(['is_primary' => false]);
+            $primary = ProdukFoto::where('produk_foto_id', $primaryId)->where('produk_id', $produk->produk_id)->first();
+            if ($primary) {
+                $primary->update(['is_primary' => true]);
+                $produk->update(['gambar_produk' => $primary->path]);
+            }
+        }
+
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'ProdukController@update', 'produk_id' => $produk->produk_id]);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal memperbarui produk.'));
+        }
     }
 
     public function destroy(Produk $produk)
     {
-        if (!empty($produk->gambar_produk)) {
-            try {
-                Storage::disk('public')->delete($produk->gambar_produk);
-            } catch (\Throwable $e) {
+        try {
+            // Hapus semua foto galeri
+            foreach ($produk->photos as $pf) {
+                try { Storage::disk('public')->delete($pf->path); } catch (\Throwable $e) {}
+                $pf->delete();
             }
+            $produk->delete();
+            return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'ProdukController@destroy', 'produk_id' => $produk->produk_id]);
+            return back()->with('error', $this->errorMessage($e, 'Gagal menghapus produk.'));
         }
-        $produk->delete();
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus.');
     }
 }

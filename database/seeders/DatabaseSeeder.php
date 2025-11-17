@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             ProdukSeeder::class,
             JenisIkanSeeder::class,
-            KategoriProdukSeeder::class
+            KategoriProdukSeeder::class,
+            ReviewProdukSeeder::class,
         ]);
     }
 }

@@ -25,17 +25,23 @@ class ConfirmablePasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
-            throw ValidationException::withMessages([
-                'password' => __('auth.password'),
-            ]);
+        try {
+            if (! Auth::guard('web')->validate([
+                'email' => $request->user()->email,
+                'password' => $request->password,
+            ])) {
+                throw ValidationException::withMessages([
+                    'password' => __('auth.password'),
+                ]);
+            }
+
+            $request->session()->put('auth.password_confirmed_at', time());
+
+            return redirect()->intended(RouteServiceProvider::home());
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'ConfirmablePasswordController@store']); }
+            // ValidationException will be handled by Handler; for other errors flash message
+            return back()->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal konfirmasi password.') : 'Terjadi kesalahan.');
         }
-
-        $request->session()->put('auth.password_confirmed_at', time());
-
-        return redirect()->intended(RouteServiceProvider::home());
     }
 }

@@ -44,7 +44,6 @@ class ProdukFactory extends Factory
             'kode_produk' => 'SKU-'.strtoupper(Str::random(8)),
             'slug' => Str::slug($nama).'-'.Str::lower(Str::random(6)),
             'nama_produk' => $nama,
-            'gambar_produk' => 'images/produk/'.Str::uuid().'.jpg',
             'kategori_produk_id' => $kategori->getKey(),
             'jenis_ikan_id' => $jenis->getKey(),
             'harga' => $harga,

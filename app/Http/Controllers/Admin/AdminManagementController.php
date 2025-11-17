@@ -30,6 +30,7 @@ class AdminManagementController extends Controller
 
     public function store(Request $request)
     {
+        try {
         $validated = $request->validate([
             'nama' => ['required','string','max:255'],
             'username' => ['required','string','max:255','unique:penggunas,username'],
@@ -58,8 +59,11 @@ class AdminManagementController extends Controller
             'role_slug' => User::ROLE_ADMIN,
         ]);
         $admin->assignRole(User::ROLE_ADMIN);
-
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil dibuat.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'AdminManagementController@store']);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal membuat admin.'));
+        }
     }
 
     public function edit(User $admin)
@@ -71,6 +75,7 @@ class AdminManagementController extends Controller
     public function update(Request $request, User $admin)
     {
         abort_unless($admin->hasRole(User::ROLE_ADMIN), 404);
+        try {
         $validated = $request->validate([
             'nama' => ['required','string','max:255'],
             'username' => ['required','string','max:255', Rule::unique('penggunas','username')->ignore($admin->id, 'id')],
@@ -103,12 +108,21 @@ class AdminManagementController extends Controller
         $admin->assignRole(User::ROLE_ADMIN);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'AdminManagementController@update', 'admin_id' => $admin->id]);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal memperbarui admin.'));
+        }
     }
 
     public function destroy(User $admin)
     {
         abort_unless($admin->hasRole(User::ROLE_ADMIN), 404);
-        $admin->delete();
-        return back()->with('success', 'Admin berhasil dihapus.');
+        try {
+            $admin->delete();
+            return back()->with('success', 'Admin berhasil dihapus.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'AdminManagementController@destroy', 'admin_id' => $admin->id]);
+            return back()->with('error', $this->errorMessage($e, 'Gagal menghapus admin.'));
+        }
     }
 }

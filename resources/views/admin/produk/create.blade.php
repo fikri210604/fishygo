@@ -16,9 +16,10 @@
                 <label class="label"><span class="label-text">Slug (opsional)</span></label>
                 <input type="text" name="slug" class="input input-bordered w-full" />
             </div>
-            <div>
-                <label class="label"><span class="label-text">Gambar</span></label>
-                <input type="file" name="gambar_produk" accept="image/*" class="file-input file-input-bordered w-full" />
+            <div class="md:col-span-2">
+                <label class="label"><span class="label-text">Galeri Foto (opsional)</span></label>
+                <input type="file" name="photos[]" accept="image/*" multiple class="file-input file-input-bordered w-full" />
+                <div class="text-xs text-gray-500 mt-1">Anda dapat mengunggah beberapa foto. Foto pertama akan dijadikan utama jika tidak memilih gambar utama.</div>
             </div>
             <div>
                 <label class="label"><span class="label-text">Kategori</span></label>
@@ -92,4 +93,3 @@
         </div>
     </form>
 @endsection
-

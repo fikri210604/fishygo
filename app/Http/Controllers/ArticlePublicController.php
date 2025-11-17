@@ -9,19 +9,29 @@ class ArticlePublicController extends Controller
 {
     public function index()
     {
-        $articles = Article::query()
-            ->whereNotNull('diterbitkan_pada')
-            ->orderByDesc('diterbitkan_pada')
-            ->paginate(10);
+        try {
+            $articles = Article::query()
+                ->whereNotNull('diterbitkan_pada')
+                ->orderByDesc('diterbitkan_pada')
+                ->paginate(10);
 
-        return view('articles.index', compact('articles'));
+            return view('articles.index', compact('articles'));
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'ArticlePublicController@index']); }
+            return back()->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal memuat artikel.') : 'Terjadi kesalahan.');
+        }
     }
 
     public function show(Article $article)
     {
-        if (is_null($article->diterbitkan_pada)) {
-            abort(404);
+        try {
+            if (is_null($article->diterbitkan_pada)) {
+                abort(404);
+            }
+            return view('articles.show', compact('article'));
+        } catch (\Throwable $e) {
+            if (method_exists($this, 'logException')) { $this->logException($e, ['action' => 'ArticlePublicController@show', 'id' => $article->id ?? null]); }
+            return back()->with('error', method_exists($this, 'errorMessage') ? $this->errorMessage($e, 'Gagal menampilkan artikel.') : 'Terjadi kesalahan.');
         }
-        return view('articles.show', compact('article'));
     }
 }

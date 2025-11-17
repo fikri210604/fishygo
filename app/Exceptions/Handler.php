@@ -3,7 +3,15 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Handler extends ExceptionHandler
 {
@@ -44,5 +52,49 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        // Let Laravel handle common cases normally
+        if ($e instanceof ValidationException ||
+            $e instanceof AuthenticationException ||
+            $e instanceof AuthorizationException) {
+            return parent::render($request, $e);
+        }
+
+        // If JSON or API request, return JSON error
+        if ($request->expectsJson() || Str::startsWith($request->path(), 'api/')) {
+            $message = config('app.debug') ? ($e->getMessage() ?: 'Server error') : 'Terjadi kesalahan pada server.';
+            return response()->json([
+                'message' => $message,
+            ], $this->isHttpStatus($e) ? $e->getStatusCode() : 500);
+        }
+
+        // For typical web request: flash error and redirect back
+        try {
+            Log::error($e->getMessage(), ['exception' => $e]);
+        } catch (\Throwable $ignore) {}
+
+        $msg = 'Terjadi kesalahan. Silakan coba lagi.';
+        if (config('app.debug') && $e->getMessage()) {
+            $msg .= ' ['.$e->getMessage().']';
+        }
+
+        // Avoid flashing on 404/403; let default renderer handle
+        if ($this->isHttpStatus($e) && in_array($e->getStatusCode(), [403, 404, 405], true)) {
+            return parent::render($request, $e);
+        }
+
+        $back = back();
+        if (!in_array(strtoupper($request->method()), ['GET', 'HEAD'])) {
+            $back = $back->withInput();
+        }
+        return $back->with('error', $msg);
+    }
+
+    protected function isHttpStatus(Throwable $e): bool
+    {
+        return $e instanceof HttpExceptionInterface && method_exists($e, 'getStatusCode');
     }
 }

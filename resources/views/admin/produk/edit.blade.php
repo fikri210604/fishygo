@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
     <h1 class="text-xl font-semibold mb-4">Edit Produk</h1>
-    <form method="POST" action="{{ route('admin.produk.update', $produk->produk_id) }}" enctype="multipart/form-data" class="bg-white p-5 rounded border space-y-4 max-w-3xl">
+    <form method="POST" action="{{ route('admin.produk.update', $produk->produk_id) }}" enctype="multipart/form-data" class="bg-white p-5 rounded border space-y-4 max-w-5xl">
         @csrf
         @method('PUT')
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -17,13 +17,36 @@
                 <label class="label"><span class="label-text">Slug (opsional)</span></label>
                 <input type="text" name="slug" class="input input-bordered w-full" value="{{ old('slug', $produk->slug) }}" />
             </div>
-            <div>
-                <label class="label"><span class="label-text">Gambar (opsional)</span></label>
-                <input type="file" name="gambar_produk" accept="image/*" class="file-input file-input-bordered w-full" />
-                @if($produk->gambar_produk)
-                    <div class="mt-2">
-                        <img src="{{ asset('storage/'.$produk->gambar_produk) }}" class="h-16 rounded object-cover" />
+            
+            <div class="md:col-span-2">
+                <label class="label"><span class="label-text">Galeri Foto</span></label>
+                <input type="file" name="photos[]" accept="image/*" multiple class="file-input file-input-bordered w-full" />
+                <div class="text-xs text-gray-500 mt-1">Unggah foto tambahan (opsional). Atur foto utama dan urutan di bawah.</div>
+                @php $photos = $produk->photos()->orderBy('urutan')->get(); @endphp
+                @if ($photos->count())
+                    <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach ($photos as $pf)
+                            <div class="border rounded p-2 space-y-2">
+                                <img src="{{ asset('storage/'.$pf->path) }}" class="h-28 w-full object-cover rounded" alt="Foto">
+                                <div class="flex items-center justify-between text-sm">
+                                    <label class="flex items-center gap-1">
+                                        <input type="radio" name="primary_photo_id" value="{{ $pf->produk_foto_id }}" class="radio radio-sm" {{ $pf->is_primary ? 'checked' : '' }}>
+                                        <span>Jadikan utama</span>
+                                    </label>
+                                    <label class="flex items-center gap-1 text-red-600">
+                                        <input type="checkbox" name="delete_photo_ids[]" value="{{ $pf->produk_foto_id }}" class="checkbox checkbox-xs">
+                                        <span>Hapus</span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="label"><span class="label-text-alt">Urutan</span></label>
+                                    <input type="number" name="order[{{ $pf->produk_foto_id }}]" value="{{ $pf->urutan }}" class="input input-bordered input-sm w-full">
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
+                @else
+                    <div class="mt-2 text-sm text-gray-500">Belum ada foto galeri.</div>
                 @endif
             </div>
             <div>
@@ -103,4 +126,3 @@
         </div>
     </form>
 @endsection
-

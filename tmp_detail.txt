@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', $produk->nama_produk . ' - FishyGo')
 @section('content')
@@ -102,8 +102,8 @@
                         @endforelse
                         {{-- Form Tambah Review --}}
                         @auth
-                            <form action="{{ route('produk.review.store', $produk->produk_id) }}" method="POST"
-                                class="mt-4 space-y-3">
+                            {{-- <form action="{{ route('produk.review.store', $produk->produk_id) }}" method="POST"
+                                class="mt-4 space-y-3"> --}}
                                 @csrf
                                 <div>
                                     <label class="label"><span class="label-text">Rating</span></label>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div>
                                     <label class="label"><span class="label-text">Komentar</span></label>
-                                    <textarea name="review" class="textarea textarea-bordered w-full" rows="3"
+                                    <textarea name="komentar" class="textarea textarea-bordered w-full" rows="3"
                                         required></textarea>
                                 </div>
                                 <button class="btn btn-primary w-full">Kirim Review</button>
@@ -174,3 +174,4 @@
     </div>
 
 @endsection
+

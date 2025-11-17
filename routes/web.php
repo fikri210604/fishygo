@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\ReviewProdukController;
 use App\Http\Controllers\Admin\JenisIkanController;
 use App\Http\Controllers\Admin\KategoriProdukController;
 use App\Http\Controllers\ArticlePublicController;
@@ -23,10 +25,10 @@ Route::get('/articles', [ArticlePublicController::class, 'index'])->name('articl
 Route::get('/articles/{article:slug}', [ArticlePublicController::class, 'show'])->name('articles.show');
 
 // Dashboard user
-Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->middleware(['auth'])->name('home');
 
 // Detail produk publik (pakai slug)
-Route::get('/produk/{produk:slug}', [ProdukController::class, 'show'])->name('produk.show');
+Route::get('/produk/{produk:slug}', [DetailProdukController::class, 'show'])->name('produk.show');
 
 // Profil user
 Route::middleware('auth')->group(function () {
@@ -58,6 +60,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('produk', ProdukController::class)->parameters(['produk' => 'produk'])->except(['show']);
     });
 });
+
+// Review produk (user login)
+Route::middleware('auth')->group(function () {
+    Route::post('/produk/{produk:produk_id}/reviews', [ReviewProdukController::class, 'store'])->name('produk.review.store');
+    Route::put('/produk/reviews/{review:review_id}', [ReviewProdukController::class, 'update'])->name('produk.review.update');
+    Route::delete('/produk/reviews/{review:review_id}', [ReviewProdukController::class, 'destroy'])->name('produk.review.destroy');
+});
+
+// List review produk (public, JSON)
+Route::get('/produk/{produk:produk_id}/reviews', [ReviewProdukController::class, 'indexByProduct'])->name('produk.review.index');
 
 // Import route auth.php
 require __DIR__.'/auth.php';

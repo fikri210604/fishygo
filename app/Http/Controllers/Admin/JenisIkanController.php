@@ -29,6 +29,7 @@ class JenisIkanController extends Controller
 
     public function store(Request $request)
     {
+        try {
         $request->validate([
             'jenis_ikan' => ['required', 'string', 'max:255'],
             'gambar_jenis_ikan' => ['nullable', 'image', 'max:2048'],
@@ -43,8 +44,11 @@ class JenisIkanController extends Controller
             'jenis_ikan' => $request->input('jenis_ikan'),
             'gambar_jenis_ikan' => $path,
         ]);
-
         return redirect()->route('admin.jenis-ikan.index')->with('success', 'Jenis ikan berhasil dibuat.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'JenisIkanController@store']);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal membuat jenis ikan.'));
+        }
     }
 
     public function edit(JenisIkan $jenis_ikan)
@@ -54,6 +58,7 @@ class JenisIkanController extends Controller
 
     public function update(Request $request, JenisIkan $jenis_ikan)
     {
+        try {
         $request->validate([
             'jenis_ikan' => ['required', 'string', 'max:255'],
             'gambar_jenis_ikan' => ['nullable', 'image', 'max:2048'],
@@ -74,17 +79,26 @@ class JenisIkanController extends Controller
         $jenis_ikan->update($payload);
 
         return redirect()->route('admin.jenis-ikan.index')->with('success', 'Jenis ikan berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'JenisIkanController@update', 'jenis_ikan_id' => $jenis_ikan->jenis_ikan_id]);
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal memperbarui jenis ikan.'));
+        }
     }
 
     public function destroy(JenisIkan $jenis_ikan)
     {
-        if (!empty($jenis_ikan->gambar_jenis_ikan)) {
-            try {
-                Storage::disk('public')->delete($jenis_ikan->gambar_jenis_ikan);
-            } catch (\Throwable $e) {
+        try {
+            if (!empty($jenis_ikan->gambar_jenis_ikan)) {
+                try {
+                    Storage::disk('public')->delete($jenis_ikan->gambar_jenis_ikan);
+                } catch (\Throwable $e) {
+                }
             }
+            $jenis_ikan->delete();
+            return redirect()->route('admin.jenis-ikan.index')->with('success', 'Jenis ikan berhasil dihapus.');
+        } catch (\Throwable $e) {
+            $this->logException($e, ['action' => 'JenisIkanController@destroy', 'jenis_ikan_id' => $jenis_ikan->jenis_ikan_id]);
+            return back()->with('error', $this->errorMessage($e, 'Gagal menghapus jenis ikan.'));
         }
-        $jenis_ikan->delete();
-        return redirect()->route('admin.jenis-ikan.index')->with('success', 'Jenis ikan berhasil dihapus.');
     }
 }

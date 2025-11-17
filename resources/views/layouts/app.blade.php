@@ -25,7 +25,15 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 pt-16">
-        @include('layouts.navbar')
+        @auth
+            @can('access-admin')
+                @include('layouts.navbars.nav-admin')
+            @else
+                @include('layouts.navbars.nav-user')
+            @endcan
+        @else
+            @include('layouts.navbars.nav-public')
+        @endauth
 
         <div class="max-w-7xl mx-auto">
             @if (isset($header))

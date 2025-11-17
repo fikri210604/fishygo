@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Produk extends Model
@@ -21,7 +22,6 @@ class Produk extends Model
         'produk_id',
         'slug',
         'kode_produk',
-        'gambar_produk',
         'nama_produk',
         'kategori_produk_id',
         'jenis_ikan_id',
@@ -66,7 +66,7 @@ class Produk extends Model
         });
 
         static::updating(function ($model) {
-            if ($model->isDirty('nama_produk')) { // hanya update slug kalau nama berubah
+            if ($model->isDirty('nama_produk')) { 
                 $model->slug = Str::slug($model->nama_produk) . '-' . Str::lower(Str::random(6));
             }
         });
@@ -92,6 +92,50 @@ class Produk extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ProdukFoto::class, 'produk_id');
+    }
+
+    public function primaryPhoto()
+    {
+        return $this->hasOne(ProdukFoto::class, 'produk_id')->where('is_primary', true)->orderBy('urutan');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ReviewProduk::class, 'produk_id', 'produk_id');
+    }
+
+    // Akses nilai gambar utama dari relasi foto (fallback ke kolom lama jika ada)
+    public function getGambarProdukAttribute($value)
+    {
+        // Prioritaskan relasi yang sudah di-load
+        if ($this->relationLoaded('primaryPhoto') && $this->primaryPhoto) {
+            return $this->primaryPhoto->path;
+        }
+        if ($this->relationLoaded('photos') && $this->photos->count() > 0) {
+            $primary = $this->photos->firstWhere('is_primary', true);
+            if ($primary) { return $primary->path; }
+            return $this->photos->sortBy(['is_primary','desc'], ['urutan','asc'])->first()?->path ?? $value;
+        }
+        // Query ringan jika belum di-load
+        $path = $this->primaryPhoto()->value('path');
+        if ($path) { return $path; }
+        $first = $this->photos()->orderByDesc('is_primary')->orderBy('urutan')->value('path');
+        return $first ?: $value;
+    }
+
+    public function recalcRating(): void
+    {
+        $agg = $this->reviews()->whereNull('deleted_at')
+            ->selectRaw('COUNT(*) as cnt, COALESCE(AVG(rating),0) as avg')
+            ->first();
+        $this->rating_count = (int) ($agg->cnt ?? 0);
+        $this->rating_avg = round((float) ($agg->avg ?? 0), 2);
+        $this->save();
     }
 
     // Helper harga efektif (memakai promo jika aktif & dalam rentang waktu)

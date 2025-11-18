@@ -52,13 +52,12 @@ class ProfileController extends Controller
 
             $user = $request->user();
 
-            // Build payload update ala: $model->update(['field' => $request->input('field')])
+            // Build payload update untuk tabel pengguna (tanpa kolom address)
             $payload = [
                 'nama' => $request->input('nama'),
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
-                'address' => $request->input('address'),
-                'phone' => $request->input('phone'),
+                'nomor_telepon' => $request->input('phone'),
             ];
 
             // Tangani avatar: hapus lama dan simpan baru (jika ada)

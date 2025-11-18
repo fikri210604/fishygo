@@ -62,7 +62,7 @@
     <h2 class="text-xl font-bold mb-4">Temukan Berbagai Produk Ikan</h2>
 
     {{-- scroll horizontal --}}
-    <div class="mb-8 overflow-x-auto scrollbar-hide mt-4"> 
+    <div class="mb-8 overflow-x-auto scrollbar-hide mt-4">
         <div class="flex gap-2 w-max">
 
             @php($active = request('jenis') === null)
@@ -108,7 +108,20 @@
                         @else
                             <span class="btn btn-xs bg-gray-200 btn-disabled" title="Slug tidak tersedia">Detail</span>
                         @endif
-                        <a href="#" class="btn btn-xs btn-primary">Beli</a>
+                        @auth
+                            <form action="{{ route('cart.add', $p->produk_id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-xs btn-primary flex items-center gap-1">
+                                    <span class="text-xs font-bold">+</span>
+                                    <i class="ri-shopping-cart-2-line text-sm"></i>
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-xs btn-primary flex items-center gap-1">
+                                <span class="text-xs font-bold">+</span>
+                                <i class="ri-shopping-cart-2-line text-sm"></i>
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>

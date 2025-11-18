@@ -38,8 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'email_verified_at',
         'role_slug',
-        'address',
-        'phone',
+        'phone', // input profil, akan dipetakan ke nomor_telepon
         'nomor_telepon',
         'google_id',
         'avatar',
@@ -147,7 +146,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($this->isAdmin()) { return 'admin.dashboard'; }
         if ($this->isKurir()) { return 'kurir.dashboard'; }
-        return 'home';
+        // Pengguna biasa diarahkan ke halaman utama (welcome)
+        return 'welcome';
     }
 
     public static function defaultRoleSlug(): string
@@ -175,6 +175,6 @@ class User extends Authenticatable implements MustVerifyEmail
     // Profil lengkap jika nomor HP terisi dan punya alamat lengkap
     public function isProfileComplete(): bool
     {
-        return filled($this->phone) && $this->hasCompleteAddress();
+        return filled($this->nomor_telepon) && $this->hasCompleteAddress();
     }
 }

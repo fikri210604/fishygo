@@ -21,7 +21,11 @@
 
 <body class="bg-white pt-16">
 
-    @include('layouts.navbars.nav-public')
+    @auth
+        @include('layouts.navbars.nav-user')
+    @else
+        @include('layouts.navbars.nav-public')
+    @endauth
 
     {{-- HERO --}}
     <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center px-6"

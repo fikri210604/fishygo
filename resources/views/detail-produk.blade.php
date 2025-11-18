@@ -95,7 +95,7 @@
                                 <div class="text-yellow-500 text-sm mb-1">
                                     {{ str_repeat('⭐', $rev->rating) }}
                                 </div>
-                                <p class="text-gray-700">{{ $rev->komentar }}</p>
+                                <p class="text-gray-700">{{ $rev->review }}</p>
                             </div>
                         @empty
                             <p class="text-gray-500">Belum ada review.</p>
@@ -129,8 +129,21 @@
                     </div>
                 </div>
                 <div class="flex gap-3 mt-6">
-                    <button class="btn btn-primary">Tambahkan Ke Keranjang</button>
-                    <button class="btn btn-outline">Beli Sekarang</button>
+                    @auth
+                        <form action="{{ route('cart.add', $produk->produk_id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">
+                                Tambahkan Ke Keranjang
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-primary">
+                            Tambahkan Ke Keranjang
+                        </a>
+                    @endauth
+                    <a href="{{ route('cart.index') }}" class="btn btn-outline">
+                        Lihat Keranjang
+                    </a>
                 </div>
             </div>
         </div>
@@ -159,7 +172,20 @@
                             @else
                                 <span class="btn btn-xs bg-gray-200 btn-disabled" title="Slug tidak tersedia">Detail</span>
                             @endif
-                            <a href="#" class="btn btn-xs btn-primary">Beli</a>
+                            @auth
+                                <form action="{{ route('cart.add', $r->produk_id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-xs btn-primary flex items-center gap-1">
+                                        <span class="text-xs font-bold">+</span>
+                                        <i class="ri-shopping-cart-2-line text-sm"></i>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-xs btn-primary flex items-center gap-1">
+                                    <span class="text-xs font-bold">+</span>
+                                    <i class="ri-shopping-cart-2-line text-sm"></i>
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>

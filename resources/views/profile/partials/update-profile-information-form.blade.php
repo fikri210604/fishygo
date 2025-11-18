@@ -56,14 +56,14 @@
 
         <div>
             <x-input-label for="address" :value="__('Alamat Lengkap (Jalan, RT/RW, No Rumah)')" />
-            <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-900">{{ old('address', $user->address) }}</textarea>
+            <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-900">{{ old('address', optional($primaryAddress ?? null)->alamat_lengkap) }}</textarea>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <x-input-label for="phone" :value="__('Nomor HP')" />
-                <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full text-gray-900" :value="old('phone', $user->phone)" autocomplete="tel" />
+                <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full text-gray-900" :value="old('phone', $user->nomor_telepon)" autocomplete="tel" />
                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
             </div>
             <div>
@@ -75,9 +75,17 @@
 
         <div>
             <x-input-label for="avatar" :value="__('Avatar')" />
-            @if ($user->avatar)
+            @php
+                $avatar = $user->avatar ?? null;
+                if ($avatar) {
+                    $avatarUrl = \Illuminate\Support\Str::startsWith($avatar, ['http://', 'https://'])
+                        ? $avatar
+                        : asset('storage/' . $avatar);
+                }
+            @endphp
+            @if (!empty($avatar ?? null))
                 <div class="mb-2">
-                    <img src="{{ asset('storage/'.$user->avatar) }}" alt="avatar" class="h-16 w-16 rounded-full object-cover">
+                    <img src="{{ $avatarUrl }}" alt="avatar" class="h-16 w-16 rounded-full object-cover">
                 </div>
             @endif
             <input id="avatar" name="avatar" type="file" accept="image/*" class="mt-1 block w-full" />

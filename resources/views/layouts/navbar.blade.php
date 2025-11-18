@@ -46,7 +46,7 @@
                     Produk
                 </a>
 
-                <a href="{{ url('/#tentang') }}" class="font-semibold text-gray-800 hover:text-orange-400">
+                <a href="{{ route('tentang') }}" class="font-semibold text-gray-800 hover:text-orange-400">
                     Tentang
                 </a>
 
@@ -123,7 +123,7 @@
                 Produk
             </a>
 
-            <a href="{{ url('/#tentang') }}" class="block py-2 text-sm font-semibold text-gray-800">
+            <a href="{{ route('tentang') }}" class="block py-2 text-sm font-semibold text-gray-800">
                 Tentang
             </a>
 

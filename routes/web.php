@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\ReviewProdukController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\JenisIkanController;
 use App\Http\Controllers\Admin\KategoriProdukController;
 use App\Http\Controllers\ArticlePublicController;
@@ -18,14 +19,19 @@ use App\Http\Controllers\HomeController;
 // Halaman utama
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
+
+// Halaman tentang
+Route::view('/tentang', 'tentang')->name('tentang');
 
 // Artikel publik
 Route::get('/articles', [ArticlePublicController::class, 'index'])->name('articles.index');
 Route::get('/articles/{article:slug}', [ArticlePublicController::class, 'show'])->name('articles.show');
 
-// Dashboard user
-Route::get('/home', [HomeController::class, 'index'])->middleware(['auth'])->name('home');
+// Dashboard user (daftar produk)
+Route::get('/produk', [HomeController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('home');
 
 // Detail produk publik (pakai slug)
 Route::get('/produk/{produk:slug}', [DetailProdukController::class, 'show'])->name('produk.show');
@@ -35,6 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Keranjang belanja
+    Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/keranjang/{produk:produk_id}', [CartController::class, 'add'])->name('cart.add');
+    Route::put('/keranjang/{produk:produk_id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/keranjang/{produk:produk_id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/keranjang', [CartController::class, 'clear'])->name('cart.clear');
 });
 
 // Dashboard akses role

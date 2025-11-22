@@ -109,7 +109,7 @@
                             <span class="btn btn-xs bg-gray-200 btn-disabled" title="Slug tidak tersedia">Detail</span>
                         @endif
                         @auth
-                            <form action="{{ route('cart.add', $p->produk_id) }}" method="POST">
+                            <form action="{{ route('cart.add', $p->produk_id) }}" method="POST" data-cart-add="true">
                                 @csrf
                                 <button type="submit" class="btn btn-xs btn-primary flex items-center gap-1">
                                     <span class="text-xs font-bold">+</span>

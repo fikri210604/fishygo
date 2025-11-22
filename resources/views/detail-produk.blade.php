@@ -130,7 +130,7 @@
                 </div>
                 <div class="flex gap-3 mt-6">
                     @auth
-                        <form action="{{ route('cart.add', $produk->produk_id) }}" method="POST">
+                        <form action="{{ route('cart.add', $produk->produk_id) }}" method="POST" data-cart-add="true">
                             @csrf
                             <button type="submit" class="btn btn-primary">
                                 Tambahkan Ke Keranjang
@@ -173,7 +173,7 @@
                                 <span class="btn btn-xs bg-gray-200 btn-disabled" title="Slug tidak tersedia">Detail</span>
                             @endif
                             @auth
-                                <form action="{{ route('cart.add', $r->produk_id) }}" method="POST">
+                                <form action="{{ route('cart.add', $r->produk_id) }}" method="POST" data-cart-add="true">
                                     @csrf
                                     <button type="submit" class="btn btn-xs btn-primary flex items-center gap-1">
                                         <span class="text-xs font-bold">+</span>

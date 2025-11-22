@@ -33,11 +33,9 @@
         <!-- Cart icon -->
         <a href="{{ route('cart.index') }}" class="relative ml-2 text-gray-700 hover:text-orange-500">
             <i class="ri-shopping-cart-2-line text-2xl"></i>
-            @if($cartCount > 0)
-                <span class="absolute -top-1 -right-2 bg-orange-500 text-white text-[10px] leading-none rounded-full px-1.5 py-0.5">
-                    {{ $cartCount }}
-                </span>
-            @endif
+            <span id="navbar-cart-count" class="absolute -top-1 -right-2 bg-orange-500 text-white text-[10px] leading-none rounded-full px-1.5 py-0.5 {{ $cartCount > 0 ? '' : 'hidden' }}">
+                {{ $cartCount }}
+            </span>
         </a>
 
         <!-- Profile dropdown -->
@@ -87,7 +85,7 @@
         <div class="mt-2">
             <a href="{{ route('cart.index') }}" class="inline-flex items-center text-gray-800 hover:text-orange-500">
                 <i class="ri-shopping-cart-2-line text-xl mr-1"></i>
-                <span>Keranjang ({{ $cartCount }})</span>
+                <span>Keranjang (<span id="navbar-cart-count-mobile">{{ $cartCount }}</span>)</span>
             </a>
         </div>
     </div>

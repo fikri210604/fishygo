@@ -8,6 +8,59 @@ use Illuminate\Http\Request;
 class CartController extends Controller
 {
     /**
+     * Bangun ringkasan keranjang (items, total, dan count).
+     */
+    protected function buildCartSummary(array $cart): array
+    {
+        if (empty($cart)) {
+            return [
+                'items' => [],
+                'total' => 0,
+                'cart_count' => 0,
+                'items_count' => 0,
+            ];
+        }
+
+        $produkIds = array_keys($cart);
+        $produks = Produk::whereIn('produk_id', $produkIds)
+            ->with('primaryPhoto')
+            ->get()
+            ->keyBy('produk_id');
+
+        $items = [];
+        $total = 0;
+        $cartCount = 0;
+
+        foreach ($cart as $produkId => $row) {
+            $produk = $produks->get($produkId);
+            if (!$produk) {
+                continue;
+            }
+
+            $qty = max(1, (int) ($row['qty'] ?? 1));
+            $harga = (float) $produk->hargaEfektif();
+            $subtotal = $harga * $qty;
+
+            $total += $subtotal;
+            $cartCount += $qty;
+
+            $items[] = [
+                'produk' => $produk,
+                'qty' => $qty,
+                'harga' => $harga,
+                'subtotal' => $subtotal,
+            ];
+        }
+
+        return [
+            'items' => $items,
+            'total' => $total,
+            'cart_count' => $cartCount,
+            'items_count' => count($items),
+        ];
+    }
+
+    /**
      * Ambil data keranjang dari session.
      */
     protected function getCart(): array
@@ -31,45 +84,13 @@ class CartController extends Controller
     {
         try {
             $cart = $this->getCart();
-
-            if (empty($cart)) {
-                return view('keranjang', [
-                    'items' => [],
-                    'total' => 0,
-                ]);
-            }
-
-            $produkIds = array_keys($cart);
-            $produks = Produk::whereIn('produk_id', $produkIds)
-                ->with('primaryPhoto')
-                ->get()
-                ->keyBy('produk_id');
-
-            $items = [];
-            $total = 0;
-
-            foreach ($cart as $produkId => $row) {
-                $produk = $produks->get($produkId);
-                if (!$produk) {
-                    continue;
-                }
-
-                $qty = max(1, (int) ($row['qty'] ?? 1));
-                $harga = (float) $produk->hargaEfektif();
-                $subtotal = $harga * $qty;
-                $total += $subtotal;
-
-                $items[] = [
-                    'produk' => $produk,
-                    'qty' => $qty,
-                    'harga' => $harga,
-                    'subtotal' => $subtotal,
-                ];
-            }
+            $summary = $this->buildCartSummary($cart);
 
             return view('keranjang', [
-                'items' => $items,
-                'total' => $total,
+                'items' => $summary['items'],
+                'total' => $summary['total'],
+                'cart_count' => $summary['cart_count'],
+                'items_count' => $summary['items_count'],
             ]);
         } catch (\Throwable $e) {
             $this->logException($e, ['action' => 'CartController@index']);
@@ -93,11 +114,15 @@ class CartController extends Controller
             }
 
             $this->saveCart($cart);
+            $summary = $this->buildCartSummary($cart);
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Produk ditambahkan ke keranjang.',
+                    'cart_count' => $summary['cart_count'],
+                    'items_count' => $summary['items_count'],
+                    'total' => $summary['total'],
                 ]);
             }
 
@@ -131,23 +156,64 @@ class CartController extends Controller
 
             $mode = $request->input('mode');
             $currentQty = max(1, (int) ($cart[$produk->produk_id]['qty'] ?? 1));
+            $removed = false;
 
             if ($mode === 'inc') {
                 $qty = $currentQty + 1;
+                $cart[$produk->produk_id]['qty'] = $qty;
             } elseif ($mode === 'dec') {
-                $qty = max(1, $currentQty - 1);
+                $qty = $currentQty - 1;
+                if ($qty < 1) {
+                    unset($cart[$produk->produk_id]);
+                    $removed = true;
+                } else {
+                    $cart[$produk->produk_id]['qty'] = $qty;
+                }
             } else {
                 $qty = max(1, (int) $request->input('qty', $currentQty));
+                $cart[$produk->produk_id]['qty'] = $qty;
             }
 
-            $cart[$produk->produk_id]['qty'] = $qty;
             $this->saveCart($cart);
 
             if ($request->expectsJson()) {
-                return response()->json([
+                $summary = $this->buildCartSummary($cart);
+                $produkId = $produk->produk_id;
+                $itemData = null;
+
+                foreach ($summary['items'] as $item) {
+                    if ($item['produk']->produk_id === $produkId) {
+                        $itemData = [
+                            'produk_id' => $produkId,
+                            'qty' => $item['qty'],
+                            'harga' => $item['harga'],
+                            'subtotal' => $item['subtotal'],
+                        ];
+                        break;
+                    }
+                }
+                $message = $removed
+                    ? 'Produk dihapus dari keranjang.'
+                    : 'Kuantitas keranjang diperbarui.';
+
+                $response = [
                     'status' => 'success',
-                    'message' => 'Kuantitas keranjang diperbarui.',
-                ]);
+                    'message' => $message,
+                    'cart_count' => $summary['cart_count'],
+                    'items_count' => $summary['items_count'],
+                    'total' => $summary['total'],
+                    'item' => $removed ? null : $itemData,
+                ];
+
+                if ($removed) {
+                    $response['removed_produk_id'] = $produkId;
+                }
+
+                return response()->json($response);
+            }
+
+            if ($removed) {
+                return back()->with('success', 'Produk dihapus dari keranjang.');
             }
 
             return back()->with('success', 'Kuantitas keranjang diperbarui.');
@@ -174,13 +240,20 @@ class CartController extends Controller
     {
         try {
             $cart = $this->getCart();
-            unset($cart[$produk->produk_id]);
+            $produkId = $produk->produk_id;
+            unset($cart[$produkId]);
             $this->saveCart($cart);
 
             if ($request->expectsJson()) {
+                $summary = $this->buildCartSummary($cart);
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Produk dihapus dari keranjang.',
+                    'cart_count' => $summary['cart_count'],
+                    'items_count' => $summary['items_count'],
+                    'total' => $summary['total'],
+                    'removed_produk_id' => $produkId,
                 ]);
             }
 
@@ -213,6 +286,9 @@ class CartController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Keranjang dikosongkan.',
+                    'cart_count' => 0,
+                    'items_count' => 0,
+                    'total' => 0,
                 ]);
             }
 
@@ -230,4 +306,3 @@ class CartController extends Controller
         }
     }
 }
-

@@ -17,10 +17,10 @@
             </div>
         @else
             <div class="flex justify-between items-center mb-4">
-                <span class="text-sm text-gray-600">
-                    {{ count($items) }} produk di keranjang
+                <span class="text-sm text-gray-600" data-cart-items-count>
+                    {{ $items_count ?? count($items) }} produk di keranjang
                 </span>
-                <form action="{{ route('cart.clear') }}" method="POST">
+                <form action="{{ route('cart.clear') }}" method="POST" data-cart-clear="true">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-sm btn-outline rounded-full">
@@ -37,7 +37,9 @@
                         $harga = $item['harga'];
                         $subtotal = $item['subtotal'];
                     @endphp
-                    <div class="flex items-center gap-4 bg-white rounded-2xl shadow-sm px-4 py-4">
+                    <div class="flex items-center gap-4 bg-white rounded-2xl shadow-sm px-4 py-4"
+                         data-cart-item
+                         data-produk-id="{{ $produk->produk_id }}">
                         <div class="pt-2">
                             <input type="checkbox" class="checkbox checkbox-sm" disabled>
                         </div>
@@ -71,14 +73,15 @@
                                 Rp {{ number_format($harga, 0, ',', '.') }}
                             </p>
                             <form action="{{ route('cart.update', $produk->produk_id) }}" method="POST"
-                                  class="inline-flex items-center bg-gray-100 rounded-full px-2 py-1">
+                                  class="inline-flex items-center bg-gray-100 rounded-full px-2 py-1"
+                                  data-cart-update="true">
                                 @csrf
                                 @method('PUT')
                                 <button type="submit" name="mode" value="dec"
                                         class="px-2 text-lg font-bold text-gray-700">
                                     -
                                 </button>
-                                <span class="px-2 text-sm min-w-[1.5rem] text-center">
+                                <span class="px-2 text-sm min-w-[1.5rem] text-center" data-cart-qty>
                                     {{ $qty }}
                                 </span>
                                 <button type="submit" name="mode" value="inc"
@@ -86,7 +89,7 @@
                                     +
                                 </button>
                             </form>
-                            <form action="{{ route('cart.remove', $produk->produk_id) }}" method="POST">
+                            <form action="{{ route('cart.remove', $produk->produk_id) }}" method="POST" data-cart-remove="true">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -103,16 +106,15 @@
                 <div class="max-w-5xl mx-auto flex items-center justify-between">
                     <div>
                         <p class="text-xs text-gray-500">Total</p>
-                        <p class="text-xl font-bold text-primary">
+                        <p class="text-xl font-bold text-primary" id="cart-total">
                             Rp {{ number_format($total, 0, ',', '.') }}
                         </p>
                     </div>
-                    <button class="btn btn-primary rounded-full px-8">
-                        Checkout ({{ count($items) }})
+                    <button class="btn btn-primary rounded-full px-8" data-cart-checkout-count>
+                        Checkout ({{ $cart_count ?? count($items) }})
                     </button>
                 </div>
             </div>
         @endif
     </div>
 @endsection
-

@@ -8,6 +8,7 @@ Alpine.start();
 
 import './wilayah';
 import './loading-handler';
+import './cart';
 
 // Global Alpine store for layout (mobile sidebar)
 document.addEventListener('alpine:init', () => {

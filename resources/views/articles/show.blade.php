@@ -7,7 +7,7 @@
             </div>
             @if(!empty($article->thumbnail))
                 <div class="mb-6">
-                    <img src="{{ asset('storage/'.$article->thumbnail) }}" alt="Thumbnail {{ $article->judul }}" class="w-full max-h-96 object-cover rounded">
+                    <img src="{{ asset('storage/'.$article->thumbnail) }}" alt="Thumbnail {{ $article->judul }}" class="w-full max-h-96 object-cover rounded" loading="lazy" decoding="async">
                 </div>
             @endif
             <div class="content">

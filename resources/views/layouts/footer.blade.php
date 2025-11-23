@@ -4,7 +4,7 @@
         {{-- Logo & Brand --}}
         <div class="flex items-center justify-center gap-3 mb-4">
             @if(file_exists(public_path('assets/images/logo.png')))
-                <img src="{{ asset('assets/images/logo.png') }}" class="h-10" alt="FishyGo Logo" />
+                <img src="{{ asset('assets/images/logo.png') }}" class="h-10" alt="FishyGo Logo" loading="lazy" decoding="async" height="40" />
             @else
                 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
                     F

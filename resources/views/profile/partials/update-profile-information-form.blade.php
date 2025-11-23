@@ -20,27 +20,31 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <x-input-label for="nama" :value="__('Nama')" />
-                <x-text-input id="nama" name="nama" type="text" class="mt-1 block w-full text-gray-900" :value="old('nama', $user->nama)" required autocomplete="name" />
+                <x-text-input id="nama" name="nama" type="text" class="mt-1 block w-full text-gray-900"
+                    :value="old('nama', $user->nama)" required autocomplete="name" />
                 <x-input-error class="mt-2" :messages="$errors->get('nama')" />
             </div>
             <div>
                 <x-input-label for="username" :value="__('Username')" />
-                <x-text-input id="username" name="username" type="text" class="mt-1 block w-full text-gray-900" :value="old('username', $user->username)" required autocomplete="username" />
+                <x-text-input id="username" name="username" type="text" class="mt-1 block w-full text-gray-900"
+                    :value="old('username', $user->username)" required autocomplete="username" />
                 <x-input-error class="mt-2" :messages="$errors->get('username')" />
             </div>
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full text-gray-900" :value="old('email', $user->email)" required autocomplete="email" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full text-gray-900"
+                :value="old('email', $user->email)" required autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !$user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button form="send-verification"
+                            class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
@@ -56,19 +60,22 @@
 
         <div>
             <x-input-label for="address" :value="__('Alamat Lengkap (Jalan, RT/RW, No Rumah)')" />
-            <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-900">{{ old('address', optional($primaryAddress ?? null)->alamat_lengkap) }}</textarea>
+            <textarea id="address" name="address" rows="3"
+                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-900">{{ old('address', optional($primaryAddress ?? null)->alamat_lengkap) }}</textarea>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <x-input-label for="phone" :value="__('Nomor HP')" />
-                <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full text-gray-900" :value="old('phone', $user->nomor_telepon)" autocomplete="tel" />
+                <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full text-gray-900"
+                    :value="old('phone', $user->nomor_telepon)" autocomplete="tel" />
                 <x-input-error class="mt-2" :messages="$errors->get('phone')" />
             </div>
             <div>
                 <x-input-label for="kode_pos" :value="__('Kode Pos')" />
-                <x-text-input id="kode_pos" name="kode_pos" type="text" class="mt-1 block w-full text-gray-900" :value="old('kode_pos', optional($primaryAddress ?? null)->kode_pos)" />
+                <x-text-input id="kode_pos" name="kode_pos" type="text" class="mt-1 block w-full text-gray-900"
+                    :value="old('kode_pos', optional($primaryAddress ?? null)->kode_pos)" />
                 <x-input-error class="mt-2" :messages="$errors->get('kode_pos')" />
             </div>
         </div>
@@ -85,7 +92,7 @@
             @endphp
             @if (!empty($avatar ?? null))
                 <div class="mb-2">
-                    <img src="{{ $avatarUrl }}" alt="avatar" class="h-16 w-16 rounded-full object-cover">
+                    <img src="{{ $avatarUrl }}" alt="avatar" class="h-16 w-16 rounded-full object-cover" loading="lazy" decoding="async" width="64" height="64">
                 </div>
             @endif
             <input id="avatar" name="avatar" type="file" accept="image/*" class="mt-1 block w-full" />
@@ -97,84 +104,105 @@
             <div>
                 <x-input-label for="province_select" :value="__('Provinsi')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="province_select" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                    <select id="province" name="province_id" class="w-full bg-gray-200 border-gray-300 rounded-md">
                         <option value="">-- Pilih Provinsi --</option>
                     </select>
                     <span id="province_spinner" class="hidden inline-flex">
-                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="province_id" name="province_id" value="{{ old('province_id', optional($primaryAddress ?? null)->province_id) }}">
-                <input type="hidden" id="province_name" name="province_name" value="{{ old('province_name', optional($primaryAddress ?? null)->province_name) }}">
+                <input type="hidden" id="province_id" name="province_id"
+                    value="{{ old('province_id', optional($primaryAddress ?? null)->province_id) }}">
+                <input type="hidden" id="province_name" name="province_name"
+                    value="{{ old('province_name', optional($primaryAddress ?? null)->province_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('province_id')" />
             </div>
 
             <div>
                 <x-input-label for="regency_select" :value="__('Kabupaten/Kota')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="regency_select" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" disabled>
-                        <option value="">-- Pilih Kabupaten/Kota --</option>
+                    <select id="city" name="city_id" class="w-full bg-gray-200 border-gray-300 rounded-md" disabled>
+                        <option value="">-- Pilih Kota/Kabupaten --</option>
                     </select>
                     <span id="regency_spinner" class="hidden inline-flex">
-                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="regency_id" name="regency_id" value="{{ old('regency_id', optional($primaryAddress ?? null)->regency_id) }}">
-                <input type="hidden" id="regency_name" name="regency_name" value="{{ old('regency_name', optional($primaryAddress ?? null)->regency_name) }}">
+                <input type="hidden" id="regency_id" name="regency_id"
+                    value="{{ old('regency_id', optional($primaryAddress ?? null)->regency_id) }}">
+                <input type="hidden" id="regency_name" name="regency_name"
+                    value="{{ old('regency_name', optional($primaryAddress ?? null)->regency_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('regency_id')" />
             </div>
 
             <div>
                 <x-input-label for="district_select" :value="__('Kecamatan')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="district_select" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" disabled>
+                    <select id="district" name="district_id" class="w-full bg-gray-200 border-gray-300 rounded-md"
+                        disabled>
                         <option value="">-- Pilih Kecamatan --</option>
                     </select>
                     <span id="district_spinner" class="hidden inline-flex">
-                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="district_id" name="district_id" value="{{ old('district_id', optional($primaryAddress ?? null)->district_id) }}">
-                <input type="hidden" id="district_name" name="district_name" value="{{ old('district_name', optional($primaryAddress ?? null)->district_name) }}">
+                <input type="hidden" id="district_id" name="district_id"
+                    value="{{ old('district_id', optional($primaryAddress ?? null)->district_id) }}">
+                <input type="hidden" id="district_name" name="district_name"
+                    value="{{ old('district_name', optional($primaryAddress ?? null)->district_name) }}">
                 <x-input-error class="mt-2" :messages="$errors->get('district_id')" />
             </div>
 
             <div>
-                <x-input-label for="village_select" :value="__('Kelurahan/Desa')" />
+                <x-input-label for="subdistrict" :value="__('Kelurahan / Desa')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="village_select" class="flex-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" disabled>
-                        <option value="">-- Pilih Kelurahan/Desa --</option>
+                    <select id="subdistrict" name="subdistrict_id" class="w-full bg-gray-200 border-gray-300 rounded-md"
+                        disabled>
+                        <option value="">-- Pilih Kelurahan / Desa --</option>
                     </select>
-                    <span id="village_spinner" class="hidden inline-flex">
-                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+
+                    <span id="subdistrict_spinner" class="hidden inline-flex">
+                        <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                         </svg>
                     </span>
                 </div>
-                <input type="hidden" id="village_id" name="village_id" value="{{ old('village_id', optional($primaryAddress ?? null)->village_id) }}">
-                <input type="hidden" id="village_name" name="village_name" value="{{ old('village_name', optional($primaryAddress ?? null)->village_name) }}">
-                <x-input-error class="mt-2" :messages="$errors->get('village_id')" />
+                <input type="hidden" id="subdistrict_name" name="subdistrict_name"
+                    value="{{ old('subdistrict_name', optional($primaryAddress ?? null)->village_name) }}">
+
+                <x-input-error class="mt-2" :messages="$errors->get('subdistrict_id')" />
             </div>
+
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <x-input-label for="rt" :value="__('RT')" />
-                    <x-text-input id="rt" name="rt" type="text" class="mt-1 block w-full text-gray-900" :value="old('rt', optional($primaryAddress ?? null)->rt)" />
+                    <x-text-input id="rt" name="rt" type="text" class="mt-1 block w-full text-gray-900"
+                        :value="old('rt', optional($primaryAddress ?? null)->rt)" />
                     <x-input-error class="mt-2" :messages="$errors->get('rt')" />
                 </div>
                 <div>
                     <x-input-label for="rw" :value="__('RW')" />
-                    <x-text-input id="rw" name="rw" type="text" class="mt-1 block w-full text-gray-900" :value="old('rw', optional($primaryAddress ?? null)->rw)" />
+                    <x-text-input id="rw" name="rw" type="text" class="mt-1 block w-full text-gray-900"
+                        :value="old('rw', optional($primaryAddress ?? null)->rw)" />
                     <x-input-error class="mt-2" :messages="$errors->get('rw')" />
                 </div>
             </div>
@@ -184,13 +212,8 @@
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm text-gray-600">{{ __('Saved.') }}</p>
             @endif
         </div>
     </form>

@@ -41,8 +41,9 @@ return [
     ],
 
     // External wilayah API settings
-    'wilayah' => [
-        'base_url' => env('WILAYAH_BASE_URL', 'https://wilayah.id/api'),
+    'rajaongkir' => [
+        'key' => env('KOMERCE_RAJAONGKIR_KEY'),
+        'url' => env('KOMERCE_RAJAONGKIR_URL')
     ],
 
 ];

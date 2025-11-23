@@ -7,7 +7,7 @@
             <div class="w-full max-w-md">
                 <div class="text-center mb-6">
                     <h1 class="text-3xl font-bold text-primary mb-2">Login ke FishyGo!</h1>
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo" class="h-12 mx-auto" loading="lazy">
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo" class="h-12 mx-auto" decoding="async" fetchpriority="high" height="48">
                 </div>
                 @if (session('verified'))
                     <div class="mb-4 p-3 rounded bg-green-50 text-green-700 border border-green-200">

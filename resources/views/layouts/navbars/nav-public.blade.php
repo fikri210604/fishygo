@@ -3,7 +3,7 @@
         
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-10">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-10" decoding="async" fetchpriority="high" height="40">
         </a>
 
         <!-- Menu utama -->

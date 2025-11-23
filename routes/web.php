@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\PesananManajementController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\ReviewProdukController;
 use App\Http\Controllers\CartController;
@@ -15,6 +18,7 @@ use App\Http\Controllers\Admin\JenisIkanController;
 use App\Http\Controllers\Admin\KategoriProdukController;
 use App\Http\Controllers\ArticlePublicController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PesananController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -48,12 +52,24 @@ Route::middleware('auth')->group(function () {
     Route::put('/keranjang/{produk:produk_id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/keranjang/{produk:produk_id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::delete('/keranjang', [CartController::class, 'clear'])->name('cart.clear');
+
+    // Checkout & Pesanan
+    Route::get('/checkout', [PesananController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [PesananController::class, 'store'])->name('checkout.store');
+    // Pastikan rute statis didefinisikan sebelum parameter agar tidak bentrok
+    Route::get('/pesanan/history', [PesananController::class, 'history'])->name('pesanan.history');
+    Route::get('/pesanan/{pesanan:pesanan_id}', [PesananController::class, 'show'])
+        ->whereUuid('pesanan')
+        ->name('pesanan.show');
+    Route::post('/pesanan/{pesanan:pesanan_id}/cancel', [PesananController::class, 'cancel'])
+        ->whereUuid('pesanan')
+        ->name('pesanan.cancel');
 });
 
 // Dashboard akses role
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])
-        ->middleware(['auth','verified','can:access-admin'])
+        ->middleware('can:access-admin')
         ->name('admin.dashboard');
 
     Route::view('/kurir/dashboard', 'kurir.dashboard')
@@ -71,6 +87,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('kategori', KategoriProdukController::class)->parameters(['kategori' => 'kategori'])->except(['show']);
         Route::resource('jenis-ikan', JenisIkanController::class)->parameters(['jenis-ikan' => 'jenis_ikan'])->except(['show']);
         Route::resource('produk', ProdukController::class)->parameters(['produk' => 'produk'])->except(['show']);
+
+        // Settings: Roles & Permissions
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::resource('permissions', PermissionController::class)->except(['show','create','edit']);
+            Route::resource('roles', RolePermissionController::class)->except(['show','create','edit']);
+            Route::put('roles/{role}/permissions', [RolePermissionController::class, 'updatePermissions'])->name('roles.permissions.update');
+        });
+
+        // Pesanan (Admin)
+        Route::resource('pesanan', PesananManajementController::class)->only(['index','show']);
     });
 });
 
@@ -86,5 +112,3 @@ Route::get('/produk/{produk:produk_id}/reviews', [ReviewProdukController::class,
 
 // Import route auth.php
 require __DIR__.'/auth.php';
-
-// (Disederhanakan) endpoint polling tidak diperlukan

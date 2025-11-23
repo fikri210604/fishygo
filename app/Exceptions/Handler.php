@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
@@ -56,7 +57,17 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
-        // Let Laravel handle common cases normally
+        // Session expired (CSRF token mismatch) -> inform and redirect to login
+        if ($e instanceof TokenMismatchException) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Sesi telah berakhir. Silakan login ulang.'
+                ], 419);
+            }
+            // Tampilkan halaman error 419 khusus dengan tombol login
+            return response()->view('errors.419', [], 419);
+        }
+
         if ($e instanceof ValidationException ||
             $e instanceof AuthenticationException ||
             $e instanceof AuthorizationException) {
@@ -74,14 +85,13 @@ class Handler extends ExceptionHandler
         // For typical web request: flash error and redirect back
         try {
             Log::error($e->getMessage(), ['exception' => $e]);
-        } catch (\Throwable $ignore) {}
+        } catch (Throwable $ignore) {}
 
         $msg = 'Terjadi kesalahan. Silakan coba lagi.';
         if (config('app.debug') && $e->getMessage()) {
             $msg .= ' ['.$e->getMessage().']';
         }
 
-        // Avoid flashing on 404/403; let default renderer handle
         if ($this->isHttpStatus($e) && in_array($e->getStatusCode(), [403, 404, 405], true)) {
             return parent::render($request, $e);
         }
@@ -96,5 +106,14 @@ class Handler extends ExceptionHandler
     protected function isHttpStatus(Throwable $e): bool
     {
         return $e instanceof HttpExceptionInterface && method_exists($e, 'getStatusCode');
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        return redirect()->guest(route('login'))
+            ->with('error', 'Sesi telah berakhir. Silakan login ulang.');
     }
 }

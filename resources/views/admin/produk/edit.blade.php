@@ -27,7 +27,7 @@
                     <div class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach ($photos as $pf)
                             <div class="border rounded p-2 space-y-2">
-                                <img src="{{ asset('storage/'.$pf->path) }}" class="h-28 w-full object-cover rounded" alt="Foto">
+                                <img src="{{ asset('storage/'.$pf->path) }}" class="h-28 w-full object-cover rounded" alt="Foto" loading="lazy" decoding="async">
                                 <div class="flex items-center justify-between text-sm">
                                     <label class="flex items-center gap-1">
                                         <input type="radio" name="primary_photo_id" value="{{ $pf->produk_foto_id }}" class="radio radio-sm" {{ $pf->is_primary ? 'checked' : '' }}>

@@ -22,7 +22,6 @@ class ProfileUpdateRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
             'avatar' => ['nullable','image','max:2048'],
-            // Field wilayah untuk tabel alamat (opsional di profil)
             'province_id' => ['nullable','string','max:50'],
             'province_name' => ['nullable','string','max:100'],
             'regency_id' => ['nullable','string','max:50'],

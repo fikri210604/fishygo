@@ -50,7 +50,9 @@
                             @endphp
                             @if ($imgPath)
                                 <img src="{{ $imgPath }}" alt="{{ $produk->nama_produk }}"
-                                     class="w-full h-full object-cover" loading="lazy">
+                                     class="w-full h-full object-cover"
+                                     loading="lazy" decoding="async" width="96" height="96" fetchpriority="low"
+                                     sizes="96px">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">
                                     Tidak ada gambar
@@ -110,9 +112,9 @@
                             Rp {{ number_format($total, 0, ',', '.') }}
                         </p>
                     </div>
-                    <button class="btn btn-primary rounded-full px-8" data-cart-checkout-count>
+                    <a href="{{ route('checkout.create') }}" class="btn btn-primary rounded-full px-8" data-cart-checkout-count>
                         Checkout ({{ $cart_count ?? count($items) }})
-                    </button>
+                    </a>
                 </div>
             </div>
         @endif

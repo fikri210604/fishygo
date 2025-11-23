@@ -21,8 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Wilayah endpoints backed by local DB
 Route::prefix('wilayah')->group(function () {
-    Route::get('/provinces', [WilayahDbController::class, 'provinces']);
-    Route::get('/regencies/{provinceId}', [WilayahDbController::class, 'regencies']);
-    Route::get('/districts/{regencyId}', [WilayahDbController::class, 'districts']);
-    Route::get('/villages/{districtId}', [WilayahDbController::class, 'villages']);
+    Route::get('/provinces', [WilayahDbController::class, 'getProvinces']);
+    Route::get('/cities/{province}', [WilayahDbController::class, 'getCities']);
+    Route::get('/districts/{city}', [WilayahDbController::class, 'getDistricts']);
+    Route::get('/sub-district/{district}', [WilayahDbController::class, 'getSubDistrict']);
 });

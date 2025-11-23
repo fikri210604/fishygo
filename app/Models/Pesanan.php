@@ -1,5 +1,4 @@
-﻿<?php
-
+<?php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -55,6 +54,10 @@ class Pesanan extends Model
         });
     }
 
+    // Status constants
+    public const STATUS_MENUNGGU_PEMBAYARAN = 'menunggu_pembayaran';
+    public const STATUS_DIBATALKAN = 'dibatalkan';
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pengguna_id');
@@ -79,6 +82,7 @@ class Pesanan extends Model
     {
         return $this->hasOne(Pengiriman::class, 'pesanan_id', 'pesanan_id');
     }
+
     public function cancelledBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'cancelled_by_id');
@@ -93,8 +97,10 @@ class Pesanan extends Model
     {
         return $query->where('pengguna_id', $userId);
     }
+
+    public function canBeCancelled(): bool
+    {
+        return $this->status === self::STATUS_MENUNGGU_PEMBAYARAN;
+    }
 }
-
-
-
 

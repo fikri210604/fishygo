@@ -32,6 +32,7 @@
                             @if($row->gambar_kategori)
     <img src="{{ asset('storage/'.$row->gambar_kategori) }}"
          class="h-10 w-10 rounded object-cover"
+         loading="lazy" decoding="async" width="40" height="40"
          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
     <div class="skeleton h-10 w-10 rounded hidden"></div>
 @else

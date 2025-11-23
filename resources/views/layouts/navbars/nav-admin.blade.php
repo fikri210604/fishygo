@@ -9,7 +9,7 @@
                 </svg>
             </button>
             <a href="{{ route('admin.dashboard') }}" class="flex items-center">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-10">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="h-10" decoding="async" fetchpriority="high" height="40">
             </a>
         </div>
 
@@ -23,6 +23,7 @@
             </x-slot>
             <x-slot name="content">
                 <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
+                <x-dropdown-link :href="route('pesanan.history')">Riwayat Pesanan</x-dropdown-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Keluar</x-dropdown-link>

@@ -23,8 +23,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 pt-16">
+<body class="font-sans antialiased min-h-screen flex flex-col">
+    <div class="flex-1 bg-gray-100 pt-16">
         @auth
             @can('access-admin')
                 @include('layouts.navbars.nav-admin')
@@ -52,8 +52,8 @@
                 @endisset
             </main>
         </div>
-        @include('layouts.footer')
     </div>
+    @include('layouts.footer')
     @if (! View::hasSection('hide-toast'))
         <x-flash-toast />
     @endif

@@ -32,7 +32,7 @@
                         <th>{{ ($articles->currentPage()-1)*$articles->perPage() + $i + 1 }}</th>
                         <td>
                             @if($a->thumbnail)
-                                <img src="{{ asset('storage/'.$a->thumbnail) }}" class="h-10 w-16 rounded object-cover" />
+                                <img src="{{ asset('storage/'.$a->thumbnail) }}" class="h-10 w-16 rounded object-cover" loading="lazy" decoding="async" width="64" height="40" />
                             @else
                                 <div class="skeleton h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
                             @endif

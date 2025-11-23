@@ -36,7 +36,7 @@
         @endif
     >
         @if(file_exists(public_path('assets/images/logo-fishygo.png')))
-            <img src="{{ asset('assets/images/logo-fishygo.png') }}" loading="lazy" class="w-56 md:w-80 mb-6 drop-shadow-lg" alt="FishyGo">
+            <img src="{{ asset('assets/images/logo-fishygo.png') }}" loading="lazy" decoding="async" class="w-56 md:w-80 mb-6 drop-shadow-lg" alt="FishyGo">
         @else
             <div class="w-56 h-56 md:w-80 md:h-80 bg-white/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm">
                 <div class="text-8xl md:text-9xl">🐟</div>

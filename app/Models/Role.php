@@ -24,4 +24,16 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class, 'role_permission', 'role_id', 'permission_id')->withTimestamps();
     }
+
+    public function givePermission(String $slug)
+    {
+        $permission = Permission::where('slug', $slug)->first();
+        if (!$permission) {
+            return;
+        }
+        $attached = $this->permissions()->where('permissions.id', $permission->id)->exists();
+        if (!$attached) {
+            $this->permissions()->attach($permission->id);
+        }
+    }
 }

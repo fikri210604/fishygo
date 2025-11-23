@@ -28,4 +28,3 @@ document.addEventListener('alpine:init', () => {
   })
 })
 
-// SweetAlert2 removed in favor of DaisyUI toast

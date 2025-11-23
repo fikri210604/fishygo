@@ -3,7 +3,7 @@
         <!-- Logo -->
         <div class="shrink-0 flex items-center">
             <a href="{{ route('home') }}" class="flex items-center">
-                <img src="{{ asset('assets/images/logo.png') }}" alt="Fishy Go" class="h-12">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="Fishy Go" class="h-12" decoding="async" fetchpriority="high" height="48">
             </a>
         </div>
 
@@ -52,7 +52,7 @@
                 <x-slot name="trigger">
                     <button class="inline-flex items-center px-3 py-2 text-sm rounded-md bg-white text-gray-700 hover:text-orange-500">
                         @if(!empty($avatar ?? null))
-                            <img src="{{ $avatarUrl }}" alt="avatar" class="h-8 w-8 rounded-full object-cover mr-2">
+                            <img src="{{ $avatarUrl }}" alt="avatar" class="h-8 w-8 rounded-full object-cover mr-2" loading="lazy" decoding="async" width="32" height="32">
                         @else
                             <i class="ri-user-3-line text-xl mr-2"></i>
                         @endif
@@ -62,6 +62,7 @@
                 </x-slot>
                 <x-slot name="content">
                     <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
+                    <x-dropdown-link :href="route('pesanan.history')">Riwayat Pesanan</x-dropdown-link>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Keluar</x-dropdown-link>

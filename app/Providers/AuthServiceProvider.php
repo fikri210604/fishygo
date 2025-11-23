@@ -26,7 +26,6 @@ class AuthServiceProvider extends ServiceProvider
 
         // Gate dinamis berbasis permission slug
         Gate::before(function (User $user, string $ability) {
-            // Admin lolos semua
             if ($user->isAdmin()) {
                 return true;
             }

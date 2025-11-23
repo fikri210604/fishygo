@@ -19,7 +19,7 @@
         <x-input-label for="thumbnail" :value="__('Thumbnail (opsional)')" />
         @if(!empty($article->thumbnail ?? null))
             <div class="mb-2">
-                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="h-24 rounded border" />
+                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Thumbnail" class="h-24 rounded border" loading="lazy" decoding="async" height="96" />
             </div>
         @endif
         <input id="thumbnail" name="thumbnail" type="file" accept="image/*" class="mt-1 block w-full" />

@@ -32,7 +32,7 @@
                 <div x-data="{ i: {{ $primaryIndex }}, imgs: @json($photoUrls) }" class="w-full">
                     <div class="relative w-full h-80 md:h-96 overflow-hidden rounded-lg shadow-md">
                         <template x-if="imgs.length">
-                            <img :src="imgs[i]" alt="{{ $produk->nama_produk }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+                            <img :src="imgs[i]" alt="{{ $produk->nama_produk }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
                         </template>
                         <button type="button" class="btn btn-circle btn-sm absolute left-2 top-1/2 -translate-y-1/2"
                                 @click="i = (i - 1 + imgs.length) % imgs.length" aria-label="Sebelumnya">‹</button>
@@ -43,7 +43,7 @@
                         <template x-for="(src, idx) in imgs" :key="idx">
                             <button type="button" @click="i = idx"
                                     :class="'h-16 w-16 rounded overflow-hidden border ' + (idx === i ? 'border-primary' : 'border-base-200')">
-                                <img :src="src" alt="thumb" class="w-full h-full object-cover" loading="lazy">
+                                <img :src="src" alt="thumb" class="w-full h-full object-cover" loading="lazy" decoding="async" width="64" height="64">
                             </button>
                         </template>
                     </div>
@@ -159,7 +159,7 @@
                         <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
                         <img src="{{ $r->gambar_produk ? asset('storage/' . $r->gambar_produk) : '' }}"
                             alt="{{ $r->nama_produk }}" class="absolute inset-0 w-full h-full object-cover opacity-0"
-                            loading="lazy"
+                            loading="lazy" decoding="async"
                             onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('hidden');">
                     </figure>
                     <div class="card-body p-3">

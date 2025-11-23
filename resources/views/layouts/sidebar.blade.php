@@ -69,10 +69,10 @@
 
             <!-- TRANSAKSI -->
             <div class="px-3 text-[11px] font-semibold text-gray-500 uppercase tracking-wider mt-4 mb-2">Transaksi</div>
-            <a href="#"
-                class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] text-gray-700 hover:bg-gray-100 transition-colors">
-                <span
-                    class="material-symbols-outlined text-[20px] shrink-0 text-gray-500 group-hover:text-gray-700">shopping_cart</span>
+            @php($active = request()->routeIs('admin.pesanan.*'))
+            <a href="{{ route('admin.pesanan.index') }}"
+                class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] transition-colors {{ $active ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                <span class="material-symbols-outlined text-[20px] shrink-0 {{ $active ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-700' }}">shopping_cart</span>
                 <span>Transaksi</span>
             </a>
             <a href="#"
@@ -110,6 +110,15 @@
                     class="material-symbols-outlined text-[20px] shrink-0 text-gray-500 group-hover:text-gray-700">settings</span>
                 <span>Pengaturan</span>
             </a>
+
+            @can('access-admin')
+            @php($active = request()->routeIs('admin.settings.roles.*') || request()->routeIs('admin.settings.permissions.*'))
+            <a href="{{ route('admin.settings.roles.index') }}"
+                class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] transition-colors pl-2 {{ $active ? 'bg-indigo-50 text-indigo-700 font-semibold border-l-4 border-indigo-500' : 'text-gray-700 hover:bg-gray-100' }}">
+                <span class="material-symbols-outlined text-[20px] shrink-0 {{ $active ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-700' }}">admin_panel_settings</span>
+                <span>Role & Permission</span>
+            </a>
+            @endcan
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

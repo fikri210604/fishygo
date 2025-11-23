@@ -121,7 +121,6 @@ class Produk extends Model
             if ($primary) { return $primary->path; }
             return $this->photos->sortBy(['is_primary','desc'], ['urutan','asc'])->first()?->path ?? $value;
         }
-        // Query ringan jika belum di-load
         $path = $this->primaryPhoto()->value('path');
         if ($path) { return $path; }
         $first = $this->photos()->orderByDesc('is_primary')->orderBy('urutan')->value('path');

@@ -38,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'email_verified_at',
         'role_slug',
-        'phone', // input profil, akan dipetakan ke nomor_telepon
+        'phone',
         'nomor_telepon',
         'google_id',
         'avatar',
@@ -87,20 +87,17 @@ class User extends Authenticatable implements MustVerifyEmail
             return true;
         }
 
-        // Cek permission aktif melalui relasi roles -> permissions
         return $this->roles()
-            ->whereHas('permissions', function ($q) use ($slug) {
-                $q->where('slug', $slug)->where('aktif', '1');
-            })
+            ->whereHas('permissions', fn($q) => $q->where('slug', $slug))
             ->exists();
+
     }
 
     public function hasRole(string $slug): bool
     {
         if ($this->relationLoaded('roles')) {
-            return $this->roles->contains(fn ($r) => $r->slug === $slug);
+            return $this->roles->contains(fn($r) => $r->slug === $slug);
         }
-        // Fallback to single role column for backward compatibility
         if ($this->role_slug === $slug) {
             return true;
         }
@@ -110,13 +107,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function assignRole(string $slug): void
     {
         $role = Role::query()->where('slug', $slug)->first();
-        if (! $role) { return; }
+        if (!$role) {
+            return;
+        }
         $attached = $this->roles()->where('roles.id', $role->id)->exists();
-        if (! $attached) {
+        if (!$attached) {
             $this->roles()->attach($role->id);
         }
 
-        if (! $this->role_slug) {
+        if (!$this->role_slug) {
             $this->role_slug = $slug;
             $this->save();
         }
@@ -144,9 +143,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function Route(): string
     {
-        if ($this->isAdmin()) { return 'admin.dashboard'; }
-        if ($this->isKurir()) { return 'kurir.dashboard'; }
-        // Pengguna biasa diarahkan ke halaman utama (welcome)
+        if ($this->isAdmin()) {
+            return 'admin.dashboard';
+        }
+        if ($this->isKurir()) {
+            return 'kurir.dashboard';
+        }
         return 'welcome';
     }
 

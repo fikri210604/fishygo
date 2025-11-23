@@ -7,7 +7,7 @@
                 <div class="flex gap-4">
                     @if(!empty($a->thumbnail))
                         <a href="{{ route('articles.show', $a) }}" class="shrink-0">
-                            <img src="{{ asset('storage/'.$a->thumbnail) }}" alt="Thumbnail {{ $a->judul }}" class="w-36 h-24 object-cover rounded">
+                            <img src="{{ asset('storage/'.$a->thumbnail) }}" alt="Thumbnail {{ $a->judul }}" class="w-36 h-24 object-cover rounded" loading="lazy" decoding="async" width="144" height="96">
                         </a>
                     @endif
 

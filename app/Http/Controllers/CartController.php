@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    public function __construct(protected CartService $cartService)
+    {
+    }
     /**
      * Bangun ringkasan keranjang (items, total, dan count).
      */
@@ -65,8 +69,7 @@ class CartController extends Controller
      */
     protected function getCart(): array
     {
-        $cart = session('cart', []);
-        return is_array($cart) ? $cart : [];
+        return $this->cartService->get();
     }
 
     /**
@@ -74,7 +77,7 @@ class CartController extends Controller
      */
     protected function saveCart(array $cart): void
     {
-        session(['cart' => $cart]);
+        $this->cartService->put($cart);
     }
 
     /**
@@ -280,7 +283,7 @@ class CartController extends Controller
     public function clear(Request $request)
     {
         try {
-            session()->forget('cart');
+            $this->cartService->clear();
 
             if ($request->expectsJson()) {
                 return response()->json([

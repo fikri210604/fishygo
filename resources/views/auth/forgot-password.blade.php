@@ -14,7 +14,7 @@
                 {{-- TITLE + LOGO --}}
                 <div class="text-center mb-6">
                     <h1 class="text-3xl font-bold text-primary mb-2">Reset Password</h1>
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo" class="h-12 mx-auto">
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo" class="h-12 mx-auto" decoding="async" fetchpriority="high" height="48">
                 </div>
 
                 {{-- Penjelasan --}}

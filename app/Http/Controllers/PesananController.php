@@ -76,6 +76,7 @@ class PesananController extends Controller
             $pesanan = $this->service->createFromCart($user, $alamat, $summary, [
                 'metode_pembayaran' => $request->input('metode_pembayaran', 'manual'),
                 'catatan' => $request->input('catatan'),
+                'pickup' => $request->boolean('pickup'),
             ]);
 
             // Bersihkan keranjang

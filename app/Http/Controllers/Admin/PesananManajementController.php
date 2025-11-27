@@ -37,7 +37,7 @@ class PesananManajementController extends Controller
 
         $counts = [
             'all' => Pesanan::count(),
-            'waiting' => Pesanan::status(Pesanan::STATUS_MENUNGGU_PEMBAYARAN)->count(),
+            'waiting' => Pesanan::query()->whereIn('status', [Pesanan::STATUS_MENUNGGU_PEMBAYARAN, 'menunggu_konfirmasi'])->count(),
             'cancelled' => Pesanan::status(Pesanan::STATUS_DIBATALKAN)->count(),
         ];
 
@@ -50,4 +50,3 @@ class PesananManajementController extends Controller
         return view('admin.pesanan.show', compact('pesanan'));
     }
 }
-

@@ -1,4 +1,4 @@
-<section>
+﻿<section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Profile Information') }}
@@ -104,7 +104,7 @@
             <div>
                 <x-input-label for="province_select" :value="__('Provinsi')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="province" name="province_id" class="w-full bg-gray-200 border-gray-300 rounded-md">
+                    <select id="province" name="province_id" class="w-full bg-gray-200 border-gray-300 rounded-md" data-selected="{{ old('province_id', optional($primaryAddress ?? null)->province_id) }}">
                         <option value="">-- Pilih Provinsi --</option>
                     </select>
                     <span id="province_spinner" class="hidden inline-flex">
@@ -126,7 +126,7 @@
             <div>
                 <x-input-label for="regency_select" :value="__('Kabupaten/Kota')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="city" name="city_id" class="w-full bg-gray-200 border-gray-300 rounded-md" disabled>
+                    <select id="city" name="city_id" class="w-full bg-gray-200 border-gray-300 rounded-md" disabled data-selected="{{ old('regency_id', optional($primaryAddress ?? null)->regency_id) }}">
                         <option value="">-- Pilih Kota/Kabupaten --</option>
                     </select>
                     <span id="regency_spinner" class="hidden inline-flex">
@@ -148,8 +148,7 @@
             <div>
                 <x-input-label for="district_select" :value="__('Kecamatan')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="district" name="district_id" class="w-full bg-gray-200 border-gray-300 rounded-md"
-                        disabled>
+                    <select id="district" name="district_id" class="w-full bg-gray-200 border-gray-300 rounded-md" disabled data-selected="{{ old('district_id', optional($primaryAddress ?? null)->district_id) }}">
                         <option value="">-- Pilih Kecamatan --</option>
                     </select>
                     <span id="district_spinner" class="hidden inline-flex">
@@ -171,8 +170,7 @@
             <div>
                 <x-input-label for="subdistrict" :value="__('Kelurahan / Desa')" />
                 <div class="mt-1 flex items-center gap-2">
-                    <select id="subdistrict" name="subdistrict_id" class="w-full bg-gray-200 border-gray-300 rounded-md"
-                        disabled>
+                    <select id="subdistrict" name="subdistrict_id" class="w-full bg-gray-200 border-gray-300 rounded-md" disabled data-selected="{{ old('subdistrict_id', optional($primaryAddress ?? null)->village_id) }}">
                         <option value="">-- Pilih Kelurahan / Desa --</option>
                     </select>
 
@@ -185,6 +183,8 @@
                         </svg>
                     </span>
                 </div>
+                <input type="hidden" id="subdistrict_id" name="subdistrict_id"
+                    value="{{ old('subdistrict_id', optional($primaryAddress ?? null)->village_id) }}">
                 <input type="hidden" id="subdistrict_name" name="subdistrict_name"
                     value="{{ old('subdistrict_name', optional($primaryAddress ?? null)->village_name) }}">
 
@@ -217,4 +217,163 @@
             @endif
         </div>
     </form>
+
+    <script>
+        (function(){
+            // Sinkronkan nilai select -> hidden agar terkirim meski select disabled
+            const selProvince = document.getElementById('province');
+            const hidProvinceId = document.getElementById('province_id');
+            const hidProvinceName = document.getElementById('province_name');
+
+            const selRegency = document.getElementById('regency') || document.getElementById('city');
+            const hidRegencyId = document.getElementById('regency_id');
+            const hidRegencyName = document.getElementById('regency_name');
+
+            const selDistrict = document.getElementById('district');
+            const hidDistrictId = document.getElementById('district_id');
+            const hidDistrictName = document.getElementById('district_name');
+
+            const selSubdistrict = document.getElementById('subdistrict');
+            const hidSubId = document.getElementById('subdistrict_id');
+            const hidSubName = document.getElementById('subdistrict_name');
+
+            function sync(sel, hidId, hidName){
+                if(!sel || !hidId || !hidName) return;
+                const opt = sel.options[sel.selectedIndex];
+                if(!opt) return;
+                hidId.value = opt.value || '';
+                hidName.value = (opt.dataset && opt.dataset.label) ? opt.dataset.label : (opt.textContent || '');
+            }
+
+            selProvince && selProvince.addEventListener('change', function(){ sync(selProvince, hidProvinceId, hidProvinceName); });
+            selRegency && selRegency.addEventListener('change', function(){ sync(selRegency, hidRegencyId, hidRegencyName); });
+            selDistrict && selDistrict.addEventListener('change', function(){ sync(selDistrict, hidDistrictId, hidDistrictName); });
+            selSubdistrict && selSubdistrict.addEventListener('change', function(){ sync(selSubdistrict, hidSubId, hidSubName); });
+
+            // Sinkron awal jika select sudah berisi
+            sync(selProvince, hidProvinceId, hidProvinceName);
+            sync(selRegency, hidRegencyId, hidRegencyName);
+            sync(selDistrict, hidDistrictId, hidDistrictName);
+            sync(selSubdistrict, hidSubId, hidSubName);
+        })();
+    </script>
+
+    <script>
+        (function(){
+            const apiBase = '/api/wilayah';
+
+            const selProvince = document.getElementById('province');
+            const selCity = document.getElementById('city');
+            const selDistrict = document.getElementById('district');
+            const selSubdistrict = document.getElementById('subdistrict');
+
+            const hidProvinceId = document.getElementById('province_id');
+            const hidProvinceName = document.getElementById('province_name');
+            const hidRegencyId = document.getElementById('regency_id');
+            const hidRegencyName = document.getElementById('regency_name');
+            const hidDistrictId = document.getElementById('district_id');
+            const hidDistrictName = document.getElementById('district_name');
+            const hidSubId = document.getElementById('subdistrict_id');
+            const hidSubName = document.getElementById('subdistrict_name');
+
+            const spProv = document.getElementById('province_spinner');
+            const spReg = document.getElementById('regency_spinner');
+            const spDis = document.getElementById('district_spinner');
+            const spSub = document.getElementById('subdistrict_spinner');
+
+            function setHidden(sel, hidId, hidName){
+                if(!sel || !hidId || !hidName) return;
+                const opt = sel.options[sel.selectedIndex];
+                if(!opt) return;
+                hidId.value = opt.value || '';
+                hidName.value = opt.dataset.label || opt.textContent || '';
+            }
+
+            function makeOption(val, label){
+                const o = document.createElement('option');
+                o.value = val ?? '';
+                o.textContent = label ?? '';
+                o.dataset.label = label ?? '';
+                return o;
+            }
+
+            async function get(url){
+                const r = await fetch(url);
+                if(!r.ok) throw new Error('Failed '+url);
+                const j = await r.json();
+                return j.data || [];
+            }
+
+            async function loadProvinces(){
+                try{
+                    spProv && spProv.classList.remove('hidden');
+                    const data = await get(`${apiBase}/provinces`);
+                    selProvince.innerHTML = '';
+                    selProvince.appendChild(makeOption('', '-- Pilih Provinsi --'));
+                    data.forEach(p=> selProvince.appendChild(makeOption(p.id || p.province_id || p.value, p.name || p.province)) );
+                    selProvince.disabled = false;
+                    const pre = selProvince.dataset.selected || hidProvinceId?.value;
+                    if(pre){ selProvince.value = pre; setHidden(selProvince, hidProvinceId, hidProvinceName); await onProvinceChange(false); }
+                }finally{ spProv && spProv.classList.add('hidden'); }
+            }
+
+            async function onProvinceChange(clearDown=true){
+                const pid = selProvince.value;
+                setHidden(selProvince, hidProvinceId, hidProvinceName);
+                selCity.innerHTML=''; selCity.appendChild(makeOption('', '-- Pilih Kota/Kabupaten --'));
+                selDistrict.innerHTML=''; selDistrict.appendChild(makeOption('', '-- Pilih Kecamatan --'));
+                selSubdistrict.innerHTML=''; selSubdistrict.appendChild(makeOption('', '-- Pilih Kelurahan / Desa --'));
+                selCity.disabled = selDistrict.disabled = selSubdistrict.disabled = true;
+                if(!pid) return;
+                try{
+                    spReg && spReg.classList.remove('hidden');
+                    const data = await get(`${apiBase}/cities/${encodeURIComponent(pid)}`);
+                    data.forEach(c=> selCity.appendChild(makeOption(c.id || c.city_id, (c.type? c.type+' ' : '') + (c.city_name || c.name || ''))));
+                    selCity.disabled = false;
+                    const pre = selCity.dataset.selected || hidRegencyId?.value;
+                    if(pre){ selCity.value = pre; setHidden(selCity, hidRegencyId, hidRegencyName); await onCityChange(false); }
+                }finally{ spReg && spReg.classList.add('hidden'); }
+            }
+
+            async function onCityChange(clearDown=true){
+                const cid = selCity.value;
+                setHidden(selCity, hidRegencyId, hidRegencyName);
+                selDistrict.innerHTML=''; selDistrict.appendChild(makeOption('', '-- Pilih Kecamatan --'));
+                selSubdistrict.innerHTML=''; selSubdistrict.appendChild(makeOption('', '-- Pilih Kelurahan / Desa --'));
+                selDistrict.disabled = selSubdistrict.disabled = true;
+                if(!cid) return;
+                try{
+                    spDis && spDis.classList.remove('hidden');
+                    const data = await get(`${apiBase}/districts/${encodeURIComponent(cid)}`);
+                    data.forEach(d=> selDistrict.appendChild(makeOption(d.id || d.district_id, d.district_name || d.name)));
+                    selDistrict.disabled = false;
+                    const pre = selDistrict.dataset.selected || hidDistrictId?.value;
+                    if(pre){ selDistrict.value = pre; setHidden(selDistrict, hidDistrictId, hidDistrictName); await onDistrictChange(false); }
+                }finally{ spDis && spDis.classList.add('hidden'); }
+            }
+
+            async function onDistrictChange(clearDown=true){
+                const did = selDistrict.value;
+                setHidden(selDistrict, hidDistrictId, hidDistrictName);
+                selSubdistrict.innerHTML=''; selSubdistrict.appendChild(makeOption('', '-- Pilih Kelurahan / Desa --'));
+                selSubdistrict.disabled = true;
+                if(!did) return;
+                try{
+                    spSub && spSub.classList.remove('hidden');
+                    const data = await get(`${apiBase}/sub-district/${encodeURIComponent(did)}`);
+                    data.forEach(s=> selSubdistrict.appendChild(makeOption(s.id || s.subdistrict_id, s.subdistrict_name || s.name)));
+                    selSubdistrict.disabled = false;
+                    const pre = selSubdistrict.dataset.selected || hidSubId?.value;
+                    if(pre){ selSubdistrict.value = pre; setHidden(selSubdistrict, hidSubId, hidSubName); }
+                }finally{ spSub && spSub.classList.add('hidden'); }
+            }
+
+            selProvince && selProvince.addEventListener('change', ()=> onProvinceChange());
+            selCity && selCity.addEventListener('change', ()=> onCityChange());
+            selDistrict && selDistrict.addEventListener('change', ()=> onDistrictChange());
+            selSubdistrict && selSubdistrict.addEventListener('change', ()=> setHidden(selSubdistrict, hidSubId, hidSubName));
+
+            document.addEventListener('DOMContentLoaded', loadProvinces);
+        })();
+    </script>
 </section>

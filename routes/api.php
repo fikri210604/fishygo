@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\WilayahDbController;
+use App\Http\Controllers\PembayaranController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,6 @@ Route::prefix('wilayah')->group(function () {
     Route::get('/districts/{city}', [WilayahDbController::class, 'getDistricts']);
     Route::get('/sub-district/{district}', [WilayahDbController::class, 'getSubDistrict']);
 });
+
+// Midtrans notifications (webhook)
+Route::post('midtrans/notification', [PembayaranController::class, 'midtransNotification'])->name('midtrans.notification');

@@ -14,7 +14,7 @@
             <div class="font-semibold">Berhasil</div>
             <div class="text-sm">{{ session('success') }}</div>
         </div>
-        <button type="button" class="btn btn-ghost btn-sm ml-auto" @click="show = false" aria-label="Tutup">âœ•</button>
+        <button type="button" class="btn btn-ghost btn-sm ml-auto" @click="show = false" aria-label="Tutup">×</button>
     </div>
 @endif
 
@@ -37,13 +37,12 @@
         </div>
     </form>
 
-
     {{-- Kategori --}}
     <h2 class="text-xl font-bold mb-4">Kategori Produk</h2>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         @forelse($kategori as $k)
             <a href="{{ route('home', ['kategori' => $k->kategori_produk_id] + request()->only('q', 'jenis')) }}"
-                class="block">
+                class="block" data-load-products>
                 <div class="card bg-white shadow-sm hover:shadow-md transition p-3">
                     <figure class="h-28 w-full overflow-hidden rounded relative">
                         <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
@@ -63,93 +62,26 @@
     {{-- Filter Jenis Ikan --}}
     <h2 class="text-xl font-bold mb-4">Temukan Berbagai Produk Ikan</h2>
 
-    {{-- scroll horizontal --}}
     <div class="mb-8 overflow-x-auto scrollbar-hide mt-4">
         <div class="flex gap-2 w-max">
-
             @php($active = request('jenis') === null)
             <a href="{{ route('home', request()->except('jenis')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
-           {{ $active
-    ? 'bg-[#6A453B] border-[#6A453B] text-white'
-    : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
+               {{ $active ? 'bg-[#6A453B] border-[#6A453B] text-white' : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
                 Semua
             </a>
             @foreach($jenis_ikan as $j)
             @php($active = (string) request('jenis') === (string) $j->jenis_ikan_id)
             <a href="{{ route('home', ['jenis' => $j->jenis_ikan_id] + request()->except('page')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
-               {{ $active
-        ? 'bg-[#6A453B] border-[#6A453B] text-white'
-        : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
+                 {{ $active ? 'bg-[#6A453B] border-[#6A453B] text-white' : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
                 {{ $j->jenis_ikan }}
             </a>
             @endforeach
         </div>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 mb-6">
-
-        @forelse($produk as $p)
-            <div class="card bg-base-100 shadow hover:shadow-md transition">
-
-                <a href="{{ route('produk.show', ['produk' => $p->slug]) }}">
-                    <figure class="h-40 overflow-hidden relative">
-                        <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
-
-                        <img src="{{ $p->gambar_produk ? asset('storage/' . $p->gambar_produk) : '' }}"
-                            alt="{{ $p->nama_produk }}" class="absolute inset-0 w-full h-full object-cover opacity-0"
-                            loading="lazy" decoding="async" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            onload="this.classList.remove('opacity-0'); 
-                                this.previousElementSibling.classList.add('hidden');">
-                    </figure>
-                </a>
-
-                <div class="card-body p-3">
-                    <p class="font-semibold text-sm truncate">{{ $p->nama_produk }}</p>
-                    <p class="text-sm text-primary font-bold">
-                        Rp {{ number_format($p->harga ?? 0, 0, ',', '.') }}
-                    </p>
-
-                    <div class="card-actions justify-between mt-2">
-
-                        {{-- Tombol Detail --}}
-                        <a href="{{ route('produk.show', ['produk' => $p->slug]) }}" class="btn btn-xs bg-gray-200">
-                            Detail
-                        </a>
-
-                        {{-- Add to Cart --}}
-                        @auth
-                            <form action="{{ route('cart.add', $p->produk_id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-xs btn-primary flex items-center gap-1">
-                                    <span class="text-xs font-bold">+</span>
-                                    <i class="ri-shopping-cart-2-line text-sm"></i>
-                                </button>
-                            </form>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-xs btn-primary flex items-center gap-1">
-                                <span class="text-xs font-bold">+</span>
-                                <i class="ri-shopping-cart-2-line text-sm"></i>
-                            </a>
-                        @endauth
-                    </div>
-                </div>
-
-            </div>
-        @empty
-            <p class="col-span-full text-gray-500 text-center">Produk belum tersedia.</p>
-        @endforelse
-
-    </div>
-
-
-    <div class="mb-10 flex justify-center">
-        <div class="join">
-            <a href="{{ $produk->previousPageUrl() ?: '#' }}"
-                class="join-item btn btn-sm {{ $produk->onFirstPage() ? 'btn-disabled' : '' }}">Â«</a>
-            <button class="join-item btn btn-sm">Page {{ $produk->currentPage() }} / {{ $produk->lastPage() }}</button>
-            <a href="{{ $produk->nextPageUrl() ?: '#' }}"
-                class="join-item btn btn-sm {{ $produk->hasMorePages() ? '' : 'btn-disabled' }}">Â»</a>
-        </div>
+    {{-- Daftar Produk (AJAX Pagination) --}}
+    <div id="product-list" data-ajax-pagination="produk">
+        @include('partials.products-grid', ['produk' => $produk])
     </div>
 
     {{-- Artikel --}}
@@ -178,10 +110,10 @@
 <div class="mb-16 flex justify-center">
     <div class="join">
         <a href="{{ $kategori->previousPageUrl() ?: '#' }}"
-            class="join-item btn btn-sm {{ $kategori->onFirstPage() ? 'btn-disabled' : '' }}">Â«</a>
+            class="join-item btn btn-sm {{ $kategori->onFirstPage() ? 'btn-disabled' : '' }}">«</a>
         <button class="join-item btn btn-sm">Page {{ $kategori->currentPage() }} / {{ $kategori->lastPage() }}</button>
         <a href="{{ $kategori->nextPageUrl() ?: '#' }}"
-            class="join-item btn btn-sm {{ $kategori->hasMorePages() ? '' : 'btn-disabled' }}">Â»</a>
+            class="join-item btn btn-sm {{ $kategori->hasMorePages() ? '' : 'btn-disabled' }}">»</a>
     </div>
 </div>
 

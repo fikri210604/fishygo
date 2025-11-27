@@ -9,22 +9,15 @@
         <!-- Menu utama -->
         <div class="hidden md:flex items-center gap-6">
             <a href="{{ url('/') }}#home" class="hover:text-orange-500 font-medium">Home</a>
-
             @guest
-                <!-- Sebelum login: hanya Home, Produk, Kategori.
-                     Produk & Kategori akan mengarah ke halaman login. -->
                 <a href="{{ route('login') }}" class="hover:text-orange-500 font-medium">Produk</a>
                 <a href="{{ route('login') }}" class="hover:text-orange-500 font-medium">Kategori</a>
             @else
-                <!-- Setelah login (kalau layout ini dipakai) -->
                 <a href="{{ route('home') }}" class="hover:text-orange-500 font-medium">Produk</a>
                 <a href="{{ url('/#kategori') }}" class="hover:text-orange-500 font-medium">Kategori</a>
             @endguest
         </div>
-
-        <!-- Tombol kanan -->
         <div class="flex items-center gap-2">
-
             @guest
                 <!-- Belum login -->
                 <a href="{{ route('login') }}" class="btn btn-ghost">Masuk</a>

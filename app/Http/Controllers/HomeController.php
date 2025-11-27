@@ -46,6 +46,10 @@ class HomeController extends Controller
                 ->orderBy('jenis_ikan')
                 ->get();
 
+            if ($request->ajax() && $request->has('page_produk')) {
+                return view('partials.products-grid', compact('produk'))->render();
+            }
+
             return view('home', compact('artikel', 'produk', 'kategori', 'jenis_ikan', 'q', 'kategoriId', 'jenisId'));
         } catch (\Throwable $e) {
             if (method_exists($this, 'logException')) {
@@ -56,3 +60,4 @@ class HomeController extends Controller
     }
 
 }
+

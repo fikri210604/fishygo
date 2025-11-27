@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\KategoriProdukController;
 use App\Http\Controllers\ArticlePublicController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\PembayaranController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -56,6 +57,8 @@ Route::middleware('auth')->group(function () {
     // Checkout & Pesanan
     Route::get('/checkout', [PesananController::class, 'create'])->name('checkout.create');
     Route::post('/checkout', [PesananController::class, 'store'])->name('checkout.store');
+    // Midtrans Snap token (user-initiated)
+    Route::post('/payment/midtrans/snap', [PembayaranController::class, 'midtransSnap'])->name('payment.midtrans.snap');
     // Pastikan rute statis didefinisikan sebelum parameter agar tidak bentrok
     Route::get('/pesanan/history', [PesananController::class, 'history'])->name('pesanan.history');
     Route::get('/pesanan/{pesanan:pesanan_id}', [PesananController::class, 'show'])
@@ -97,6 +100,11 @@ Route::middleware(['auth','verified'])->group(function () {
 
         // Pesanan (Admin)
         Route::resource('pesanan', PesananManajementController::class)->only(['index','show']);
+        // Pembayaran COD actions
+        Route::post('pesanan/{pesanan:pesanan_id}/cod/confirm', [\App\Http\Controllers\PembayaranController::class, 'codConfirm'])
+            ->whereUuid('pesanan')->name('pesanan.cod.confirm');
+        Route::post('pesanan/{pesanan:pesanan_id}/cod/cancel', [\App\Http\Controllers\PembayaranController::class, 'codCancel'])
+            ->whereUuid('pesanan')->name('pesanan.cod.cancel');
     });
 });
 

@@ -33,30 +33,13 @@ class ProfileController extends Controller
     {
         try {
             $data = $request->validated();
-            // Ambil field wilayah untuk alamat (pisahkan dari kolom user)
-            $alamatData = [
-                'province_id' => $data['province_id'] ?? null,
-                'province_name' => $data['province_name'] ?? null,
-                'regency_id' => $data['regency_id'] ?? null,
-                'regency_name' => $data['regency_name'] ?? null,
-                'district_id' => $data['district_id'] ?? null,
-                'district_name' => $data['district_name'] ?? null,
-                'village_id' => $data['village_id'] ?? null,
-                'village_name' => $data['village_name'] ?? null,
-                'rt' => $data['rt'] ?? null,
-                'rw' => $data['rw'] ?? null,
-                'kode_pos' => $data['kode_pos'] ?? null,
-            ];
-            // Hapus field wilayah dari $data agar tidak masuk ke kolom user
-            foreach (array_keys($alamatData) as $k) { unset($data[$k]); }
-
             $user = $request->user();
 
-            // Build payload update untuk tabel pengguna (tanpa kolom address)
+            // 1) Update profil pengguna
             $payload = [
-                'nama' => $request->input('nama'),
-                'username' => $request->input('username'),
-                'email' => $request->input('email'),
+                'nama' => (string) $request->input('nama'),
+                'username' => (string) $request->input('username'),
+                'email' => (string) $request->input('email'),
                 'nomor_telepon' => $request->input('phone'),
             ];
 
@@ -77,16 +60,50 @@ class ProfileController extends Controller
             // Update user dengan pola $model->update([...])
             $user->update($payload);
 
-            // Simpan/Update alamat utama jika field wilayah lengkap dan alamat_lengkap tersedia
-            $hasWilayah = filled($alamatData['province_id']) && filled($alamatData['regency_id']) && filled($alamatData['district_id']) && filled($alamatData['village_id']);
-            if ($hasWilayah && filled($request->input('address'))) {
+            // 2) Update alamat utama sesuai model + migrasi (menyimpan snapshot wilayah)
+            $existingAlamat = Alamat::where('pengguna_id', $user->id)->first();
+
+            // Aliases & fallback ke nilai existing agar update tetap tersimpan
+            $provinceId   = $request->input('province_id') ?: ($existingAlamat->province_id ?? null);
+            $provinceName = $request->input('province_name') ?: ($existingAlamat->province_name ?? null);
+            $regencyId    = $request->input('regency_id') ?: $request->input('city_id') ?: ($existingAlamat->regency_id ?? null);
+            $regencyName  = $request->input('regency_name') ?: $request->input('city_name') ?: ($existingAlamat->regency_name ?? null);
+            $districtId   = $request->input('district_id') ?: ($existingAlamat->district_id ?? null);
+            $districtName = $request->input('district_name') ?: ($existingAlamat->district_name ?? null);
+            $villageId    = $request->input('village_id') ?: $request->input('subdistrict_id') ?: ($existingAlamat->village_id ?? null);
+            $villageName  = $request->input('village_name') ?: $request->input('subdistrict_name') ?: ($existingAlamat->village_name ?? null);
+            $rt           = $request->input('rt') ?: ($existingAlamat->rt ?? null);
+            $rw           = $request->input('rw') ?: ($existingAlamat->rw ?? null);
+            $kodePos      = $request->input('kode_pos') ?: ($existingAlamat->kode_pos ?? null);
+
+            $alamatLengkap = trim((string) $request->input('address'));
+            if ($alamatLengkap === '' && $existingAlamat) {
+                $alamatLengkap = (string) $existingAlamat->alamat_lengkap;
+            }
+
+            // Simpan alamat jika ada salah satu data wilayah atau alamat lengkap tersedia
+            $hasAnyWilayah = filled($provinceId) || filled($regencyId) || filled($districtId) || filled($villageId)
+                || filled($provinceName) || filled($regencyName) || filled($districtName) || filled($villageName);
+
+            if ($hasAnyWilayah || $alamatLengkap !== '') {
                 Alamat::updateOrCreate(
                     ['pengguna_id' => $user->id],
-                    array_merge($alamatData, [
+                    [
                         'pengguna_id' => $user->id,
-                        'penerima' => $user->nama,
-                        'alamat_lengkap' => $request->input('address'),
-                    ])
+                        'penerima' => $payload['nama'] ?: $user->nama,
+                        'alamat_lengkap' => $alamatLengkap,
+                        'province_id' => $provinceId,
+                        'province_name' => $provinceName,
+                        'regency_id' => $regencyId,
+                        'regency_name' => $regencyName,
+                        'district_id' => $districtId,
+                        'district_name' => $districtName,
+                        'village_id' => $villageId,
+                        'village_name' => $villageName,
+                        'rt' => $rt,
+                        'rw' => $rw,
+                        'kode_pos' => $kodePos,
+                    ]
                 );
             }
 

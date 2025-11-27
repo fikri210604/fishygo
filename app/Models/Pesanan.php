@@ -100,7 +100,6 @@ class Pesanan extends Model
 
     public function canBeCancelled(): bool
     {
-        return $this->status === self::STATUS_MENUNGGU_PEMBAYARAN;
+        return in_array($this->status, [self::STATUS_MENUNGGU_PEMBAYARAN, 'menunggu_konfirmasi'], true);
     }
 }
-

@@ -1,4 +1,4 @@
-// Simple AJAX handler for cart related forms:
+﻿// Simple AJAX handler for cart related forms:
 // - Add to cart:  form[data-cart-add="true"]
 // - Update qty:   form[data-cart-update="true"]
 // - Remove item:  form[data-cart-remove="true"]
@@ -83,7 +83,7 @@
     if (container) return container;
 
     container = document.createElement('div');
-    container.className = 'toast toast-top toast-end z-[60] js-toast-container';
+    container.className = 'toast toast-top toast-end z-[60] pointer-events-none js-toast-container';
     document.body.appendChild(container);
     return container;
   }
@@ -98,7 +98,7 @@
     else if (type === 'error') alertClass = 'alert-error';
     else if (type === 'warning') alertClass = 'alert-warning';
 
-    alert.className = `alert ${alertClass} shadow-lg w-80 sm:w-96 mb-2`;
+    alert.className = `alert ${alertClass} shadow-lg w-80 sm:w-96 mb-2 pointer-events-auto`;
 
     const span = document.createElement('span');
     span.textContent = text;
@@ -246,3 +246,4 @@
     init();
   }
 })();
+

@@ -18,7 +18,7 @@
 @endphp
 
 @if (count($messages))
-<div class="toast toast-top toast-end z-[60]" aria-live="polite" aria-atomic="true">
+<div class="toast toast-top toast-end z-[60] mt-16 pointer-events-none" aria-live="polite" aria-atomic="true">
     @foreach ($messages as $m)
         @php
             $type = $m['type'];
@@ -37,7 +37,7 @@
             x-transition.scale.duration.300ms
             x-init="setTimeout(() => show = false, 3500)"
             role="alert"
-            class="alert {{ $alertClass }} shadow-lg w-80 sm:w-96 mb-2 animate-fade-in-down"
+            class="alert {{ $alertClass }} shadow-lg w-80 sm:w-96 mb-2 animate-fade-in-down pointer-events-auto"
         >
             <div class="flex items-start gap-3 w-full">
                 {{-- Icon sesuai tipe alert --}}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -55,21 +56,21 @@ class GoogleAuthController extends Controller
                     'role_slug' => User::ROLE_USER, // role default
                     'email_verified_at' => now(),
                 ]);
-                // Pastikan role di pivot terset agar muncul di admin
                 $user->assignRole(User::ROLE_USER);
             } else {
-                // Jika user sudah ada, update data penting
                 $user->update([
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar() ?? $user->avatar,
                     'email_verified_at' => $user->email_verified_at ?? now(),
                 ]);
-                // Pastikan role terpasang
                 $user->assignRole(User::ROLE_USER);
             }
 
-            // Login user via web guard
-            try { Auth::guard('web')->login($user, remember: true); } catch (\Throwable $e) { Auth::login($user, remember: true); }
+            try {
+                Auth::guard('web')->login($user, remember: true);
+            } catch (\Throwable $e) {
+                Auth::login($user, remember: true);
+            }
             try {
                 request()->session()->regenerate();
             } catch (\Throwable $e) {
@@ -96,7 +97,7 @@ class GoogleAuthController extends Controller
             }
 
             // Fallback intended/home
-            $resp = redirect()->intended(\App\Providers\RouteServiceProvider::home())
+            $resp = redirect()->intended(RouteServiceProvider::home())
                 ->with('success', 'Berhasil masuk dengan Google.');
             if ($needsProfile) {
                 $resp->with('info', $profileMsg);

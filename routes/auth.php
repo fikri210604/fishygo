@@ -16,10 +16,33 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 
-    // ✅ Step 1 (Akun minimal + Kirim verifikasi)
+    // Step 1: Kirim link verifikasi ke email (email only)
     Route::post('register/start', [RegisteredUserController::class, 'start'])->name('register.start');
 
-    // (Opsional jika ingin registrasi full tanpa step)
+    // Halaman pemberitahuan cek email (guest)
+    Route::get('register/notice', [RegisteredUserController::class, 'notice'])->name('register.notice');
+
+    // Resend link verifikasi
+    Route::post('register/resend', [RegisteredUserController::class, 'resend'])
+        ->middleware('throttle:6,1')
+        ->name('register.resend');
+
+    // Step 2: Klik link verifikasi → set email di sesi
+    Route::get('register/verify', [RegisteredUserController::class, 'verify'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('register.verify');
+
+    // Step 3: Lengkapi profil (tanpa password)
+    Route::get('register/complete/profile', [RegisteredUserController::class, 'completeProfile'])->name('register.complete.profile');
+    Route::post('register/complete/profile', [RegisteredUserController::class, 'completeProfileStore'])->name('register.complete.profile.store');
+
+    // Step 4: Masukkan password
+    Route::get('register/complete/password', [RegisteredUserController::class, 'completePassword'])->name('register.complete.password');
+
+    // Step 4 (Submit): Buat akun
+    Route::post('register/complete', [RegisteredUserController::class, 'complete'])->name('register.complete');
+
+    // (Opsional) API registrasi full tanpa step
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -49,3 +72,5 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
+
+

@@ -9,6 +9,8 @@ Alpine.start();
 import './wilayah';
 import './loading-handler';
 import './cart';
+import './pagination'
+import './partials/checkout-payment';
 
 // Global Alpine store for layout (mobile sidebar)
 document.addEventListener('alpine:init', () => {
@@ -27,4 +29,3 @@ document.addEventListener('alpine:init', () => {
     closeSidebar() { this.sidebarOpen = false },
   })
 })
-

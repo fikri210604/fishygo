@@ -76,6 +76,66 @@
                 @else
                     <div class="text-sm text-gray-500">Belum ada informasi pembayaran.</div>
                 @endif
+
+                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'midtrans')
+                    <button id="btn-pay-midtrans" class="btn btn-primary w-full mt-4">Bayar dengan Midtrans</button>
+
+                    <script
+                        src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+                        data-client-key="{{ config('midtrans.client_key') }}"
+                        defer
+                    ></script>
+                    <script>
+                        (function(){
+                            const btn = document.getElementById('btn-pay-midtrans');
+                            if(!btn) return;
+                            const pesananId = @json($pesanan->pesanan_id);
+                            const snapUrl = @json(route('payment.midtrans.snap'));
+                            const redirectAfter = @json(route('pesanan.show', $pesanan->pesanan_id));
+                            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                            function enable(v){ btn.disabled = !v; btn.classList.toggle('btn-disabled', !v); }
+
+                            btn.addEventListener('click', async function(){
+                                try {
+                                    enable(false);
+                                    const res = await fetch(snapUrl, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': token,
+                                            'Accept': 'application/json'
+                                        },
+                                        body: JSON.stringify({ pesanan_id: pesananId })
+                                    });
+                                    const data = await res.json();
+                                    if(!res.ok) { alert(data?.message || 'Gagal membuat transaksi'); enable(true); return; }
+                                    if(!(window.snap && data.token)) { alert('Snap tidak tersedia'); enable(true); return; }
+                                    window.snap.pay(data.token, {
+                                        onSuccess: function(){ window.location.href = redirectAfter; },
+                                        onPending: function(){ window.location.href = redirectAfter; },
+                                        onError: function(){ alert('Pembayaran gagal atau dibatalkan.'); enable(true); },
+                                        onClose: function(){ enable(true); }
+                                    });
+                                } catch(e) {
+                                    alert('Terjadi kesalahan.');
+                                    enable(true);
+                                }
+                            });
+                        })();
+                    </script>
+                @endif
+
+                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'cod')
+                    @php($pickup = (bool) data_get($pesanan->alamat_snapshot, 'pickup', false))
+                    <div class="alert alert-info mt-4">
+                        @if($pickup)
+                            Metode pembayaran COD (Ambil di tempat). Silakan lakukan pembayaran saat pengambilan.
+                        @else
+                            Metode pembayaran COD. Silakan siapkan pembayaran saat pesanan diantarkan.
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>

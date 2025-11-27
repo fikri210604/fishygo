@@ -21,7 +21,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+</head data-theme="mytheme">
 
 <body class="font-sans antialiased min-h-screen flex flex-col">
     <div class="flex-1 bg-gray-100 pt-16">

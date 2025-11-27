@@ -36,12 +36,15 @@ class PesananService
             $subtotal = (float)$cartSummary['total'];
             $total = $subtotal + $ongkir - $diskon;
 
+            $metodePembayaran = (string) ($options['metode_pembayaran'] ?? 'manual');
+            $statusAwal = $metodePembayaran === 'cod' ? 'menunggu_konfirmasi' : Pesanan::STATUS_MENUNGGU_PEMBAYARAN;
+
             $pesanan = Pesanan::create([
                 'kode_pesanan' => $kode,
                 'pengguna_id' => $user->id,
                 'alamat_id' => $alamat->id,
-                'status' => Pesanan::STATUS_MENUNGGU_PEMBAYARAN,
-                'metode_pembayaran' => $options['metode_pembayaran'] ?? 'manual',
+                'status' => $statusAwal,
+                'metode_pembayaran' => $metodePembayaran,
                 'subtotal' => $subtotal,
                 'ongkir' => $ongkir,
                 'diskon' => $diskon,
@@ -57,6 +60,8 @@ class PesananService
                     'rt' => $alamat->rt,
                     'rw' => $alamat->rw,
                     'kode_pos' => $alamat->kode_pos,
+                    'pickup' => (bool) ($options['pickup'] ?? false),
+                    'delivery_method' => ((bool) ($options['pickup'] ?? false)) ? 'pickup' : 'delivery',
                 ],
                 'berat_total_gram' => $cartSummary['berat_total_gram'] ?? 0,
             ]);
@@ -76,10 +81,21 @@ class PesananService
                 }
             }
 
+            $metode = (string) ($options['metode_pembayaran'] ?? 'manual');
+            $gateway = match ($metode) {
+                'midtrans' => 'midtrans',
+                'cod' => 'cod',
+                default => 'manual',
+            };
+            $channel = match ($metode) {
+                'midtrans' => 'snap',
+                'cod' => 'cod',
+                default => 'transfer',
+            };
             Pembayaran::create([
                 'pesanan_id' => $pesanan->pesanan_id,
-                'gateway' => $options['gateway'] ?? 'manual',
-                'channel' => $options['channel'] ?? 'transfer',
+                'gateway' => $options['gateway'] ?? $gateway,
+                'channel' => $options['channel'] ?? $channel,
                 'amount' => $pesanan->total,
                 'status' => 'pending',
                 'reference' => $pesanan->kode_pesanan,
@@ -121,4 +137,3 @@ class PesananService
         });
     }
 }
-

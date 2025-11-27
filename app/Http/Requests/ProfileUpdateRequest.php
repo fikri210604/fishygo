@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Requests;
 
@@ -30,6 +30,8 @@ class ProfileUpdateRequest extends FormRequest
             'district_name' => ['nullable','string','max:100'],
             'village_id' => ['nullable','string','max:50'],
             'village_name' => ['nullable','string','max:100'],
+            'subdistrict_id' => ['nullable','string','max:50'],
+            'subdistrict_name' => ['nullable','string','max:100'],
             'rt' => ['nullable','string','max:10'],
             'rw' => ['nullable','string','max:10'],
             'kode_pos' => ['nullable','string','max:10'],

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -14,40 +14,27 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 
 // Guest (belum login)
 Route::middleware('guest')->group(function () {
+    // Register
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-
-    // Step 1: Kirim link verifikasi ke email (email only)
     Route::post('register/start', [RegisteredUserController::class, 'start'])->name('register.start');
-
-    // Halaman pemberitahuan cek email (guest)
     Route::get('register/notice', [RegisteredUserController::class, 'notice'])->name('register.notice');
-
-    // Resend link verifikasi
     Route::post('register/resend', [RegisteredUserController::class, 'resend'])
         ->middleware('throttle:6,1')
         ->name('register.resend');
-
-    // Step 2: Klik link verifikasi → set email di sesi
     Route::get('register/verify', [RegisteredUserController::class, 'verify'])
         ->middleware(['signed', 'throttle:6,1'])
         ->name('register.verify');
-
-    // Step 3: Lengkapi profil (tanpa password)
     Route::get('register/complete/profile', [RegisteredUserController::class, 'completeProfile'])->name('register.complete.profile');
     Route::post('register/complete/profile', [RegisteredUserController::class, 'completeProfileStore'])->name('register.complete.profile.store');
-
-    // Step 4: Masukkan password
     Route::get('register/complete/password', [RegisteredUserController::class, 'completePassword'])->name('register.complete.password');
-
-    // Step 4 (Submit): Buat akun
     Route::post('register/complete', [RegisteredUserController::class, 'complete'])->name('register.complete');
-
-    // (Opsional) API registrasi full tanpa step
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    // Login
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    // Forgot password & reset password
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');

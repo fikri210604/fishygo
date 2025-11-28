@@ -49,7 +49,6 @@ class PesananController extends Controller
     {
         $user = $request->user();
         try {
-            // Guard: profil wajib lengkap sebelum checkout (double-check pada POST)
             if (method_exists($user, 'isProfileComplete') && !$user->isProfileComplete()) {
                 return redirect()->route('profile.edit')
                     ->with('error', 'Lengkapi profil dan alamat sebelum melakukan checkout.');
@@ -59,8 +58,6 @@ class PesananController extends Controller
             if (empty($summary['items'])) {
                 return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
             }
-
-            // Ambil alamat
             $alamat = null;
             if ($request->filled('alamat_id')) {
                 $alamat = Alamat::where('id', $request->input('alamat_id'))
@@ -72,16 +69,12 @@ class PesananController extends Controller
             if (!$alamat) {
                 return back()->with('error', 'Alamat belum diatur.');
             }
-
             $pesanan = $this->service->createFromCart($user, $alamat, $summary, [
                 'metode_pembayaran' => $request->input('metode_pembayaran', 'manual'),
                 'catatan' => $request->input('catatan'),
                 'pickup' => $request->boolean('pickup'),
             ]);
-
-            // Bersihkan keranjang
             $this->cart->clear();
-
             return redirect()->route('pesanan.show', ['pesanan' => $pesanan->pesanan_id])
                 ->with('success', 'Pesanan berhasil dibuat.');
         } catch (\Throwable $e) {

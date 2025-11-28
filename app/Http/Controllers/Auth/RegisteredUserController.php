@@ -28,19 +28,14 @@ class RegisteredUserController extends Controller
             $request->validate([
                 'email' => 'required|email:lowercase|max:255|unique:pengguna,email',
             ]);
-
             $email = $request->input('email');
-
             $url = URL::temporarySignedRoute(
                 'register.verify',
                 now()->addMinutes(60),
                 ['email' => $email]
             );
-
             Mail::to($email)->send(new RegistrationVerificationMail($url));
-
             $request->session()->put('pending_registration_email', $email);
-
             return redirect()->route('register.notice')->with('status', 'verification-link-sent');
         } catch (\Throwable $e) {
             if (method_exists($this, 'logException')) {

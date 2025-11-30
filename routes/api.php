@@ -23,10 +23,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Wilayah endpoints backed by local DB
 Route::prefix('wilayah')->group(function () {
     Route::get('/provinces', [WilayahDbController::class, 'getProvinces']);
-    Route::get('/cities/{province}', [WilayahDbController::class, 'getCities']);
-    Route::get('/districts/{city}', [WilayahDbController::class, 'getDistricts']);
-    Route::get('/sub-district/{district}', [WilayahDbController::class, 'getSubDistrict']);
+    Route::get('/regencies/{province}', [WilayahDbController::class, 'getRegencies']);
+    Route::get('/districts/{regency}', [WilayahDbController::class, 'getDistricts']);
+    Route::get('/villages/{district}', [WilayahDbController::class, 'getVillages']);
 });
+
+
 
 // Midtrans notifications (webhook)
 Route::post('midtrans/notification', [PembayaranController::class, 'midtransNotification'])->name('midtrans.notification');

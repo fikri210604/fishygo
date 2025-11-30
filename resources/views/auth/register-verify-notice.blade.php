@@ -1,6 +1,6 @@
 ﻿@section('title', 'Verifikasi Email')
 
-@endsection
+
 
 <x-guest-layout>
     <div class="min-h-screen flex flex-col lg:flex-row">

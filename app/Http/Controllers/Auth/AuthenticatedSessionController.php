@@ -33,13 +33,14 @@ class AuthenticatedSessionController extends Controller
 
             $user = Auth::user();
 
-            if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
+            if (method_exists($user, 'isUser') && $user->isUser() && method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
                 return redirect()->route('verification.notice');
             }
 
             $route = $user->Route();
 
-            $needsProfile = method_exists($user, 'isProfileComplete') ? !$user->isProfileComplete() : false;
+            $needsProfile = method_exists($user, 'isUser') && $user->isUser()
+                && method_exists($user, 'isProfileComplete') && !$user->isProfileComplete();
             $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';
 
             if (Route::has($route)) {

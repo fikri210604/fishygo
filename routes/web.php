@@ -20,6 +20,8 @@ use App\Http\Controllers\ArticlePublicController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\Kurir\DeliveryController as KurirDeliveryController;
+use App\Http\Controllers\Kurir\DashboardController as KurirDashboardController;
 
 // Halaman utama
 Route::get('/', function () {
@@ -28,6 +30,11 @@ Route::get('/', function () {
 
 // Halaman tentang
 Route::view('/tentang', 'tentang')->name('tentang');
+
+// Midtrans redirection endpoints (Finish/Unfinish/Error)
+Route::get('/payment/midtrans/finish', [PembayaranController::class, 'midtransFinish'])->name('payment.midtrans.finish');
+Route::get('/payment/midtrans/unfinish', [PembayaranController::class, 'midtransUnfinish'])->name('payment.midtrans.unfinish');
+Route::get('/payment/midtrans/error', [PembayaranController::class, 'midtransError'])->name('payment.midtrans.error');
 
 // Artikel publik
 Route::get('/articles', [ArticlePublicController::class, 'index'])->name('articles.index');
@@ -64,20 +71,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/{pesanan:pesanan_id}', [PesananController::class, 'show'])
         ->whereUuid('pesanan')
         ->name('pesanan.show');
+    // Upload bukti transfer manual
+    Route::post('/pesanan/{pesanan:pesanan_id}/manual/upload', [PembayaranController::class, 'manualUpload'])
+        ->whereUuid('pesanan')
+        ->name('pesanan.manual.upload');
+    Route::get('/pesanan/{pesanan:pesanan_id}/receipt', [PembayaranController::class, 'receiptUser'])
+        ->whereUuid('pesanan')
+        ->name('pesanan.receipt');
     Route::post('/pesanan/{pesanan:pesanan_id}/cancel', [PesananController::class, 'cancel'])
         ->whereUuid('pesanan')
         ->name('pesanan.cancel');
 });
 
-// Dashboard akses role
+// Dashboard akses role (admin requires verified)
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])
         ->middleware('can:access-admin')
         ->name('admin.dashboard');
-
-    Route::view('/kurir/dashboard', 'kurir.dashboard')
-        ->middleware('can:access-kurir')
-        ->name('kurir.dashboard');
 
     Route::prefix('admin')->middleware('can:access-admin')->name('admin.')->group(function () {
         Route::resource('users', UserManagementController::class)->except(['show']);
@@ -105,6 +115,25 @@ Route::middleware(['auth','verified'])->group(function () {
             ->whereUuid('pesanan')->name('pesanan.cod.confirm');
         Route::post('pesanan/{pesanan:pesanan_id}/cod/cancel', [\App\Http\Controllers\PembayaranController::class, 'codCancel'])
             ->whereUuid('pesanan')->name('pesanan.cod.cancel');
+        // Pembayaran Manual Transfer actions
+        Route::post('pesanan/{pesanan:pesanan_id}/manual/confirm', [\App\Http\Controllers\PembayaranController::class, 'manualConfirm'])
+            ->whereUuid('pesanan')->name('pesanan.manual.confirm');
+        Route::post('pesanan/{pesanan:pesanan_id}/manual/reject', [\App\Http\Controllers\PembayaranController::class, 'manualReject'])
+            ->whereUuid('pesanan')->name('pesanan.manual.reject');
+        Route::get('pesanan/{pesanan:pesanan_id}/receipt', [\App\Http\Controllers\PembayaranController::class, 'receipt'])
+            ->whereUuid('pesanan')->name('pesanan.receipt');
+    });
+});
+
+// Kurir dashboard (no email verification required)
+Route::middleware(['auth'])->prefix('kurir')->name('kurir.')->group(function(){
+    Route::middleware('can:access-kurir')->group(function(){
+        Route::get('/dashboard', [KurirDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/pengiriman', [KurirDeliveryController::class, 'index'])->name('pengiriman.index');
+        Route::get('/pengiriman/{pengiriman:pengiriman_id}', [KurirDeliveryController::class, 'show'])
+            ->whereUuid('pengiriman')->name('pengiriman.show');
+        Route::post('/pengiriman/{pengiriman:pengiriman_id}/status', [KurirDeliveryController::class, 'updateStatus'])
+            ->whereUuid('pengiriman')->name('pengiriman.status');
     });
 });
 

@@ -40,11 +40,15 @@ return [
         'stateless' => env('GOOGLE_STATELESS', false),
     ],
 
-    // External wilayah API settings (RajaOngkir or compatible aggregator)
-    // Fallbacks are provided to support older env names used in docs/examples.
+
+    // wilayah.id
+    'wilayah' => [
+        'url' => env('WILAYAH_ID_URL'),
+    ],
+
     'rajaongkir' => [
         'key' => env('RAJAONGKIR_DELIVERY_KEY'),
-        'url' => env('KOMERCE_RAJAONGKIR_URL'),
+        'url' => env('KOMERCE_AGG_URL'),
         'api_key' => env('RAJAONGKIR_COST_KEY'),
         'type'=> env('RAJAONGKIR_ACCOUNT_TYPE', 'starter'),
         'ongkir_url' => env('RAJAONGKIR_URL'),

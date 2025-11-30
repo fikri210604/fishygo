@@ -21,7 +21,7 @@ class Pembayaran extends Model
         'pesanan_id',
         'gateway', 'channel', 'amount', 'status',
         'reference', 'order_id', 'transaction_id',
-        'gateway_payload', 'dibayar_pada', 'expiry_time',
+        'gateway_payload', 'dibayar_pada', 'expiry_time', 'paid_by_id',
     ];
 
     protected $casts = [
@@ -44,5 +44,10 @@ class Pembayaran extends Model
     public function pesanan(): BelongsTo
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id', 'pesanan_id');
+    }
+
+    public function paidBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'paid_by_id', 'id');
     }
 }

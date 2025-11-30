@@ -31,6 +31,8 @@
             <p class="text-gray-500">Belum ada artikel.</p>
         @endforelse
 
-        <div class="mt-6">{{ $articles->links() }}</div>
+        <div class="mt-8 flex justify-center">
+            {{ $articles->onEachSide(1)->links('vendor.pagination.daisy') }}
+        </div>
     </div>
 </x-guest-layout>

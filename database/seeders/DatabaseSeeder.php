@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
         $this->seedOnce('jenis_ikan', JenisIkanSeeder::class);
         $this->seedOnce('produk', ProdukSeeder::class);
         $this->seedOnce('review_produk', ReviewProdukSeeder::class);
+        // Always run KurirSeeder (idempotent check inside)
+        $this->call(KurirSeeder::class);
     }
 
     protected function seedOnce(string $table, string $seederClass, int $min = 1): void

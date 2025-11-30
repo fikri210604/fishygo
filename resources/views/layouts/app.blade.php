@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
 
 <head>
     <meta charset="utf-8">
@@ -36,6 +36,9 @@
         @endauth
 
         <div class="max-w-7xl mx-auto">
+            <div class="px-4 sm:px-6 lg:px-8 pt-4">
+                <x-breadcrumbs />
+            </div>
             @if (isset($header))
                 <header class="bg-white shadow">
                     <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -57,6 +60,7 @@
     @if (! View::hasSection('hide-toast'))
         <x-flash-toast />
     @endif
+    @stack('scripts')
 </body>
 
 </html>

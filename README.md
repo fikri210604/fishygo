@@ -5,6 +5,69 @@
 
 Aplikasi E-Commerce Ikan Segar merupakan sebuah platform penjualan produk perikanan secara online yang dikembangkan menggunakan Laravel 10 sebagai framework utama. Sistem ini dirancang untuk mendigitalisasi proses jual-beli ikan segar, mulai dari tahap penelusuran produk hingga tahap transaksi dan pengiriman, sehingga memberikan pengalaman belanja yang lebih cepat, mudah, dan terstruktur bagi pengguna.
 
+---
+
+Penjelasan Proyek (9 poin)
+
+1) Judul Proyek
+- Nama: E-Commerce Ikan Segar
+- Deskripsi: Platform e-commerce untuk katalog, keranjang, checkout, pembayaran (Midtrans/COD), dan manajemen pesanan produk perikanan.
+
+2) Deskripsi Singkat Proyek
+- Fungsi: Menyediakan katalog produk, keranjang, checkout dengan ongkir, pembayaran, riwayat pesanan, dan panel admin.
+- Pengguna: Admin, User (pelanggan), Kurir.
+- Masalah yang diselesaikan: Digitalisasi jual-beli ikan, perhitungan ongkir otomatis, pembayaran online, dan pengelolaan pesanan terstruktur.
+
+3) Peran (Role)
+- Role minimal: Admin, User, Kurir.
+- Perbedaan akses:
+  - Admin: akses dashboard admin, CRUD master data (produk, kategori, jenis ikan), manajemen user, role & permission, pesanan, artikel. Rute dilindungi gate `can:access-admin` di `routes/web.php:75`, `routes/web.php:82` dan didefinisikan di `app/Providers/AuthServiceProvider.php:24`.
+  - Kurir: akses dashboard kurir, melihat pesanan untuk dikirim. Rute dilindungi gate `can:access-kurir` di `routes/web.php:79`, definisi gate di `app/Providers/AuthServiceProvider.php:36`.
+  - User: belanja, keranjang, checkout, riwayat pesanan, ulasan. Akses melalui middleware `auth` dan beberapa halaman `verified`.
+- Permission dinamis: `Gate::before` memeriksa permission berbasis role di `app/Providers/AuthServiceProvider.php:16`.
+
+4) Autentikasi & Verifikasi
+- Login: Laravel Breeze. Login memakai `Auth::attempt(...)` dan session regeneration di `app/Http/Controllers/Auth/AuthenticatedSessionController.php:26`. Password di-hash saat registrasi dengan `Hash::make(...)` di `app/Http/Controllers/Auth/RegisteredUserController.php:147`.
+- Verifikasi email: model `User` `implements MustVerifyEmail` (`app/Models/User.php:6`), middleware `verified` pada grup rute admin (`routes/web.php:73`), dan alur verifikasi di `routes/auth.php:33`.
+- Login Google (SSO): tersedia via Socialite (`routes/auth.php:24`).
+
+5) Validasi (View & Controller)
+- View: menampilkan error dan nilai lama (contoh `resources/views/admin/articles/_form.blade.php:9`, `resources/views/checkout.blade.php:64`).
+- Controller/Request:
+  - Login: `app/Http/Requests/Auth/LoginRequest.php` memvalidasi email/password dan rate limiting.
+  - Checkout: `app/Http/Requests/CheckoutStoreRequest.php` memvalidasi metode pembayaran/catatan.
+  - Batal pesanan: `app/Http/Requests/OrderCancelRequest.php` memvalidasi alasan/catatan.
+  - Produk: validasi lengkap pada `store`/`update` (unik `kode_produk`, `slug`, tanggal promo, stok >= 0) di `app/Http/Controllers/Admin/ProdukController.php:31` dan `app/Http/Controllers/Admin/ProdukController.php:146`.
+- Validasi status pesanan: hanya bisa dibatalkan pada status tertentu di `app/Models/Pesanan.php:53` dan layanan terkait di `app/Services/PesananService.php`.
+
+6) Session & Otorisasi
+- Session: diregenerasi saat login dan di-invalidasi saat logout (`AuthenticatedSessionController`). Keranjang via session + cookie persist (`app/Services/CartService.php`).
+- Otorisasi: middleware `auth`, `verified`, gate `can:...`. Gate role (`access-admin`, `access-kurir`, `access-user`) di `app/Providers/AuthServiceProvider.php`, plus `Gate::before` untuk permission.
+
+7) Data Master
+- Kategori Produk: `database/migrations/2025_11_01_125222_create_table_kategori_produk.php`.
+- Jenis Ikan: `database/migrations/2025_11_01_125244_create_table_jenis_ikan.php`.
+- Produk (+ foto): `database/migrations/2025_11_01_125309_create_table_produk.php`, `2025_11_17_000000_create_produk_foto_table.php`.
+- Artikel: `database/migrations/2025_10_28_010000_create_articles_table.php`.
+- Akun/Alamat: `2025_09_30_051341_create_penggunas_table.php`, `2025_11_01_125147_create_table_alamat.php`.
+- Role & Permission: `2025_11_05_184700_create_permisson_table.php` (roles, permissions, pivot).
+- Transaksi: `2025_11_06_100000_create_pesanan_table.php`, `100100_create_pesanan_item_table.php`, `100200_create_pembayaran_table.php`, `100300_create_pengiriman_table.php`, `100500_create_log_pesanan_table.php`.
+- Keranjang (server-side): `2025_11_06_100400_create_keranjang_table.php`, `100410_create_keranjang_item_table.php`.
+
+8) Fitur Tambahan
+- API eksternal wilayah (RajaOngkir/kompatibel) melalui endpoint internal `/api/wilayah/*` (`routes/api.php:16`), implementasi di `app/Http/Controllers/Api/WilayahDbController.php`, konfigurasi `config/services.php`.
+- Payment Gateway Midtrans: Snap token (`routes/web.php:44`, `PembayaranController@midtransSnap`) dan webhook notifikasi (`routes/api.php:33`, `PembayaranController@midtransNotification`).
+- Login Google: Socialite (`routes/auth.php:24`).
+
+9) Teknologi yang Digunakan
+- Framework: Laravel 10 (`composer.json`).
+- PHP: 8.1.
+- Database: PostgreSQL (`.env` `DB_CONNECTION=pgsql`).
+- Auth: Breeze, Sanctum, Socialite (Google).
+- Payment: Midtrans (`config/midtrans.php`).
+- Frontend: Blade, Tailwind CSS, Vite.
+- Migrasi: lihat daftar pada folder `database/migrations` (contoh file disebut pada poin 7).
+
 Integrasi utama mencakup:
 
 * **Google Login (OAuth2 Socialite)**

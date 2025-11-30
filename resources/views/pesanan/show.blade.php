@@ -20,7 +20,7 @@
                         <div class="text-sm text-gray-600">Rp {{ number_format($pesanan->total, 0, ',', '.') }}</div>
                     </div>
                 </div>
-                @if($pesanan->status === 'menunggu_pembayaran')
+                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']))
                     <form action="{{ route('pesanan.cancel', $pesanan->pesanan_id) }}" method="POST" class="mt-4 border-t pt-4">
                         @csrf
                         <div class="grid md:grid-cols-2 gap-3">
@@ -73,55 +73,91 @@
                     <div class="text-sm">Jumlah: Rp {{ number_format($pay->amount, 0, ',', '.') }}</div>
                     <div class="text-sm">Metode: {{ $pay->gateway }} - {{ $pay->channel }}</div>
                     <div class="text-xs text-gray-500 mt-2">Ref: {{ $pay->reference }}</div>
+                    @php($manualBank = is_array($pay->gateway_payload ?? null) ? ($pay->gateway_payload['manual_bank'] ?? null) : null)
+                    @php($rejectReason = is_array($pay->gateway_payload ?? null) ? ($pay->gateway_payload['manual_reject_reason'] ?? null) : null)
+                    @if($pesanan->metode_pembayaran === 'manual' && $manualBank)
+                        <div class="mt-2 text-sm">Bank: <span class="font-medium">{{ $manualBank }}</span></div>
+                        <div class="mt-2 text-xs text-gray-600">
+                            @php($bankInfo = [
+                                'BCA' => 'Rekening BCA: 1234567890 a.n. PT FishyGo. Tambahkan berita: Kode Pesanan saat transfer.',
+                                'BRI' => 'Rekening BRI: 9876543210 a.n. PT FishyGo. Pastikan unggah bukti setelah transfer.',
+                                'BNI' => 'Rekening BNI: 1122334455 a.n. PT FishyGo. Simpan resi untuk validasi.',
+                            ])
+                            {{ $bankInfo[$manualBank] ?? '' }}
+                        </div>
+                    @endif
+                    @if($pay->status === 'rejected' && $rejectReason)
+                        <div class="alert alert-warning mt-3 text-sm">Bukti pembayaran ditolak: {{ $rejectReason }}</div>
+                    @endif
+                    @php($proofPath = is_array($pay->gateway_payload ?? null) ? ($pay->gateway_payload['manual_proof_path'] ?? null) : null)
+                    @if($proofPath)
+                        <div class="mt-3">
+                            <div class="text-sm font-medium mb-1">Bukti Transfer</div>
+                            <a href="{{ asset('storage/'.$proofPath) }}" target="_blank" class="inline-block">
+                                <img src="{{ asset('storage/'.$proofPath) }}" alt="Bukti transfer" class="max-h-40 rounded border" />
+                            </a>
+                        </div>
+                    @endif
+                    @if($pay->status === 'paid')
+                        <a class="btn btn-outline btn-sm w-full mt-3" href="{{ route('pesanan.receipt', $pesanan->pesanan_id) }}#print">Cetak Struk</a>
+                    @endif
                 @else
                     <div class="text-sm text-gray-500">Belum ada informasi pembayaran.</div>
                 @endif
 
                 @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'midtrans')
-                    <button id="btn-pay-midtrans" class="btn btn-primary w-full mt-4">Bayar dengan Midtrans</button>
+                    <x-midtrans-snap-button
+                        class="w-full mt-4"
+                        :pesanan-id="$pesanan->pesanan_id"
+                        :redirect="route('pesanan.show', $pesanan->pesanan_id)"
+                    />
+                @endif
 
-                    <script
-                        src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
-                        data-client-key="{{ config('midtrans.client_key') }}"
-                        defer
-                    ></script>
+                {{-- Manual Transfer: Upload bukti pembayaran (DaisyUI modal + preview) --}}
+                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'manual')
+                    <button class="btn btn-primary w-full mt-4" onclick="document.getElementById('modal-upload-bukti').showModal()">Upload Bukti Pembayaran</button>
+
+                    <dialog id="modal-upload-bukti" class="modal">
+                        <div class="modal-box max-w-md">
+                            <h3 class="font-semibold text-lg mb-3">Upload Ulang Bukti Transfer</h3>
+                            <form action="{{ route('pesanan.manual.upload', $pesanan->pesanan_id) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
+                                @csrf
+                                <div>
+                                    <input id="input-bukti" type="file" name="bukti" accept="image/*" class="file-input file-input-bordered w-full" required>
+                                    <div class="text-xs text-gray-500 mt-2">Format gambar (JPG/PNG) maks 5MB.</div>
+                                </div>
+                                <div id="preview-wrap" class="hidden">
+                                    <div class="text-sm font-medium mb-1">Preview</div>
+                                    <img id="preview-img" src="" alt="Preview bukti" class="max-h-48 rounded border" />
+                                </div>
+                                <div class="modal-action">
+                                    <button class="btn btn-primary">Kirim</button>
+                                    <form method="dialog"><button class="btn">Batal</button></form>
+                                </div>
+                            </form>
+                        </div>
+                        <form method="dialog" class="modal-backdrop"><button>Tutup</button></form>
+                    </dialog>
+
                     <script>
                         (function(){
-                            const btn = document.getElementById('btn-pay-midtrans');
-                            if(!btn) return;
-                            const pesananId = @json($pesanan->pesanan_id);
-                            const snapUrl = @json(route('payment.midtrans.snap'));
-                            const redirectAfter = @json(route('pesanan.show', $pesanan->pesanan_id));
-                            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                            function enable(v){ btn.disabled = !v; btn.classList.toggle('btn-disabled', !v); }
-
-                            btn.addEventListener('click', async function(){
-                                try {
-                                    enable(false);
-                                    const res = await fetch(snapUrl, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': token,
-                                            'Accept': 'application/json'
-                                        },
-                                        body: JSON.stringify({ pesanan_id: pesananId })
-                                    });
-                                    const data = await res.json();
-                                    if(!res.ok) { alert(data?.message || 'Gagal membuat transaksi'); enable(true); return; }
-                                    if(!(window.snap && data.token)) { alert('Snap tidak tersedia'); enable(true); return; }
-                                    window.snap.pay(data.token, {
-                                        onSuccess: function(){ window.location.href = redirectAfter; },
-                                        onPending: function(){ window.location.href = redirectAfter; },
-                                        onError: function(){ alert('Pembayaran gagal atau dibatalkan.'); enable(true); },
-                                        onClose: function(){ enable(true); }
-                                    });
-                                } catch(e) {
-                                    alert('Terjadi kesalahan.');
-                                    enable(true);
-                                }
-                            });
+                            const inp = document.getElementById('input-bukti');
+                            const wrap = document.getElementById('preview-wrap');
+                            const img = document.getElementById('preview-img');
+                            if (inp) {
+                                inp.addEventListener('change', function(){
+                                    const f = this.files && this.files[0];
+                                    if (!f) { wrap.classList.add('hidden'); img.src = ''; return; }
+                                    if (!f.type.startsWith('image/')) { wrap.classList.add('hidden'); img.src = ''; return; }
+                                    const reader = new FileReader();
+                                    reader.onload = function(e){ img.src = e.target.result; wrap.classList.remove('hidden'); };
+                                    reader.readAsDataURL(f);
+                                });
+                            }
+                            // Auto open after checkout when no proof uploaded yet
+                            @if(!$proofPath)
+                                try { document.getElementById('modal-upload-bukti').showModal(); } catch (e) {}
+                            @endif
                         })();
                     </script>
                 @endif

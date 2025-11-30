@@ -24,8 +24,9 @@
                     <th>Kode</th>
                     <th>Pelanggan</th>
                     <th>Status</th>
-                    <th>Total</th>
                     <th>Item</th>
+                    <th>Total</th>
+                    <th>Metode Pembayaran</th>
                     <th>Dibuat</th>
                     <th class="text-center">Aksi</th>
                 </tr>
@@ -39,8 +40,9 @@
                             <div class="text-xs text-gray-500">{{ $row->user?->email }}</div>
                         </td>
                         <td class="text-xs">{{ ucfirst(str_replace('_',' ', $row->status)) }}</td>
-                        <td>Rp {{ number_format($row->total, 0, ',', '.') }}</td>
                         <td>{{ $row->items_count }}</td>
+                        <td>Rp {{ number_format($row->total, 0, ',', '.') }}</td>
+                        <td>{{strtoupper($row->metode_pembayaran)}}</td>
                         <td class="text-xs text-gray-600">{{ $row->created_at?->format('d M Y H:i') }}</td>
                         <td class="text-center">
                             <a class="btn btn-xs" href="{{ route('admin.pesanan.show', $row) }}">Detail</a>

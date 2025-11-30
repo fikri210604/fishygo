@@ -104,6 +104,21 @@
                                     <span>Transfer Manual</span>
                                 </label>
 
+                                {{-- Manual Transfer Options --}}
+                                <div id="manual-options" class="ml-7 mt-2 hidden space-y-2">
+                                    <input type="hidden" name="manual_bank" id="manual_bank" value="{{ old('manual_bank') }}" />
+                                    <div>
+                                        <label class="block text-sm mb-1">Pilih Bank</label>
+                                        <select id="manual-bank-select" class="select select-bordered w-full">
+                                            <option value="">— Pilih Rekening —</option>
+                                            <option value="BCA" {{ old('manual_bank')==='BCA' ? 'selected' : '' }}>BCA</option>
+                                            <option value="BRI" {{ old('manual_bank')==='BRI' ? 'selected' : '' }}>BRI</option>
+                                            <option value="BNI" {{ old('manual_bank')==='BNI' ? 'selected' : '' }}>BNI</option>
+                                        </select>
+                                    </div>
+                                    <div id="manual-instruction" class="alert bg-gray-100 text-sm hidden"></div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -167,9 +182,12 @@
                     <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
-                <button form="form-checkout" class="btn btn-primary w-full mt-4">
-                    Buat Pesanan
-                </button>
+                <x-midtrans-snap-button
+                    class="w-full mt-4"
+                    label="Buat Pesanan"
+                    :form-selector="'#form-checkout'"
+                    :create-url="route('checkout.store')"
+                />
 
             </div>
         </div>
@@ -178,3 +196,64 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    (function(){
+        const container = document.getElementById('pay-methods');
+        const hiddenMethod = document.getElementById('metode_pembayaran');
+        const codOptions = document.getElementById('cod-options');
+        const manualOptions = document.getElementById('manual-options');
+        const pickupInput = document.getElementById('pickup');
+        const manualSelect = document.getElementById('manual-bank-select');
+        const manualHidden = document.getElementById('manual_bank');
+        const manualInstr = document.getElementById('manual-instruction');
+
+        const bankInfo = {
+            BCA: 'Rekening BCA: 1234567890 a.n. PT FishyGo. Tambahkan berita: Kode Pesanan saat transfer.',
+            BRI: 'Rekening BRI: 9876543210 a.n. PT FishyGo. Pastikan unggah bukti setelah transfer.',
+            BNI: 'Rekening BNI: 1122334455 a.n. PT FishyGo. Simpan resi untuk validasi.',
+        };
+
+        function updateUI() {
+            const method = hiddenMethod ? hiddenMethod.value : 'midtrans';
+            if (codOptions) codOptions.classList.toggle('hidden', method !== 'cod');
+            if (manualOptions) manualOptions.classList.toggle('hidden', method !== 'manual');
+            updateManualInstruction();
+        }
+
+        function updateManualInstruction(){
+            if (!manualInstr || !manualHidden) return;
+            const v = manualHidden.value;
+            if (v && bankInfo[v]) { manualInstr.textContent = bankInfo[v]; manualInstr.classList.remove('hidden'); }
+            else { manualInstr.textContent = ''; manualInstr.classList.add('hidden'); }
+        }
+
+        if (container) {
+            container.addEventListener('change', function(e){
+                const t = e.target;
+                if (t && t.matches('input.checkbox[data-value]')) {
+                    const val = t.getAttribute('data-value');
+                    Array.from(container.querySelectorAll('input.checkbox[data-value]')).forEach(el => el.checked = (el.getAttribute('data-value') === val));
+                    if (hiddenMethod) hiddenMethod.value = val;
+                    updateUI();
+                }
+                if (t && t.matches('input.radio[name="__cod_type"]')) {
+                    const p = t.getAttribute('data-pickup') || '0';
+                    if (pickupInput) pickupInput.value = p;
+                    updateUI();
+                }
+            });
+        }
+
+        if (manualSelect) {
+            manualSelect.addEventListener('change', function(){
+                manualHidden.value = this.value || '';
+                updateManualInstruction();
+            });
+        }
+        updateUI();
+        updateManualInstruction();
+    })();
+</script>
+@endpush

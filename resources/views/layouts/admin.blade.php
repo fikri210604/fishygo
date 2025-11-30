@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,20 +16,19 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 pt-16" x-data>
-            @include('layouts.navbars.nav-admin')
+    <body class="font-sans antialiased" x-data>
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.sidebar')
 
-            <div class="md:flex">
-                @include('layouts.sidebar')
-
-                <div class="flex-1">
-                    <main>
-                        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                            @yield('content')
+            <div class="flex-1" :class="{ 'md:ml-64': !Alpine.store('layout').sidebarCollapsed, 'md:ml-16': Alpine.store('layout').sidebarCollapsed }">
+                <main>
+                    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                        <div class="px-0 sm:px-0 lg:px-0 pb-4">
+                            <x-breadcrumbs />
                         </div>
-                    </main>
-                </div>
+                        @yield('content')
+                    </div>
+                </main>
             </div>
         </div>
         <x-flash-toast />

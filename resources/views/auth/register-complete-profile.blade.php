@@ -1,4 +1,7 @@
-﻿<x-guest-layout>
+﻿@section('title', 'Lengkapi Profil - FishyGo')
+
+
+<x-guest-layout>
     <div class="min-h-screen flex flex-col lg:flex-row">
         <!-- BAGIAN KIRI GAMBAR -->
         <div class="hidden lg:flex w-1/2 bg-cover bg-center" style="background-image: url('{{ asset('assets/images/background.png') }}');"></div>
@@ -115,7 +118,5 @@
         </div>
     </div>
 
-    {{-- Dependent selects for wilayah --}}
-    @vite('resources/js/wilayah.js')
+    {{-- Wilayah dropdowns are handled by resources/js/wilayah.js via app.js --}}
 </x-guest-layout>
-

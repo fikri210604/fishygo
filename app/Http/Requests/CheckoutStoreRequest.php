@@ -17,7 +17,7 @@ class CheckoutStoreRequest extends FormRequest
             'alamat_id' => ['nullable','string'],
             'metode_pembayaran' => ['nullable','string','max:50'],
             'catatan' => ['nullable','string','max:500'],
+            'manual_bank' => ['nullable','string','max:50'],
         ];
     }
 }
-

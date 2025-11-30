@@ -92,6 +92,12 @@ class PesananService
                 'cod' => 'cod',
                 default => 'transfer',
             };
+            $manualPayload = null;
+            if ($metode === 'manual') {
+                $manualPayload = [
+                    'manual_bank' => $options['manual_bank'] ?? null,
+                ];
+            }
             Pembayaran::create([
                 'pesanan_id' => $pesanan->pesanan_id,
                 'gateway' => $options['gateway'] ?? $gateway,
@@ -100,6 +106,7 @@ class PesananService
                 'status' => 'pending',
                 'reference' => $pesanan->kode_pesanan,
                 'order_id' => $pesanan->kode_pesanan,
+                'gateway_payload' => $manualPayload,
             ]);
 
             return $pesanan;

@@ -77,16 +77,7 @@ class PesananController extends Controller
                 'manual_bank' => $request->input('manual_bank'),
             ]);
             $this->cart->clear();
-            // If the client expects JSON (AJAX flow), return JSON response
-            if ($request->expectsJson() || $request->wantsJson()) {
-                return response()->json([
-                    'ok' => true,
-                    'pesanan_id' => $pesanan->pesanan_id,
-                    'metode' => $pesanan->metode_pembayaran,
-                    'redirect' => route('pesanan.show', ['pesanan' => $pesanan->pesanan_id]),
-                ]);
-            }
-            // Default: redirect to order detail page
+
             return redirect()->route('pesanan.show', ['pesanan' => $pesanan->pesanan_id])
                 ->with('success', 'Pesanan berhasil dibuat.');
         } catch (\Throwable $e) {

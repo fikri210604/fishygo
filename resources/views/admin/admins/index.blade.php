@@ -18,9 +18,28 @@
                 <tr>
                     <td class="px-4 py-2">{{ $admin->username }}</td>
                     <td class="px-4 py-2">{{ $admin->email }}</td>
-                    <td class="px-4 py-2 space-x-2">
-                        <a href="{{ route('admin.admins.edit', $admin) }}" class="text-indigo-600 hover:underline">Edit</a>
-                        <button type="button" class="text-red-600 hover:underline" onclick="document.getElementById('confirm-delete-admin-{{ $admin->id }}').showModal()">Delete</button>
+                    <td class="px-4 py-2">
+                        <div class="dropdown dropdown-end">
+                            <button type="button" tabindex="0" class="btn btn-xs btn-outline">
+                                Pilih aksi
+                            </button>
+                            <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                <li>
+                                    <button type="button"
+                                        class="btn btn-ghost btn-xs w-full justify-center"
+                                        onclick="window.location.href='{{ route('admin.admins.edit', $admin) }}'">
+                                        Edit
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button"
+                                        class="btn btn-ghost btn-xs w-full justify-center text-red-600"
+                                        onclick="document.getElementById('confirm-delete-admin-{{ $admin->id }}').showModal()">
+                                        Hapus
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                         <dialog id="confirm-delete-admin-{{ $admin->id }}" class="modal">
                             <div class="modal-box">
                                 <h3 class="font-bold text-lg">Hapus Admin</h3>

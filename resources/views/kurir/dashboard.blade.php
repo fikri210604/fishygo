@@ -38,7 +38,7 @@
                     <form method="GET">
                         <input type="hidden" name="status" value="{{ $status }}" />
                         <input type="hidden" name="done_range" value="{{ $doneRange ?? 'today' }}" />
-                        <select name="return_range" class="select select-bordered select-xs" onchange="this.form.submit()">
+                        <select name="return_range" class="select select-bordered select-xs select-no-truncate" onchange="this.form.submit()">
                             <option value="today" {{ ($returnRange ?? 'today') === 'today' ? 'selected' : '' }}>Hari Ini
                             </option>
                             <option value="7d" {{ ($returnRange ?? '') === '7d' ? 'selected' : '' }}>7 Hari</option>
@@ -61,7 +61,7 @@
                     <form method="GET">
                         <input type="hidden" name="status" value="{{ $status }}" />
                         <input type="hidden" name="return_range" value="{{ $returnRange ?? 'today' }}" />
-                        <select name="done_range" class="select select-bordered select-xs" onchange="this.form.submit()">
+                        <select name="done_range" class="select select-bordered select-xs select-no-truncate" onchange="this.form.submit()">
                             <option value="today" {{ ($doneRange ?? 'today') === 'today' ? 'selected' : '' }}>Hari Ini
                             </option>
                             <option value="7d" {{ ($doneRange ?? '') === '7d' ? 'selected' : '' }}>7 Hari</option>
@@ -83,7 +83,7 @@
         <div class="p-4 border-b flex items-center gap-3">
             <form method="GET" class="flex items-center gap-2">
                 <label class="text-sm">Status</label>
-                <select name="status" class="select select-bordered select-sm">
+                <select name="status" class="select select-bordered select-sm select-no-truncate">
                     <option value="" {{ empty($status) ? 'selected' : '' }}>Semua</option>
                     <option value="siap" {{ ($status ?? '') === 'siap' ? 'selected' : '' }}>Siap</option>
                     <option value="diambil" {{ ($status ?? '') === 'diambil' ? 'selected' : '' }}>Diambil</option>

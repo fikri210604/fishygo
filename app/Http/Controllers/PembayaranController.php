@@ -148,6 +148,10 @@ class PembayaranController extends Controller
                     $pickup = (bool) data_get($pesanan->alamat_snapshot, 'pickup', false);
                     $pesanan->status = $pickup ? 'siap_diambil' : 'diproses';
                     $pesanan->save();
+                    // Jika pesanan untuk dikirim (bukan pickup), buat data pengiriman agar kurir bisa memproses
+                    if (!$pickup) {
+                        $pesanan->ensurePengirimanForDelivery();
+                    }
                 }
             }
 
@@ -237,6 +241,9 @@ class PembayaranController extends Controller
                 $pickup = (bool) data_get($pesanan->alamat_snapshot, 'pickup', false);
                 $pesanan->status = $pickup ? 'siap_diambil' : 'diproses';
                 $pesanan->save();
+                if (!$pickup) {
+                    $pesanan->ensurePengirimanForDelivery();
+                }
             }
             return back()->with('success', 'Pembayaran COD dikonfirmasi.');
         } catch (\Throwable $e) {
@@ -305,6 +312,9 @@ class PembayaranController extends Controller
                 $pickup = (bool) data_get($pesanan->alamat_snapshot, 'pickup', false);
                 $pesanan->status = $pickup ? 'siap_diambil' : 'diproses';
                 $pesanan->save();
+                if (!$pickup) {
+                    $pesanan->ensurePengirimanForDelivery();
+                }
             }
             return back()->with('success', 'Pembayaran transfer manual dikonfirmasi.');
         } catch (\Throwable $e) {

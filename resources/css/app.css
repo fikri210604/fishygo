@@ -134,4 +134,13 @@
   .shadow-xl {
     @apply shadow-2xl;
   }
+
+  /* Select helpers */
+  .select-no-truncate.select,
+  .select.select-no-truncate {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    height: auto;
+  }
 }

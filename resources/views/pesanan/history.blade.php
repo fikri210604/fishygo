@@ -11,6 +11,8 @@
         <select name="status" class="select select-bordered">
             <option value="">Semua Status</option>
             <option value="menunggu_pembayaran" {{ ($status ?? '')==='menunggu_pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+            <option value="dikirim" {{ ($status ?? '')==='dikirim' ? 'selected' : '' }}>Dikirim</option>
+            <option value="selesai" {{ ($status ?? '')==='selesai' ? 'selected' : '' }}>Selesai</option>
             <option value="dibatalkan" {{ ($status ?? '')==='dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
         </select>
         <button class="btn">Filter</button>
@@ -52,4 +54,3 @@
     </div>
 </div>
 @endsection
-

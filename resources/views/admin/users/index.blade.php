@@ -33,20 +33,28 @@
                                 <td class="font-medium">{{ $user->nama }}</td>
                                 <td>{{ $user->username }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td class="flex justify-center gap-2">
-                                    <button 
-                                        class="btn btn-sm btn-outline btn-info"
-                                        onclick="document.getElementById('edit_user_modal_{{ $user->id }}').showModal()"
-                                    >
-                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
-                                    </button>
-
-                                    <button 
-                                        class="btn btn-sm btn-outline btn-error"
-                                        onclick="document.getElementById('delete_user_modal_{{ $user->id }}').showModal()"
-                                    >
-                                        <i class="fa-solid fa-trash-can mr-1"></i> Hapus
-                                    </button>
+                                <td class="text-center">
+                                    <div class="dropdown dropdown-end">
+                                        <button type="button" tabindex="0" class="btn btn-xs btn-outline">
+                                            Pilih aksi
+                                        </button>
+                                        <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                            <li>
+                                                <button type="button"
+                                                    class="btn btn-ghost btn-xs w-full justify-center"
+                                                    onclick="document.getElementById('edit_user_modal_{{ $user->id }}').showModal()">
+                                                    Edit
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button"
+                                                    class="btn btn-ghost btn-xs w-full justify-center text-red-600"
+                                                    onclick="document.getElementById('delete_user_modal_{{ $user->id }}').showModal()">
+                                                    Hapus
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
 

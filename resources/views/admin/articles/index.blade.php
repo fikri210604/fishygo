@@ -41,9 +41,26 @@
                         <td>{{ $a->slug }}</td>
                         <td>{{ $a->diterbitkan_pada ? $a->diterbitkan_pada->format('Y-m-d H:i') : '-' }}</td>
                         <td class="text-center">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.articles.edit', $a) }}" class="btn btn-xs">Edit</a>
-                                <button class="btn btn-xs btn-error text-white" onclick="document.getElementById('confirm-delete-article-{{ $a->id }}').showModal()">Hapus</button>
+                            <div class="dropdown dropdown-end">
+                                <button type="button" tabindex="0" class="btn btn-xs btn-outline">
+                                    Pilih aksi
+                                </button>
+                                <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                    <li>
+                                        <button type="button"
+                                            class="btn btn-ghost btn-xs w-full justify-center"
+                                            onclick="window.location.href='{{ route('admin.articles.edit', $a) }}'">
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                            class="btn btn-ghost btn-xs w-full justify-center text-red-600"
+                                            onclick="document.getElementById('confirm-delete-article-{{ $a->id }}').showModal()">
+                                            Hapus
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
 
                             <dialog id="confirm-delete-article-{{ $a->id }}" class="modal">

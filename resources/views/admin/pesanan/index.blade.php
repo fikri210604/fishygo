@@ -8,9 +8,11 @@
         </div>
         <form method="GET" class="flex items-center gap-2">
             <input type="text" name="q" value="{{ $q }}" placeholder="Cari kode/akun" class="input input-bordered input-sm w-56" />
-            <select name="status" class="select select-bordered select-sm">
+            <select name="status" class="select select-bordered select-sm select-no-truncate">
                 <option value="">Semua Status</option>
                 <option value="menunggu_pembayaran" {{ $status==='menunggu_pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
+                <option value="dikirim" {{ $status==='dikirim' ? 'selected' : '' }}>Dikirim</option>
+                <option value="selesai" {{ $status==='selesai' ? 'selected' : '' }}>Selesai</option>
                 <option value="dibatalkan" {{ $status==='dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
             </select>
             <button class="btn btn-sm">Filter</button>
@@ -61,4 +63,3 @@
         {{ $items->onEachSide(1)->links() }}
     </div>
 @endsection
-

@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->seedOnce('jenis_ikan', JenisIkanSeeder::class);
         $this->seedOnce('produk', ProdukSeeder::class);
         $this->seedOnce('review_produk', ReviewProdukSeeder::class);
+        $this->seedOnce('pesanan', PesananSeeder::class);
         // Always run KurirSeeder (idempotent check inside)
         $this->call(KurirSeeder::class);
     }

@@ -52,13 +52,28 @@
                         <td>Rp {{ number_format($p->harga, 0, ',', '.') }}</td>
                         <td>{{ $p->stok }}</td>
                         <td class="text-center">
-                            <div class="flex justify-center gap-2">
-                                <a href="{{ route('admin.produk.edit', $p->produk_id) }}" class="btn btn-xs">Edit</a>
-                                <form method="POST" action="{{ route('admin.produk.destroy', $p->produk_id) }}" onsubmit="return confirm('Hapus produk ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-xs btn-error text-white">Hapus</button>
-                                </form>
+                            <div class="dropdown dropdown-end">
+                                <button type="button" tabindex="0" class="btn btn-xs btn-outline">
+                                    Pilih aksi
+                                </button>
+                                <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                    <li>
+                                        <button type="button"
+                                            class="btn btn-ghost btn-xs w-full justify-center"
+                                            onclick="window.location.href='{{ route('admin.produk.edit', $p->produk_id) }}'">
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{{ route('admin.produk.destroy', $p->produk_id) }}" onsubmit="return confirm('Hapus produk ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-ghost btn-xs w-full justify-center text-red-600">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
                         </td>
                     </tr>

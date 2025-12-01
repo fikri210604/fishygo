@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kurir;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengiriman;
+use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,18 +58,18 @@ class DeliveryController extends Controller
             if (empty($pengiriman->dikirim_pada))
                 $pengiriman->dikirim_pada = now();
             // update status pesanan ke 'dikirim'
-            if ($pengiriman->pesanan && $pengiriman->pesanan->status !== 'dikirim') {
+            if ($pengiriman->pesanan && $pengiriman->pesanan->status !== Pesanan::STATUS_DIKIRIM) {
                 $p = $pengiriman->pesanan;
-                $p->status = 'dikirim';
+                $p->status = Pesanan::STATUS_DIKIRIM;
                 $p->save();
             }
         } elseif ($action === 'complete') {
             $pengiriman->status = 'diterima';
             $pengiriman->diterima_pada = now();
             // update status pesanan ke 'selesai'
-            if ($pengiriman->pesanan && $pengiriman->pesanan->status !== 'selesai') {
+            if ($pengiriman->pesanan && $pengiriman->pesanan->status !== Pesanan::STATUS_SELESAI) {
                 $p = $pengiriman->pesanan;
-                $p->status = 'selesai';
+                $p->status = Pesanan::STATUS_SELESAI;
                 $p->save();
             }
         } elseif ($action === 'return') {

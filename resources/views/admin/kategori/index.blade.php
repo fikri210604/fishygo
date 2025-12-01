@@ -41,13 +41,28 @@
                         </td>
                         <td class="font-medium">{{ $row->nama_kategori }}</td>
                         <td class="text-center">
-                            <div class="flex justify-center gap-2">
-                                <button class="btn btn-xs" onclick="document.getElementById('modal-edit-{{ $row->kategori_produk_id }}').showModal()">Edit</button>
-                                <form method="POST" action="{{ route('admin.kategori.destroy', $row->kategori_produk_id) }}" onsubmit="return confirm('Hapus kategori ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-xs btn-error text-white">Hapus</button>
-                                </form>
+                            <div class="dropdown dropdown-end">
+                                <button type="button" tabindex="0" class="btn btn-xs btn-outline">
+                                    Pilih aksi
+                                </button>
+                                <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                    <li>
+                                        <button type="button"
+                                            class="btn btn-ghost btn-xs w-full justify-center"
+                                            onclick="document.getElementById('modal-edit-{{ $row->kategori_produk_id }}').showModal()">
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{{ route('admin.kategori.destroy', $row->kategori_produk_id) }}" onsubmit="return confirm('Hapus kategori ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-ghost btn-xs w-full justify-center text-red-600">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
                         </td>
                     </tr>

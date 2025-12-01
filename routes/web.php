@@ -109,7 +109,9 @@ Route::middleware(['auth','verified'])->group(function () {
         });
 
         // Pesanan (Admin)
-        Route::resource('pesanan', PesananManajementController::class)->only(['index','show']);
+        Route::resource('pesanan', PesananManajementController::class)->only(['index','show','destroy']);
+        Route::post('pesanan/{pesanan:pesanan_id}/status', [PesananManajementController::class, 'updateStatus'])
+            ->whereUuid('pesanan')->name('pesanan.status.update');
         // Pembayaran COD actions
         Route::post('pesanan/{pesanan:pesanan_id}/cod/confirm', [\App\Http\Controllers\PembayaranController::class, 'codConfirm'])
             ->whereUuid('pesanan')->name('pesanan.cod.confirm');

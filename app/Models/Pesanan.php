@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
+use App\Models\Pengiriman;
 
 class Pesanan extends Model
 {
@@ -57,6 +58,8 @@ class Pesanan extends Model
     // Status constants
     public const STATUS_MENUNGGU_PEMBAYARAN = 'menunggu_pembayaran';
     public const STATUS_DIBATALKAN = 'dibatalkan';
+    public const STATUS_DIKIRIM = 'dikirim';
+    public const STATUS_SELESAI = 'selesai';
 
     public function user(): BelongsTo
     {
@@ -81,6 +84,31 @@ class Pesanan extends Model
     public function pengiriman(): HasOne
     {
         return $this->hasOne(Pengiriman::class, 'pesanan_id', 'pesanan_id');
+    }
+
+    /**
+     * Buat record pengiriman ketika pesanan siap diproses/dikirim.
+     * Hanya untuk pesanan dengan metode delivery (bukan pickup).
+     */
+    public function ensurePengirimanForDelivery(): ?Pengiriman
+    {
+        // Skip jika metode pengiriman adalah pickup
+        $deliveryMethod = (string) data_get($this->alamat_snapshot, 'delivery_method', 'delivery');
+        if ($deliveryMethod === 'pickup') {
+            return null;
+        }
+
+        if ($this->pengiriman) {
+            return $this->pengiriman;
+        }
+
+        return $this->pengiriman()->create([
+            'kurir_kode' => null,
+            'kurir_service' => null,
+            'resi' => null,
+            'biaya' => $this->ongkir,
+            'status' => 'siap',
+        ]);
     }
 
     public function cancelledBy(): BelongsTo

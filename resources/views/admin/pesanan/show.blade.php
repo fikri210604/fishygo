@@ -6,7 +6,15 @@
             <h1 class="text-xl font-semibold">Detail Pesanan</h1>
             <div class="text-xs text-gray-500 mt-1">Kode: {{ $pesanan->kode_pesanan }}</div>
         </div>
-        <a href="{{ route('admin.pesanan.index') }}" class="btn btn-sm">Kembali</a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('admin.pesanan.index') }}" class="btn btn-sm">Kembali</a>
+            <form method="POST" action="{{ route('admin.pesanan.destroy', $pesanan->pesanan_id) }}"
+                  onsubmit="return confirm('Hapus pesanan ini? Tindakan ini tidak dapat dibatalkan.')">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-error btn-sm text-white">Hapus</button>
+            </form>
+        </div>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
@@ -21,6 +29,32 @@
                         <div class="text-xs text-gray-500">Total</div>
                         <div class="font-medium">Rp {{ number_format($pesanan->total, 0, ',', '.') }}</div>
                     </div>
+                </div>
+                <div class="mt-4 border-t pt-4">
+                    @php($statusOptions = [
+                        'menunggu_pembayaran' => 'Menunggu Pembayaran',
+                        'menunggu_konfirmasi' => 'Menunggu Konfirmasi',
+                        'diproses' => 'Diproses',
+                        'siap_diambil' => 'Siap Diambil',
+                        'dikirim' => 'Dikirim',
+                        'selesai' => 'Selesai',
+                    ])
+                    @if($pesanan->status === \App\Models\Pesanan::STATUS_DIBATALKAN)
+                        <div class="text-xs text-red-600">Pesanan sudah dibatalkan, status tidak dapat diubah.</div>
+                    @else
+                        <form method="POST" action="{{ route('admin.pesanan.status.update', $pesanan->pesanan_id) }}" class="flex flex-wrap items-center gap-2">
+                            @csrf
+                            <label class="text-xs text-gray-500">Ubah Status</label>
+                            <select name="status" class="select select-bordered select-sm select-no-truncate">
+                                @foreach($statusOptions as $value => $label)
+                                    <option value="{{ $value }}" {{ $pesanan->status === $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button class="btn btn-sm">Simpan</button>
+                        </form>
+                    @endif
                 </div>
                 @php($pay = $pesanan->pembayaran->first())
                 @if($pesanan->metode_pembayaran === 'cod')

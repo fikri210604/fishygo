@@ -32,5 +32,8 @@
             </div>
         </div>
         <x-flash-toast />
+        <script>
+            window.hasFormError = @json($errors->any() ?? false);
+        </script>
     </body>
     </html>

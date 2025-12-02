@@ -72,7 +72,6 @@ class PesananManajementController extends Controller
             return back()->with('error', 'Status pesanan tidak valid.');
         }
 
-        // Jangan ubah pesanan yang sudah dibatalkan lewat flow resmi
         if ($pesanan->status === Pesanan::STATUS_DIBATALKAN) {
             return back()->with('error', 'Pesanan yang sudah dibatalkan tidak dapat diubah statusnya.');
         }

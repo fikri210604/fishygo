@@ -1,89 +1,74 @@
 <x-guest-layout>
     <div class="min-h-screen flex flex-col lg:flex-row">
-
-        {{-- BAGIAN KIRI - BACKGROUND PATTERN --}}
         <div class="hidden lg:flex w-1/2 bg-cover bg-center"
             style="background-image: url('{{ asset('assets/images/background.png') }}');">
         </div>
-
-        {{-- BAGIAN KANAN - FORM RESET --}}
-        <div class="w-full lg:w-1/2 flex items-center justify-center px-6 md:px-12 py-10">
-
+        <div class="w-full lg:w-1/2 flex items-center justify-center px-6 md:px-6 py-6">
             <div class="w-full max-w-md">
 
-                {{-- TITLE + LOGO --}}
-                <div class="text-center mb-6">
-                    <h1 class="text-3xl font-bold text-primary mb-2">Reset Password</h1>
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo" class="h-12 mx-auto" decoding="async" fetchpriority="high" height="48">
+                <!-- LOGO -->
+                <div class="mt-8 text-center">
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="FishyGo"
+                        class="h-10 mx-auto opacity-80">
                 </div>
 
-                {{-- Penjelasan --}}
-                <p class="text-gray-600 text-sm text-center mb-4 leading-relaxed">
-                    Masukkan alamat email Anda dan kami akan mengirimkan tautan
-                    untuk mengatur ulang kata sandi.
-                </p>
-
-                {{-- STATUS SESSION --}}
-                <x-auth-session-status class="mb-4" :status="session('status')" />
-
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl font-extrabold tracking-tight text-primary">Lupa Password</h1>
+                    <p class="text-gray-500 text-sm mt-1">
+                        Kami akan mengirimkan tautan untuk mereset password kamu.
+                    </p>
+                </div>
+                @if (session('status'))
+                    <div class="alert alert-success text-sm">
+                        {{ session('status') }}
+                    </div>
+                @endif
                 <form method="POST" action="{{ route('password.email') }}" onsubmit="handleResetSubmit(event)">
                     @csrf
-
-                    {{-- EMAIL --}}
-                    <div>
+                    <div class="mb-4">
                         <x-input-label for="email" :value="__('Email')" />
-                        <x-text-input id="email" type="email" name="email"
-                            :value="old('email')" required autofocus
+                        <x-text-input id="email" type="email" name="email" :value="old('email')" required autofocus
+                            autocomplete="username"
                             class="block mt-1 w-full bg-gray-100 border-gray-300 rounded-md"
-                            placeholder="example@gmail.com" />
+                            placeholder="nama@email.com" />
                         <x-input-error :messages="$errors->get('email')" class="mt-1" />
                     </div>
+                    <div class="mt-6 flex flex-col gap-3">
+                        <button type="submit" id="resetBtn"
+                            class="btn btn-primary w-full flex items-center justify-center gap-2">
+                            <span class="btn-text">Kirim Tautan Reset</span>
+                            <span class="loader hidden items-center gap-2">
+                                <span class="loading dots-loading loading-md"></span>
+                                <span>Memproses...</span>
+                            </span>
+                        </button>
 
-                    {{-- TOMBOL KIRIM --}}
-                    <button type="submit" id="resetBtn" class="w-full mt-5 btn btn-primary flex justify-center items-center gap-2">
-                        <span class="btn-text">Kirim Tautan Reset</span>
-
-                        {{-- Loader --}}
-                        <span class="loader hidden items-center gap-2 text-sm">
-                            <span class="dots-loading"></span>
-                            <span>Memuat...</span>
-                        </span>
-                    </button>
+                        <a href="{{ route('login') }}" class="btn btn-ghost w-full text-center">
+                            Kembali ke Login
+                        </a>
+                    </div>
                 </form>
 
-                {{-- Kembali ke login --}}
-                <p class="text-center text-sm mt-4">
-                    <a href="{{ route('login') }}" class="text-primary font-semibold hover:underline">
-                        Kembali ke Login
-                    </a>
+                <!-- TIPS -->
+                <p class="mt-5 text-xs text-gray-500 leading-relaxed text-center">
+                    Tips: Jika email tidak masuk, tunggu 1–2 menit lalu periksa folder Spam/Promotions.
+                    Pastikan alamat email benar.
                 </p>
 
+                
             </div>
-
         </div>
+
     </div>
-
-    <script>
-        function handleResetSubmit(event) {
-            const btn = document.getElementById('resetBtn');
-            const btnText = btn.querySelector('.btn-text');
-            const loader = btn.querySelector('.loader');
-
-            btn.disabled = true;
-            btnText.classList.add('hidden');
-            loader.classList.remove('hidden');
-        }
-
-        @if ($errors->any())
-        window.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('resetBtn');
-            const btnText = btn.querySelector('.btn-text');
-            const loader = btn.querySelector('.loader');
-
-            btn.disabled = false;
-            btnText.classList.remove('hidden');
-            loader.classList.add('hidden');
-        });
-        @endif
-    </script>
 </x-guest-layout>
+
+<script>
+    function handleResetSubmit(e) {
+        const btn = document.getElementById('resetBtn');
+        const text = btn.querySelector('.btn-text');
+        const loader = btn.querySelector('.loader');
+
+        text.classList.add('hidden');
+        loader.classList.remove('hidden');
+    }
+</script>

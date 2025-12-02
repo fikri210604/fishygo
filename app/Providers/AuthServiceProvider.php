@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -43,6 +45,25 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('access-user', function (User $user) {
             return $user->hasRole(User::ROLE_USER);
+        });
+
+        // Custom desain email reset password
+        ResetPassword::toMailUsing(function ($notifiable, string $token) {
+            $email = $notifiable->getEmailForPasswordReset();
+            $url = route('password.reset', ['token' => $token, 'email' => $email]);
+            $passwordBroker = config('auth.defaults.passwords');
+            $expire = (int) config("auth.passwords.$passwordBroker.expire", 60);
+            $appName = config('app.name', 'Aplikasi');
+
+            return (new MailMessage)
+                ->subject("Reset Password $appName")
+                ->markdown('emails.auth.reset-password', [
+                    'url' => $url,
+                    'expire' => $expire,
+                    'appName' => $appName,
+                    'supportEmail' => config('mail.from.address'),
+                    'userEmail' => $email,
+                ]);
         });
     }
 }

@@ -66,7 +66,6 @@ class DeliveryController extends Controller
         } elseif ($action === 'complete') {
             $pengiriman->status = 'diterima';
             $pengiriman->diterima_pada = now();
-            // update status pesanan ke 'selesai'
             if ($pengiriman->pesanan && $pengiriman->pesanan->status !== Pesanan::STATUS_SELESAI) {
                 $p = $pengiriman->pesanan;
                 $p->status = Pesanan::STATUS_SELESAI;

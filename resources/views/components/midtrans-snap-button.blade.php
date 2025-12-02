@@ -173,6 +173,12 @@
                 if (!created.ok) {
                     if (created.handedToForm) return; // form submission continues
                     setBusy(false);
+                    // Fallback: redirect to order page to continue payment
+                    if (redirectAfter) {
+                        const u = new URL(redirectAfter, window.location.origin);
+                        u.searchParams.set('autopay','1');
+                        window.location.href = u.toString();
+                    }
                     return;
                 }
                 const res = await fetch(snapUrl, {
@@ -185,9 +191,27 @@
                     body: JSON.stringify({ pesanan_id: pesananId })
                 });
                 const data = await res.json().catch(() => ({}));
-                if (!res.ok || !data.token) { setBusy(false); return; }
+                if (!res.ok || !data.token) {
+                    setBusy(false);
+                    const msg = (data && data.message) ? data.message : 'Gagal memproses pembayaran.';
+                    try { alert(msg); } catch (_e) {}
+                    if (redirectAfter) {
+                        const u = new URL(redirectAfter, window.location.origin);
+                        u.searchParams.set('autopay','1');
+                        window.location.href = u.toString();
+                    }
+                    return;
+                }
                 await ensureSnapLoaded();
-                if (!(window.snap && data.token)) { setBusy(false); return; }
+                if (!(window.snap && data.token)) { 
+                    setBusy(false);
+                    if (redirectAfter) {
+                        const u = new URL(redirectAfter, window.location.origin);
+                        u.searchParams.set('autopay','1');
+                        window.location.href = u.toString();
+                    }
+                    return; 
+                }
                 window.snap.pay(data.token, {
                     onSuccess: function(){ window.location.href = redirectAfter; },
                     onPending: function(){ window.location.href = redirectAfter; },
@@ -197,6 +221,11 @@
                 });
             } catch (e) {
                 setBusy(false);
+                if (redirectAfter) {
+                    const u = new URL(redirectAfter, window.location.origin);
+                    u.searchParams.set('autopay','1');
+                    window.location.href = u.toString();
+                }
             }
         });
     })();

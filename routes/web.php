@@ -139,7 +139,7 @@ Route::middleware(['auth'])->prefix('kurir')->name('kurir.')->group(function(){
     });
 });
 
-// Review produk (user login)
+// Review produk 
 Route::middleware('auth')->group(function () {
     Route::post('/produk/{produk:produk_id}/reviews', [ReviewProdukController::class, 'store'])->name('produk.review.store');
     Route::put('/produk/reviews/{review:review_id}', [ReviewProdukController::class, 'update'])->name('produk.review.update');

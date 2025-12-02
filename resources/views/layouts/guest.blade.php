@@ -7,9 +7,14 @@
 
     <title>{{ config('app.name', 'FishyGo') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+      <!-- Fonts -->
+      <link rel="preconnect" href="https://fonts.bunny.net">
+      <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+  
+      <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600&display=swap" />
+  
+      <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -28,9 +33,6 @@
 
     <div class="flex-1 bg-gray-100 pt-16">
         <div class="max-w-7xl mx-auto">
-            <div class="px-4 sm:px-6 lg:px-8 pt-4">
-                <x-breadcrumbs />
-            </div>
             <main class="px-4 sm:px-6 lg:px-8 py-6">
                 {{ $slot }}
             </main>
@@ -39,6 +41,9 @@
 
     @include('layouts.footer')
     <x-flash-toast />
+    <script>
+        window.hasFormError = @json($errors->any() ?? false);
+    </script>
 </body>
 
 </html>

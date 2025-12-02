@@ -78,6 +78,14 @@ class PesananController extends Controller
             ]);
             $this->cart->clear();
 
+            if ($request->expectsJson() || $request->wantsJson()) {
+                return response()->json([
+                    'ok' => true,
+                    'pesanan_id' => $pesanan->pesanan_id,
+                    'redirect' => route('pesanan.show', ['pesanan' => $pesanan->pesanan_id]),
+                ]);
+            }
+
             return redirect()->route('pesanan.show', ['pesanan' => $pesanan->pesanan_id])
                 ->with('success', 'Pesanan berhasil dibuat.');
         } catch (\Throwable $e) {

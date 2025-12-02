@@ -60,6 +60,9 @@
     @if (! View::hasSection('hide-toast'))
         <x-flash-toast />
     @endif
+    <script>
+        window.hasFormError = @json($errors->any() ?? false);
+    </script>
     @stack('scripts')
 </body>
 

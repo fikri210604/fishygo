@@ -162,6 +162,28 @@
                     </script>
                 @endif
 
+                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'midtrans')
+                    <div class="mt-4">
+                        <x-midtrans-snap-button
+                            :pesanan-id="$pesanan->pesanan_id"
+                            label="Bayar Sekarang"
+                            class="w-full"
+                            :redirect="route('pesanan.show', $pesanan->pesanan_id)"
+                        />
+                    </div>
+                    <script>
+                        (function(){
+                            const params = new URLSearchParams(window.location.search);
+                            if (params.get('autopay') === '1') {
+                                setTimeout(function(){
+                                    const btn = document.querySelector('button#btn-pay-midtrans');
+                                    if (btn && !btn.disabled) btn.click();
+                                }, 200);
+                            }
+                        })();
+                    </script>
+                @endif
+
                 @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'cod')
                     @php($pickup = (bool) data_get($pesanan->alamat_snapshot, 'pickup', false))
                     <div class="alert alert-info mt-4">

@@ -195,9 +195,7 @@ class CartController extends Controller
                         break;
                     }
                 }
-                $message = $removed
-                    ? 'Produk dihapus dari keranjang.'
-                    : 'Kuantitas keranjang diperbarui.';
+                $message = $removed ? 'Produk dihapus dari keranjang.' : 'Kuantitas keranjang diperbarui.';
 
                 $response = [
                     'status' => 'success',
@@ -236,9 +234,7 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Hapus satu produk dari keranjang.
-     */
+    // Hapus satu produk dari keranjang.
     public function remove(Request $request, Produk $produk)
     {
         try {
@@ -277,9 +273,6 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * Kosongkan seluruh keranjang.
-     */
     public function clear(Request $request)
     {
         try {

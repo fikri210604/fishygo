@@ -38,7 +38,7 @@
                                         <button type="button" tabindex="0" class="btn btn-xs btn-outline">
                                             Pilih aksi
                                         </button>
-                                        <ul tabindex="0" class="dropdown-content bg-base-100 rounded-box shadow z-[1] p-1 flex flex-col gap-1 min-w-[112px]">
+                                        <ul tabindex="0" class="dropdown-content z-[1] menu menu-sm bg-base-100 rounded-box shadow p-1 min-w-[112px]">
                                             <li>
                                                 <button type="button"
                                                     class="btn btn-ghost btn-xs w-full justify-center"

@@ -53,7 +53,7 @@
                 <label class="label"><span class="label-text">Kategori</span></label>
                 <select name="kategori_produk_id" class="select select-bordered w-full" required>
                     @foreach($kategori as $k)
-                        <option value="{{ $k->id }}" @selected(old('kategori_produk_id', $produk->kategori_produk_id) == $k->id)>
+                        <option value="{{ $k->kategori_produk_id }}" @selected(old('kategori_produk_id', $produk->kategori_produk_id) == $k->kategori_produk_id)>
                             {{ $k->nama_kategori }}
                         </option>
                     @endforeach

@@ -29,7 +29,10 @@ class ProdukController extends Controller
 
     public function create()
     {
-        return view('admin.produk.create');
+        $kategori = KategoriProduk::orderBy('nama_kategori')->get();
+        $jenisIkan = JenisIkan::orderBy('jenis_ikan')->get();
+
+        return view('admin.produk.create', compact('kategori', 'jenisIkan'));
     }
 
     public function store(Request $request)
@@ -143,7 +146,10 @@ class ProdukController extends Controller
 
     public function edit(Produk $produk)
     {
-        return view('admin.produk.edit', compact('produk'));
+        $kategori = KategoriProduk::orderBy('nama_kategori')->get();
+        $jenisIkan = JenisIkan::orderBy('jenis_ikan')->get();
+
+        return view('admin.produk.edit', compact('produk', 'kategori', 'jenisIkan'));
     }
 
     public function update(Request $request, Produk $produk)

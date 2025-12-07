@@ -5,7 +5,7 @@
             <div class="flex">
 
                 @php
-                    $dashboardRoute = optional(Auth::user())->dashboardRoute() ?? 'dashboard';
+                    $dashboardRoute = optional(Auth::user())->dashboardRoute() ?? 'home';
                 @endphp
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
@@ -47,14 +47,18 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
+                        <x-alert-confirmation
+                            modal-id="confirm-logout-nav"
+                            title="Keluar akun?"
+                            message="Anda akan keluar dari sesi saat ini."
+                            confirm-text="Keluar"
+                            cancel-text="Batal"
+                            variant="danger"
+                            action="{{ route('logout') }}"
+                            method="POST"
+                        >
+                            <span class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100">{{ __('Log Out') }}</span>
+                        </x-alert-confirmation>
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -96,14 +100,18 @@
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+                <x-alert-confirmation
+                    modal-id="confirm-logout-nav-responsive"
+                    title="Keluar akun?"
+                    message="Anda akan keluar dari sesi saat ini."
+                    confirm-text="Keluar"
+                    cancel-text="Batal"
+                    variant="danger"
+                    action="{{ route('logout') }}"
+                    method="POST"
+                >
+                    <span class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">{{ __('Log Out') }}</span>
+                </x-alert-confirmation>
             </div>
         </div>
     </div>

@@ -64,7 +64,6 @@ class Handler extends ExceptionHandler
                     'message' => 'Sesi telah berakhir. Silakan login ulang.'
                 ], 419);
             }
-            // Tampilkan halaman error 419 khusus dengan tombol login
             return response()->view('errors.419', [], 419);
         }
 
@@ -74,7 +73,6 @@ class Handler extends ExceptionHandler
             return parent::render($request, $e);
         }
 
-        // If JSON or API request, return JSON error
         if ($request->expectsJson() || Str::startsWith($request->path(), 'api/')) {
             $message = config('app.debug') ? ($e->getMessage() ?: 'Server error') : 'Terjadi kesalahan pada server.';
             return response()->json([

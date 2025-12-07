@@ -222,11 +222,48 @@ class RegisteredUserController extends Controller
 
             Auth::login($user);
 
+            // Simpan alamat utama (jika data alamat tersedia)
+            try {
+                $hasAddress = !empty($profile['alamat_lengkap'])
+                    || !empty($profile['province_id']) || !empty($profile['regency_id'])
+                    || !empty($profile['district_id']) || !empty($profile['subdistrict_id']) || !empty($profile['village_id']);
+
+                if ($hasAddress) {
+                    // Beberapa form menggunakan nama field "subdistrict_*". Map ke kolom "village_*" pada tabel.
+                    $villageId = $profile['village_id'] ?? $profile['subdistrict_id'] ?? null;
+                    $villageName = $profile['village_name'] ?? $profile['subdistrict_name'] ?? null;
+
+                    Alamat::create([
+                        'pengguna_id'    => $user->id,
+                        'penerima'       => $profile['nama'] ?? $user->nama,
+                        'alamat_lengkap' => $profile['alamat_lengkap'] ?? '',
+                        'province_id'    => $profile['province_id'] ?? null,
+                        'province_name'  => $profile['province_name'] ?? null,
+                        'regency_id'     => $profile['regency_id'] ?? null,
+                        'regency_name'   => $profile['regency_name'] ?? null,
+                        'district_id'    => $profile['district_id'] ?? null,
+                        'district_name'  => $profile['district_name'] ?? null,
+                        'village_id'     => $villageId,
+                        'village_name'   => $villageName,
+                        'rt'             => $profile['rt'] ?? null,
+                        'rw'             => $profile['rw'] ?? null,
+                        'kode_pos'       => $profile['kode_pos'] ?? null,
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // Jangan gagalkan registrasi hanya karena alamat gagal disimpan.
+                if (method_exists($this, 'logException')) {
+                    $this->logException($e, ['action' => 'RegisteredUserController@complete.saveAddress']);
+                }
+            }
+
             // Bersihkan sesi
             $request->session()->forget('verified_registration_email');
             $request->session()->forget('registration_profile_data');
 
-            return redirect()->intended(route($user->Route()));
+            $displayName = $user->nama ?? $user->username ?? 'Pengguna';
+            return redirect()->route('home')
+                ->with('success', 'Pendaftaran berhasil. Selamat datang, ' . $displayName . '!');
         } catch (\Throwable $e) {
             if (method_exists($this, 'logException')) {
                 $this->logException($e, ['action' => 'RegisteredUserController@complete']);
@@ -274,6 +311,3 @@ class RegisteredUserController extends Controller
         }
     }
 }
-
-
-

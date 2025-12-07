@@ -7,24 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-
-class ReviewProduk extends Model
+class ReviewKomentar extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'review_produk';
-    protected $primaryKey = 'review_id';
+    protected $table = 'review_komentar';
+    protected $primaryKey = 'komentar_id';
     protected $keyType = 'string';
-    
-    protected $fillable = [
-        'produk_id',
-        'pengguna_id',
-        'review',
-        'rating',
-    ];
+    public $incrementing = false;
 
-    protected $casts = [
-        'rating' => 'integer',
+    protected $fillable = [
+        'komentar_id',
+        'produk_id',
+        'review_id',
+        'pengguna_id',
+        'komentar',
     ];
 
     protected static function boot()
@@ -42,13 +39,14 @@ class ReviewProduk extends Model
         return $this->belongsTo(Produk::class, 'produk_id', 'produk_id');
     }
 
+    public function review()
+    {
+        return $this->belongsTo(ReviewProduk::class, 'review_id', 'review_id');
+    }
+
     public function pengguna()
     {
         return $this->belongsTo(User::class, 'pengguna_id', 'id');
     }
-
-    public function komentars()
-    {
-        return $this->hasMany(ReviewKomentar::class, 'review_id', 'review_id');
-    }
 }
+

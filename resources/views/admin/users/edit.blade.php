@@ -29,11 +29,21 @@
         <div class="flex items-center gap-3">
             <x-primary-button>Update</x-primary-button>
             <a href="{{ route('admin.users.index') }}" class="text-gray-600 hover:underline">Cancel</a>
-            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline ml-auto" onsubmit="return confirm('Soft delete this user?');">
+            <form id="delete-user-{{ $user->id }}" action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline ml-auto">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-600 hover:underline">Delete</button>
             </form>
+            <x-alert-confirmation
+                :modal-id="'confirm-delete-user-'.$user->id"
+                title="Hapus User?"
+                message="User akan dihapus (soft delete)."
+                confirm-text="Hapus"
+                cancel-text="Batal"
+                variant="danger"
+                :form="'delete-user-'.$user->id"
+            >
+                <span class="text-red-600 hover:underline cursor-pointer">Delete</span>
+            </x-alert-confirmation>
         </div>
     </form>
 @endsection

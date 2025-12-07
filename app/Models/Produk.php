@@ -129,11 +129,23 @@ class Produk extends Model
 
     public function recalcRating(): void
     {
-        $agg = $this->reviews()->whereNull('deleted_at')
-            ->selectRaw('COUNT(*) as cnt, COALESCE(AVG(rating),0) as avg')
-            ->first();
-        $this->rating_count = (int) ($agg->cnt ?? 0);
-        $this->rating_avg = round((float) ($agg->avg ?? 0), 2);
+        $rows = $this->reviews()
+            ->whereNull('deleted_at')
+            ->whereNotNull('rating')
+            ->orderBy('pengguna_id')
+            ->orderBy('created_at') 
+            ->get(['pengguna_id','rating','created_at']);
+
+        $perUser = [];
+        foreach ($rows as $r) {
+            if (!array_key_exists($r->pengguna_id, $perUser)) {
+                $perUser[$r->pengguna_id] = (int) $r->rating;
+            }
+        }
+        $cnt = count($perUser);
+        $avg = $cnt ? array_sum($perUser) / $cnt : 0;
+        $this->rating_count = $cnt;
+        $this->rating_avg = round((float) $avg, 2);
         $this->save();
     }
 

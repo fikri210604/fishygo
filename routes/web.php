@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ArticleController;
@@ -24,9 +25,7 @@ use App\Http\Controllers\Kurir\DeliveryController as KurirDeliveryController;
 use App\Http\Controllers\Kurir\DashboardController as KurirDashboardController;
 
 // Halaman utama
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome'); 
 
 // Halaman tentang
 Route::view('/tentang', 'tentang')->name('tentang');

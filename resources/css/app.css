@@ -7,7 +7,7 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border-[0.5px];
   }
 
   .btn-primary {
@@ -130,12 +130,10 @@
     @apply w-8 h-8;
   }
 
-  /* Shadow */
   .shadow-xl {
     @apply shadow-2xl;
   }
 
-  /* Select helpers */
   .select-no-truncate.select,
   .select.select-no-truncate {
     white-space: normal;
@@ -144,3 +142,52 @@
     height: auto;
   }
 }
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Hide scrollbar for Chrome, Safari, Edge */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE/Edge Legacy */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;       /* untuk vertical */
+  height: 6px;      /* untuk horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;  /* abu muda */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;   /* slate/abu modern */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;  /* slate lebih gelap */
+}
+
+.slider-grab {
+  cursor: grab;
+}
+.slider-grabbing {
+  cursor: grabbing;
+}
+
+

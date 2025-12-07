@@ -42,13 +42,20 @@ class PesananManajementController extends Controller
             'cancelled' => Pesanan::status(Pesanan::STATUS_DIBATALKAN)->count(),
         ];
 
-        return view('admin.pesanan.index', compact('items', 'q', 'status', 'counts'));
+        $notifTransaksi = $counts['waiting'];
+
+        return view('admin.pesanan.index', compact('items', 'q', 'status', 'counts', 'notifTransaksi'));
     }
 
     public function show(Pesanan $pesanan)
     {
         $pesanan->load(['user', 'alamat', 'items.produk', 'pembayaran', 'pengiriman']);
-        return view('admin.pesanan.show', compact('pesanan'));
+
+        $notifTransaksi = Pesanan::query()
+            ->whereIn('status', [Pesanan::STATUS_MENUNGGU_PEMBAYARAN, 'menunggu_konfirmasi'])
+            ->count();
+
+        return view('admin.pesanan.show', compact('pesanan', 'notifTransaksi'));
     }
 
     public function updateStatus(Request $request, Pesanan $pesanan)

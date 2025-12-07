@@ -36,12 +36,21 @@
           <div class="flex justify-center gap-2">
             <button class="btn btn-xs"
               onclick="document.getElementById('modal-edit-{{ $p->id }}').showModal()">Edit</button>
-            <form action="{{ route('admin.settings.permissions.destroy', $p) }}" method="POST"
-              onsubmit="return confirm('Hapus permission ini?')">
+            <form id="delete-permission-{{ $p->id }}" action="{{ route('admin.settings.permissions.destroy', $p) }}" method="POST">
               @csrf
               @method('DELETE')
-              <button class="btn btn-xs btn-error text-white">Hapus</button>
             </form>
+            <x-alert-confirmation
+              :modal-id="'confirm-delete-permission-'.$p->id"
+              title="Hapus Permission?"
+              message="Tindakan ini tidak dapat dibatalkan."
+              confirm-text="Hapus"
+              cancel-text="Batal"
+              variant="danger"
+              :form="'delete-permission-'.$p->id"
+            >
+              <span class="btn btn-xs btn-error text-white">Hapus</span>
+            </x-alert-confirmation>
           </div>
         </td>
       </tr>

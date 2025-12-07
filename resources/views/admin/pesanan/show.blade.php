@@ -8,12 +8,21 @@
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('admin.pesanan.index') }}" class="btn btn-sm">Kembali</a>
-            <form method="POST" action="{{ route('admin.pesanan.destroy', $pesanan->pesanan_id) }}"
-                  onsubmit="return confirm('Hapus pesanan ini? Tindakan ini tidak dapat dibatalkan.')">
+            <form id="delete-pesanan-{{ $pesanan->pesanan_id }}" method="POST" action="{{ route('admin.pesanan.destroy', $pesanan->pesanan_id) }}">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-error btn-sm text-white">Hapus</button>
             </form>
+            <x-alert-confirmation
+                :modal-id="'confirm-delete-pesanan-'.$pesanan->pesanan_id"
+                title="Hapus Pesanan?"
+                message="Tindakan ini tidak dapat dibatalkan."
+                confirm-text="Hapus"
+                cancel-text="Batal"
+                variant="danger"
+                :form="'delete-pesanan-'.$pesanan->pesanan_id"
+            >
+                <span class="btn btn-error btn-sm text-white">Hapus</span>
+            </x-alert-confirmation>
         </div>
     </div>
 
@@ -60,10 +69,20 @@
                 @if($pesanan->metode_pembayaran === 'cod')
                     <div class="mt-4 flex items-center gap-2">
                         @if(!$pay || $pay->status !== 'paid')
-                            <form method="POST" action="{{ route('admin.pesanan.cod.confirm', $pesanan->pesanan_id) }}">
+                            <form id="cod-confirm-{{ $pesanan->pesanan_id }}" method="POST" action="{{ route('admin.pesanan.cod.confirm', $pesanan->pesanan_id) }}">
                                 @csrf
-                                <button class="btn btn-primary btn-sm" onclick="return confirm('Konfirmasi pembayaran COD?')">Konfirmasi COD</button>
                             </form>
+                            <x-alert-confirmation
+                                :modal-id="'confirm-cod-'.$pesanan->pesanan_id"
+                                title="Konfirmasi Pembayaran COD?"
+                                message="Pastikan pembayaran COD telah diterima."
+                                confirm-text="Konfirmasi COD"
+                                cancel-text="Batal"
+                                variant="success"
+                                :form="'cod-confirm-'.$pesanan->pesanan_id"
+                            >
+                                <span class="btn btn-primary btn-sm">Konfirmasi COD</span>
+                            </x-alert-confirmation>
                             <button class="btn btn-error btn-sm text-white" onclick="document.getElementById('modal-cod-cancel').showModal()">Batalkan</button>
                         @else
                             <span class="badge badge-success">Lunas</span>
@@ -110,10 +129,24 @@
                         @endif
                         <div class="flex items-center gap-2">
                             @if(!$pay || $pay->status !== 'paid')
-                                <form method="POST" action="{{ route('admin.pesanan.manual.confirm', $pesanan->pesanan_id) }}" onsubmit="return confirm('Konfirmasi pembayaran manual?')">
-                                    @csrf
-                                    <button class="btn btn-primary btn-sm" {{ $proof ? '' : 'disabled' }}>Konfirmasi Pembayaran</button>
-                                </form>
+                                @if($proof)
+                                    <form id="manual-confirm-{{ $pesanan->pesanan_id }}" method="POST" action="{{ route('admin.pesanan.manual.confirm', $pesanan->pesanan_id) }}">
+                                        @csrf
+                                    </form>
+                                    <x-alert-confirmation
+                                        :modal-id="'confirm-manual-'.$pesanan->pesanan_id"
+                                        title="Konfirmasi Pembayaran Manual?"
+                                        message="Pastikan bukti transfer valid."
+                                        confirm-text="Konfirmasi"
+                                        cancel-text="Batal"
+                                        variant="success"
+                                        :form="'manual-confirm-'.$pesanan->pesanan_id"
+                                    >
+                                        <span class="btn btn-primary btn-sm">Konfirmasi Pembayaran</span>
+                                    </x-alert-confirmation>
+                                @else
+                                    <button class="btn btn-primary btn-sm" disabled>Konfirmasi Pembayaran</button>
+                                @endif
                                 <button class="btn btn-error btn-sm text-white" onclick="document.getElementById('modal-reject-manual').showModal()" {{ $proof ? '' : 'disabled' }}>Tolak</button>
                             @else
                                 <span class="badge badge-success">Lunas</span>

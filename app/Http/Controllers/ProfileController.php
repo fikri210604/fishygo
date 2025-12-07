@@ -60,8 +60,9 @@ class ProfileController extends Controller
             // Update user dengan pola $model->update([...])
             $user->update($payload);
 
-            // 2) Update alamat utama sesuai model + migrasi (menyimpan snapshot wilayah)
-            $existingAlamat = Alamat::where('pengguna_id', $user->id)->first();
+            // 2) Update alamat utama (hanya untuk user non-admin/non-kurir)
+            $canUpdateAddress = ! $user->can('access-admin') && ! $user->can('access-kurir');
+            $existingAlamat = $canUpdateAddress ? Alamat::where('pengguna_id', $user->id)->first() : null;
 
             // Aliases & fallback ke nilai existing agar update tetap tersimpan
             $provinceId   = $request->input('province_id') ?: ($existingAlamat->province_id ?? null);
@@ -82,10 +83,10 @@ class ProfileController extends Controller
             }
 
             // Simpan alamat jika ada salah satu data wilayah atau alamat lengkap tersedia
-            $hasAnyWilayah = filled($provinceId) || filled($regencyId) || filled($districtId) || filled($villageId)
-                || filled($provinceName) || filled($regencyName) || filled($districtName) || filled($villageName);
+            $hasAnyWilayah = $canUpdateAddress && (filled($provinceId) || filled($regencyId) || filled($districtId) || filled($villageId)
+                || filled($provinceName) || filled($regencyName) || filled($districtName) || filled($villageName));
 
-            if ($hasAnyWilayah || $alamatLengkap !== '') {
+            if ($canUpdateAddress && ($hasAnyWilayah || $alamatLengkap !== '')) {
                 Alamat::updateOrCreate(
                     ['pengguna_id' => $user->id],
                     [

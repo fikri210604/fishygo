@@ -149,7 +149,14 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->isKurir()) {
             return 'kurir.dashboard';
         }
-        return 'welcome';
+        // Default dashboard route for regular users
+        return 'home';
+    }
+
+    // Backward/forward compatibility for views that expect dashboardRoute()
+    public function dashboardRoute(): string
+    {
+        return $this->Route();
     }
 
     public static function defaultRoleSlug(): string

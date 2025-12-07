@@ -65,13 +65,21 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('admin.produk.destroy', $p->produk_id) }}" onsubmit="return confirm('Hapus produk ini?')">
+                                        <form id="delete-produk-{{ $p->produk_id }}" method="POST" action="{{ route('admin.produk.destroy', $p->produk_id) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-ghost btn-xs w-full justify-center text-red-600">
-                                                Hapus
-                                            </button>
                                         </form>
+                                        <x-alert-confirmation
+                                            :modal-id="'confirm-delete-produk-'.$p->produk_id"
+                                            title="Hapus Produk?"
+                                            message="Tindakan ini tidak dapat dibatalkan."
+                                            confirm-text="Hapus"
+                                            cancel-text="Batal"
+                                            variant="danger"
+                                            :form="'delete-produk-'.$p->produk_id"
+                                        >
+                                            <span class="btn btn-ghost btn-xs w-full justify-center text-red-600">Hapus</span>
+                                        </x-alert-confirmation>
                                     </li>
                                 </ul>
                             </div>

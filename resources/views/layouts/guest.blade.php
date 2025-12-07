@@ -33,6 +33,29 @@
 
     <div class="flex-1 bg-gray-100 pt-16">
         <div class="max-w-7xl mx-auto">
+            @php
+                $routeName = optional(request()->route())->getName();
+                $excludedExact = [
+                    'login','register','password.request','password.email','password.reset','password.update',
+                    'password.confirm','verification.notice','verification.verify','verification.send',
+                    'welcome','home'
+                ];
+                $excludedPrefix = ['password.', 'verification.', 'auth.'];
+                $showBreadcrumbs = true;
+                if ($routeName) {
+                    if (in_array($routeName, $excludedExact, true)) {
+                        $showBreadcrumbs = false;
+                    }
+                    foreach ($excludedPrefix as $pre) {
+                        if (str_starts_with($routeName, $pre)) { $showBreadcrumbs = false; break; }
+                    }
+                }
+            @endphp
+            @if($showBreadcrumbs)
+                <div class="px-4 sm:px-6 lg:px-8 pt-4">
+                    <x-breadcrumbs />
+                </div>
+            @endif
             <main class="px-4 sm:px-6 lg:px-8 py-6">
                 {{ $slot }}
             </main>
@@ -40,7 +63,12 @@
     </div>
 
     @include('layouts.footer')
-    <x-flash-toast />
+    @php
+        $hasFlash = session('success') || session('status') || session('error') || session('warning') || session('info') || ($errors ?? null)?->any();
+    @endphp
+    @if ($hasFlash)
+        <x-flash-toast />
+    @endif
     <script>
         window.hasFormError = @json($errors->any() ?? false);
     </script>

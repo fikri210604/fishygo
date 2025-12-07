@@ -4,13 +4,15 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
-Alpine.start();
-
 import './wilayah';
 import './loading-handler';
 import './cart';
 import './pagination'
 import './partials/checkout-payment';
+import './slider';
+import './profile-side';
+
+Alpine.start();
 
 // Global Alpine store for layout (mobile sidebar)
 document.addEventListener('alpine:init', () => {

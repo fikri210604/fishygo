@@ -59,13 +59,21 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('admin.jenis-ikan.destroy', $row->jenis_ikan_id) }}" onsubmit="return confirm('Hapus jenis ikan ini?')">
+                                        <form id="delete-jenis-ikan-{{ $row->jenis_ikan_id }}" method="POST" action="{{ route('admin.jenis-ikan.destroy', $row->jenis_ikan_id) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-ghost btn-xs w-full justify-center text-red-600">
-                                                Hapus
-                                            </button>
                                         </form>
+                                        <x-alert-confirmation
+                                            :modal-id="'confirm-delete-jenis-ikan-'.$row->jenis_ikan_id"
+                                            title="Hapus Jenis Ikan?"
+                                            message="Tindakan ini tidak dapat dibatalkan."
+                                            confirm-text="Hapus"
+                                            cancel-text="Batal"
+                                            variant="danger"
+                                            :form="'delete-jenis-ikan-'.$row->jenis_ikan_id"
+                                        >
+                                            <span class="btn btn-ghost btn-xs w-full justify-center text-red-600">Hapus</span>
+                                        </x-alert-confirmation>
                                     </li>
                                 </ul>
                             </div>
@@ -94,6 +102,7 @@
                         </div>
                         <form method="dialog" class="modal-backdrop"><button>Tutup</button></form>
                     </dialog>
+                    
                 @empty
                     <tr>
                         <td colspan="4" class="text-center text-gray-500">Belum ada data.</td>

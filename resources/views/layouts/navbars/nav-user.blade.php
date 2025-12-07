@@ -6,7 +6,7 @@
         </a>
 
         <div class="hidden md:flex items-center space-x-8">
-            <a href="{{ url('/') }}" class="font-semibold {{ request()->is('/') ? 'text-orange-400' : 'hover:text-orange-400' }}">
+            <a href="{{ url('/') }}#home" class="font-semibold hover:text-orange-400">
                 Home
             </a>
 
@@ -15,9 +15,8 @@
                 Produk
             </a>
 
-            <a href="{{ route('tentang') }}"
-                class="font-semibold hover:text-orange-400">
-                Tentang
+            <a href="{{ route('articles.index') }}" class="font-semibold {{ request()->routeIs('articles.*') ? 'text-orange-400' : 'hover:text-orange-400' }}">
+                Artikel
             </a>
         </div>
 
@@ -67,13 +66,22 @@
                     <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
                     <x-dropdown-link :href="route('pesanan.history')">Riwayat Pesanan</x-dropdown-link>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-dropdown-link href="{{ route('logout') }}"
-                                         onclick="event.preventDefault(); this.closest('form').submit();">
-                            Keluar
-                        </x-dropdown-link>
-                    </form>
+                    @can('access-admin')
+                    <x-dropdown-link :href="route('admin.dashboard')">Dashboard</x-dropdown-link>
+                    @endcan
+
+                    <x-alert-confirmation
+                        modal-id="confirm-logout-nav-user"
+                        title="Keluar akun?"
+                        message="Anda akan keluar dari sesi saat ini."
+                        confirm-text="Keluar"
+                        cancel-text="Batal"
+                        variant="danger"
+                        action="{{ route('logout') }}"
+                        method="POST"
+                    >
+                        <span class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100">Keluar</span>
+                    </x-alert-confirmation>
                 </x-slot>
             </x-dropdown>
         @endauth
@@ -84,20 +92,10 @@
     <div class="md:hidden px-4 pb-2 space-y-2">
 
         <div class="flex items-center gap-6">
-            <a href="{{ url('/') }}"
-               class="font-semibold {{ request()->is('/') ? 'text-orange-400' : 'hover:text-orange-400' }}">
-                Home
-            </a>
-
-            <a href="{{ route('home') }}"
-               class="font-semibold {{ request()->routeIs('home') ? 'text-orange-400' : 'hover:text-orange-400' }}">
-                Produk
-            </a>
-
-            <a href="{{ route('tentang') }}"
-               class="font-semibold hover:text-orange-400">
-                Tentang
-            </a>
+            <a href="{{ url('/') }}#home" class="font-semibold hover:text-orange-400">Home</a>
+            <a href="{{ route('home') }}" class="font-semibold {{ request()->routeIs('home') ? 'text-orange-400' : 'hover:text-orange-400' }}">Produk</a>
+            <a href="{{ url('/') }}#recent-news" class="font-semibold hover:text-orange-400">Berita</a>
+            <a href="{{ route('articles.index') }}" class="font-semibold {{ request()->routeIs('articles.*') ? 'text-orange-400' : 'hover:text-orange-400' }}">Artikel</a>
         </div>
 
         {{-- Mobile Search --}}

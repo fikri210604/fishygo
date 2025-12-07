@@ -9,13 +9,8 @@
         <!-- Menu utama -->
         <div class="hidden md:flex items-center gap-6">
             <a href="{{ url('/') }}#home" class="hover:text-orange-500 font-medium">Home</a>
-            @guest
-                <a href="{{ route('login') }}" class="hover:text-orange-500 font-medium">Produk</a>
-                <a href="{{ route('login') }}" class="hover:text-orange-500 font-medium">Kategori</a>
-            @else
-                <a href="{{ route('home') }}" class="hover:text-orange-500 font-medium">Produk</a>
-                <a href="{{ url('/#kategori') }}" class="hover:text-orange-500 font-medium">Kategori</a>
-            @endguest
+            <a href="{{ url('/') }}#produk" class="hover:text-orange-500 font-medium">Produk</a>
+            <a href="{{ route('articles.index') }}" class="hover:text-orange-500 font-medium">Artikel</a>
         </div>
         <div class="flex items-center gap-2">
             @guest
@@ -30,10 +25,18 @@
                     Halo, {{ Auth::user()->nama ?? 'Pengguna' }}
                 </a>
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="btn btn-outline" type="submit">Logout</button>
-                </form>
+                <x-alert-confirmation
+                    modal-id="confirm-logout-nav-public"
+                    title="Keluar akun?"
+                    message="Anda akan keluar dari sesi saat ini."
+                    confirm-text="Keluar"
+                    cancel-text="Batal"
+                    variant="danger"
+                    action="{{ route('logout') }}"
+                    method="POST"
+                >
+                    <span class="btn btn-outline">Logout</span>
+                </x-alert-confirmation>
             @endauth
 
         </div>

@@ -34,22 +34,18 @@
 </style>
 
 <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center px-6">
-    {{-- Animasi Goyangan untuk Angka 403 --}}
     <h1 class="text-8xl md:text-9xl font-extrabold text-red-600 animate-shake">
         403
     </h1>
 
-    {{-- Animasi Pudar Masuk untuk Teks Utama --}}
     <p class="text-xl md:text-2xl text-gray-700 mt-4 animate-fade-in">
         Maaf! Kamu **tidak memiliki akses** ke halaman ini.
     </p>
     
-    {{-- Animasi Pudar Masuk untuk Teks Tambahan dengan delay --}}
     <p class="text-sm text-gray-500 mt-2 animate-fade-in animate-delay-200" style="opacity: 0;">
         (Silakan pastikan kamu sudah masuk dengan akun yang benar.)
     </p>
 
-    {{-- Animasi Pudar Masuk untuk Tombol dengan delay --}}
     @auth
         <a href="{{ url()->previous() }}" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md mt-6 animate-fade-in animate-delay-400" style="opacity: 0;">
             ⬅️ Kembali

@@ -56,7 +56,14 @@ window.globalButtonLoading = function (event) {
 
 // Global handler: apply to all form submissions
 document.addEventListener('submit', (e) => {
-    try { window.globalButtonLoading(e); } catch {}
+    try {
+        const form = e.target;
+        // Ignore dialog-close forms and any form explicitly opted-out
+        const isDialog = form && (form.getAttribute('method') || '').toLowerCase() === 'dialog';
+        const optedOut = form && form.matches('[data-no-loading]');
+        if (isDialog || optedOut) return;
+        window.globalButtonLoading(e);
+    } catch {}
 }, true);
 
 // On reload after validation errors, restore buttons on pages that set window.hasFormError

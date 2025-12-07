@@ -46,7 +46,8 @@ class HomeController extends Controller
                 ->orderBy('jenis_ikan')
                 ->get();
 
-            if ($request->ajax() && $request->has('page_produk')) {
+            // Untuk semua permintaan AJAX ke listing produk, kembalikan partial grid saja
+            if ($request->ajax()) {
                 return view('partials.products-grid', compact('produk'))->render();
             }
 

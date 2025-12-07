@@ -54,13 +54,21 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <form method="POST" action="{{ route('admin.kategori.destroy', $row->kategori_produk_id) }}" onsubmit="return confirm('Hapus kategori ini?')">
+                                        <form id="delete-kategori-{{ $row->kategori_produk_id }}" method="POST" action="{{ route('admin.kategori.destroy', $row->kategori_produk_id) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-ghost btn-xs w-full justify-center text-red-600">
-                                                Hapus
-                                            </button>
                                         </form>
+                                        <x-alert-confirmation
+                                            :modal-id="'confirm-delete-kategori-'.$row->kategori_produk_id"
+                                            title="Hapus Kategori?"
+                                            message="Tindakan ini tidak dapat dibatalkan."
+                                            confirm-text="Hapus"
+                                            cancel-text="Batal"
+                                            variant="danger"
+                                            :form="'delete-kategori-'.$row->kategori_produk_id"
+                                        >
+                                            <span class="btn btn-ghost btn-xs w-full justify-center text-red-600">Hapus</span>
+                                        </x-alert-confirmation>
                                     </li>
                                 </ul>
                             </div>

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initAjaxPagination() {
   const container = document.querySelector('[data-ajax-pagination="produk"]');
   if (!container) return;
 
@@ -28,13 +28,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('popstate', () => load(location.href));
   
-  // Intercept clicks on category links to load products via AJAX
+  // Intercept clicks that target listing URL (/produk?...) including filters & chips
   document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[data-load-products]');
+    const a = e.target.closest('a');
     if (!a) return;
-    const href = a.getAttribute('href');
+    const href = a.getAttribute('href') || '';
     if (!href || href === '#') return;
+    const isListingUrl = /\/produk\?/i.test(href);
+    const isPagination = a.closest('.pagination') || a.closest('.join');
+    const isExplicit = a.matches('[data-load-products]');
+    if (!(isListingUrl || isPagination || isExplicit)) return;
     e.preventDefault();
     load(href);
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAjaxPagination);
+} else {
+  initAjaxPagination();
+}

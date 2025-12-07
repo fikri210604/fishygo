@@ -86,8 +86,22 @@
             <a href="{{ route('admin.pesanan.index') }}"
                 class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] transition-colors {{ $active ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-100' }}"
                 :class="{ 'justify-center': $store.layout.sidebarCollapsed }">
-                <span class="material-symbols-outlined text-[20px] shrink-0 {{ $active ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-700' }}">shopping_cart</span>
-                <span x-show="!$store.layout.sidebarCollapsed">Transaksi</span>
+                <span class="relative material-symbols-outlined text-[20px] shrink-0 {{ $active ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-700' }}">
+                    shopping_cart
+                    @if(($notifTransaksi ?? 0) > 0)
+                        <span class="absolute -top-1 -right-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] leading-none"
+                              x-show="$store.layout.sidebarCollapsed"
+                              x-cloak>{{ $notifTransaksi }}</span>
+                    @endif
+                </span>
+                <span x-show="!$store.layout.sidebarCollapsed" class="flex-1 flex items-center">
+                    <span>Transaksi</span>
+                    @if(($notifTransaksi ?? 0) > 0)
+                        <span class="ml-auto inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded-full bg-red-500 text-white text-[11px]">
+                            {{ $notifTransaksi }}
+                        </span>
+                    @endif
+                </span>
             </a>
             <a href="#"
                 class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] text-gray-700 hover:bg-gray-100 transition-colors"
@@ -158,15 +172,21 @@
             </a>
             @endcan
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                    class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] text-gray-700 hover:bg-gray-100 transition-colors w-full text-left">
-                    <span
-                        class="material-symbols-outlined text-[20px] shrink-0 text-gray-500 group-hover:text-gray-700">logout</span>
+            <x-alert-confirmation
+                modal-id="confirm-logout-sidebar"
+                title="Keluar akun?"
+                message="Anda akan keluar dari sesi saat ini."
+                confirm-text="Keluar"
+                cancel-text="Batal"
+                variant="danger"
+                action="{{ route('logout') }}"
+                method="POST"
+            >
+                <span class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] text-gray-700 hover:bg-gray-100 transition-colors w-full text-left cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px] shrink-0 text-gray-500 group-hover:text-gray-700">logout</span>
                     <span>Keluar</span>
-                </button>
-            </form>
+                </span>
+            </x-alert-confirmation>
         </div>
     </div>
 </aside>

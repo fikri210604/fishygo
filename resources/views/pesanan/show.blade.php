@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']))
-                    <form action="{{ route('pesanan.cancel', $pesanan->pesanan_id) }}" method="POST" class="mt-4 border-t pt-4">
+                    <form id="cancel-pesanan-{{ $pesanan->pesanan_id }}" action="{{ route('pesanan.cancel', $pesanan->pesanan_id) }}" method="POST" class="mt-4 border-t pt-4">
                         @csrf
                         <div class="grid md:grid-cols-2 gap-3">
                             <div>
@@ -39,7 +39,17 @@
                                 <input type="text" name="note" class="input input-bordered w-full" />
                             </div>
                         </div>
-                        <button class="btn btn-error btn-sm text-white mt-3" onclick="return confirm('Batalkan pesanan ini?')">Batalkan Pesanan</button>
+                        <x-alert-confirmation
+                            :modal-id="'confirm-cancel-pesanan-'.$pesanan->pesanan_id"
+                            title="Batalkan Pesanan?"
+                            message="Pesanan akan dibatalkan. Lanjutkan?"
+                            confirm-text="Batalkan"
+                            cancel-text="Batal"
+                            variant="danger"
+                            :form="'cancel-pesanan-'.$pesanan->pesanan_id"
+                        >
+                            <span class="btn btn-error btn-sm text-white mt-3">Batalkan Pesanan</span>
+                        </x-alert-confirmation>
                     </form>
                 @elseif($pesanan->status === 'dibatalkan')
                     <div class="mt-3 text-sm text-red-600">Dibatalkan pada {{ optional($pesanan->cancelled_at)->format('d M Y H:i') }}</div>

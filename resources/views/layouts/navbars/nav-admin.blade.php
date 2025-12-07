@@ -23,11 +23,21 @@
             </x-slot>
             <x-slot name="content">
                 <x-dropdown-link :href="route('profile.edit')">Profil</x-dropdown-link>
-                <x-dropdown-link :href="route('pesanan.history')">Riwayat Pesanan</x-dropdown-link>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">Keluar</x-dropdown-link>
-                </form>
+                @can('access-admin')
+                <x-dropdown-link :href="route('admin.dashboard')">Dashboard</x-dropdown-link>
+                @endcan
+                <x-alert-confirmation
+                    modal-id="confirm-logout-nav-admin"
+                    title="Keluar akun?"
+                    message="Anda akan keluar dari sesi saat ini."
+                    confirm-text="Keluar"
+                    cancel-text="Batal"
+                    variant="danger"
+                    action="{{ route('logout') }}"
+                    method="POST"
+                >
+                    <span class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100">Keluar</span>
+                </x-alert-confirmation>
             </x-slot>
         </x-dropdown>
         @endauth

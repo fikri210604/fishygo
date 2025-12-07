@@ -21,23 +21,20 @@ class ReviewProdukController extends Controller
     {
         try {
             $user = $request->user();
-            $data = $request->validate([
-                'rating' => ['required','integer','min:1','max:5'],
-                'review' => ['nullable','string','max:5000'],
-            ]);
 
-            // Satu ulasan per user per produk: upsert jika sudah ada
-            $existing = ReviewProduk::where('produk_id', $produk->produk_id)
+            // Cek apakah user sudah pernah memberikan rating untuk produk ini
+            $hasRated = ReviewProduk::where('produk_id', $produk->produk_id)
                 ->where('pengguna_id', $user->id)
-                ->first();
+                ->whereNotNull('rating')
+                ->exists();
 
-            if ($existing) {
-                $existing->update([
-                    'rating' => $data['rating'],
-                    'review' => $data['review'] ?? $existing->review,
+            if (!$hasRated) {
+                // Pertama kali: wajib isi rating, review opsional
+                $data = $request->validate([
+                    'rating' => ['required','integer','min:1','max:5'],
+                    'review' => ['nullable','string','max:5000'],
                 ]);
-                $review = $existing->fresh('pengguna');
-            } else {
+
                 $review = ReviewProduk::create([
                     'review_id' => (string) Str::uuid(),
                     'produk_id' => $produk->produk_id,
@@ -45,27 +42,56 @@ class ReviewProdukController extends Controller
                     'rating' => $data['rating'],
                     'review' => $data['review'] ?? null,
                 ]);
+            } else {
+                // Sudah pernah memberi rating: tambah komentar baru tanpa mengubah rating (simpan ke tabel komentar)
+                $data = $request->validate([
+                    'review' => ['required','string','max:5000'],
+                ]);
+                $existing = ReviewProduk::where('produk_id', $produk->produk_id)
+                    ->where('pengguna_id', $user->id)
+                    ->whereNotNull('rating')
+                    ->orderBy('created_at')
+                    ->first();
+                if (!$existing) {
+                    // Safety fallback: jika entah bagaimana tidak ada rating, treat as first-time
+                    $review = ReviewProduk::create([
+                        'review_id' => (string) Str::uuid(),
+                        'produk_id' => $produk->produk_id,
+                        'pengguna_id' => $user->id,
+                        'rating' => 5,
+                        'review' => $data['review'],
+                    ]);
+                } else {
+                    $review = \App\Models\ReviewKomentar::create([
+                        'produk_id' => $produk->produk_id,
+                        'review_id' => $existing->review_id,
+                        'pengguna_id' => $user->id,
+                        'komentar' => $data['review'],
+                    ]);
+                }
             }
 
             $produk->recalcRating();
+            $review->load('pengguna');
+
             if($request->expectsJson()) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Ulasan tersimpan.',
+                    'message' => $hasRated ? 'Komentar ditambahkan.' : 'Ulasan tersimpan.',
                     'data' => [
                         'rating_avg' => (float) $produk->rating_avg,
                         'rating_count' => (int) $produk->rating_count,
                         'review' => $review,
                     ]
-                ], $existing ? 200 : 201);
+                ], $hasRated ? 201 : 201);
             }
-            return back()->with('success', 'Terima kasih atas ulasan Anda.');
+            return back()->with('success', $hasRated ? 'Komentar ditambahkan.' : 'Terima kasih atas ulasan Anda.');
         } catch (\Throwable $e) {
             if($request->expectsJson()) {
-                return response()->json(['message' => $this->errorMessage($e, 'Gagal menyimpan ulasan.')], 500);
+                return response()->json(['message' => $this->errorMessage($e, 'Gagal menyimpan ulasan/komentar.')], 500);
             }
             $this->logException($e, ['action' => 'ReviewProdukController@store', 'produk_id' => $produk->produk_id ?? null]);
-            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal menyimpan ulasan.'));
+            return back()->withInput()->with('error', $this->errorMessage($e, 'Gagal menyimpan ulasan/komentar.'));
         }
     }
 
@@ -100,25 +126,6 @@ class ReviewProdukController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ReviewProduk $reviewProduk)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ReviewProduk $reviewProduk)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, ReviewProduk $review)
     {
         try {

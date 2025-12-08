@@ -36,12 +36,20 @@ class ProfileController extends Controller
             $user = $request->user();
 
             // 1) Update profil pengguna
-            $payload = [
-                'nama' => (string) $request->input('nama'),
-                'username' => (string) $request->input('username'),
-                'email' => (string) $request->input('email'),
-                'nomor_telepon' => $request->input('phone'),
-            ];
+            $payload = [];
+
+            if ($request->filled('nama')) {
+                $payload['nama'] = (string) $request->input('nama');
+            }
+            if ($request->filled('username')) {
+                $payload['username'] = (string) $request->input('username');
+            }
+            if ($request->filled('email')) {
+                $payload['email'] = (string) $request->input('email');
+            }
+            if ($request->has('phone')) {
+                $payload['nomor_telepon'] = $request->input('phone');
+            }
 
             // Tangani avatar: hapus lama dan simpan baru (jika ada)
             if ($request->hasFile('avatar')) {
@@ -91,7 +99,7 @@ class ProfileController extends Controller
                     ['pengguna_id' => $user->id],
                     [
                         'pengguna_id' => $user->id,
-                        'penerima' => $payload['nama'] ?: $user->nama,
+                        'penerima' => $user->nama,
                         'alamat_lengkap' => $alamatLengkap,
                         'province_id' => $provinceId,
                         'province_name' => $provinceName,

@@ -14,10 +14,12 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isAddressUpdate = $this->hasAny(['address', 'province_id', 'regency_id', 'district_id', 'village_id', 'subdistrict_id', 'rt', 'rw', 'kode_pos']);
+
         return [
-            'nama' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'nama' => [$isAddressUpdate ? 'nullable' : 'required', 'string', 'max:255'],
+            'username' => [$isAddressUpdate ? 'nullable' : 'required', 'string', 'max:255'],
+            'email' => [$isAddressUpdate ? 'nullable' : 'required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
             'avatar' => ['nullable','image','max:2048'],

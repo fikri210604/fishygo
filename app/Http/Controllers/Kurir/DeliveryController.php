@@ -16,9 +16,64 @@ class DeliveryController extends Controller
 
         $user = $request->user();
         $status = $request->query('status');
+        $doneRange = (string) $request->query('done_range', 'today');
+        $returnRange = (string) $request->query('return_range', 'today');
         $allowedStatus = ['siap', 'diambil', 'diantar', 'diterima', 'dikembalikan'];
+        $rangeAllowed = ['today','7d','30d'];
 
         $statusOrder = ['siap', 'diambil', 'diantar', 'diterima', 'dikembalikan'];
+
+        // Metrics cards
+        $totalAssigned = Pengiriman::where('assigned_kurir_id', $user->id)->count();
+        $countDiantar = Pengiriman::where('assigned_kurir_id', $user->id)->where('status','diantar')->count();
+
+        // Done today
+        $doneRangeLabel = 'Hari Ini';
+        $doneCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+            ->where('status','diterima')
+            ->whereDate('diterima_pada', now()->toDateString())
+            ->count();
+        if (in_array($doneRange, $rangeAllowed, true)) {
+            if ($doneRange === '7d') {
+                $doneRangeLabel = '7 Hari';
+                $from = now()->subDays(7)->startOfDay();
+                $doneCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+                    ->where('status','diterima')
+                    ->where('diterima_pada', '>=', $from)
+                    ->count();
+            } elseif ($doneRange === '30d') {
+                $doneRangeLabel = '30 Hari';
+                $from = now()->subDays(30)->startOfDay();
+                $doneCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+                    ->where('status','diterima')
+                    ->where('diterima_pada', '>=', $from)
+                    ->count();
+            }
+        }
+
+        // Per-card range for Dikembalikan (pakai updated_at)
+        $returnRangeLabel = 'Hari Ini';
+        $returnCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+            ->where('status','dikembalikan')
+            ->whereDate('updated_at', now()->toDateString())
+            ->count();
+        if (in_array($returnRange, $rangeAllowed, true)) {
+            if ($returnRange === '7d') {
+                $returnRangeLabel = '7 Hari';
+                $from = now()->subDays(7)->startOfDay();
+                $returnCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+                    ->where('status','dikembalikan')
+                    ->where('updated_at', '>=', $from)
+                    ->count();
+            } elseif ($returnRange === '30d') {
+                $returnRangeLabel = '30 Hari';
+                $from = now()->subDays(30)->startOfDay();
+                $returnCountSelected = Pengiriman::where('assigned_kurir_id', $user->id)
+                    ->where('status','dikembalikan')
+                    ->where('updated_at', '>=', $from)
+                    ->count();
+            }
+        }
 
         $items = Pengiriman::with(['pesanan.user', 'pesanan.alamat'])
             ->where(function ($q) use ($user) {
@@ -30,12 +85,23 @@ class DeliveryController extends Controller
                 fn($q) =>
                 $q->where('status', $status)
             )
-            ->orderByRaw("FIELD(status, '" . implode("','", $statusOrder) . "')")
+            ->orderByRaw("CASE status
+                WHEN 'siap' THEN 1
+                WHEN 'diambil' THEN 2
+                WHEN 'diantar' THEN 3
+                WHEN 'diterima' THEN 4
+                WHEN 'dikembalikan' THEN 5
+                ELSE 6 END")
             ->orderBy('created_at', 'desc')
             ->paginate(15)
             ->withQueryString();
 
-        return view('kurir.dashboard', compact('items', 'status'));
+        return view('kurir.pengiriman.index', compact(
+            'items', 'status',
+            'totalAssigned', 'countDiantar',
+            'doneRange', 'doneRangeLabel', 'doneCountSelected',
+            'returnRange', 'returnRangeLabel', 'returnCountSelected'
+        ));
     }
 
     public function updateStatus(Request $request, Pengiriman $pengiriman)

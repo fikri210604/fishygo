@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
-
 @section('content')
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
     <div class="card card-sm shadow-sm bg-base-100 border">
         <div class="card-body flex flex-row items-center gap-4">
@@ -46,4 +45,17 @@
 
 </div>
 
+<div class="card shadow-sm bg-base-100 border">
+    <div class="card-body">
+        <h2 class="card-title">Grafik Jumlah Pesanan (30 Hari Terakhir)</h2>
+        <canvas id="orderChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+    window.orderData = @json($orderData);
+</script>
+@vite('resources/js/dashboard.js')

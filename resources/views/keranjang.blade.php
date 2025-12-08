@@ -104,7 +104,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8 sticky bottom-0 bg-white border-t border-gray-200 pt-4 pb-4">
+            <div class="mt-8 sticky bottom-0 bg-white border-t border-gray-200 pt-4 pb-4 px-4">
                 <div class="max-w-5xl mx-auto flex items-center justify-between">
                     <div>
                         <p class="text-xs text-gray-500">Total</p>

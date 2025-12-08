@@ -35,5 +35,6 @@
         <script>
             window.hasFormError = @json($errors->any() ?? false);
         </script>
+        @stack('scripts')
     </body>
     </html>

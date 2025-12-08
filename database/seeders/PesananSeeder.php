@@ -102,6 +102,63 @@ class PesananSeeder extends Seeder
             'qty'                   => $qty,
             'subtotal'              => $subtotal,
         ]);
+
+        // Create dummy orders for the past 30 days with varied distribution
+        $orderCounter = 1;
+        $totalOrders = rand(45, 60); // Create between 45-60 orders total
+
+        for ($i = 0; $i < $totalOrders; $i++) {
+            // Random date within the past 30 days
+            $daysBack = rand(0, 29);
+            $date = now()->subDays($daysBack);
+
+            $randomQty = rand(1, 5);
+            $randomSubtotal = $harga * $randomQty;
+            $randomTotal = $randomSubtotal + $ongkir - $diskon;
+
+            $dummyPesanan = Pesanan::create([
+                'kode_pesanan'      => 'INV-DUMMY-' . str_pad($orderCounter, 3, '0', STR_PAD_LEFT),
+                'pengguna_id'       => $user->id,
+                'alamat_id'         => $alamat->id,
+                'status'            => 'selesai',
+                'metode_pembayaran' => 'bank_transfer',
+                'subtotal'          => $randomSubtotal,
+                'ongkir'            => $ongkir,
+                'diskon'            => $diskon,
+                'total'             => $randomTotal,
+                'berat_total_gram'  => $produk->berat_gram ?? 1000,
+                'payment_due'       => $date->addDay(),
+                'catatan'           => 'Pesanan dummy untuk grafik.',
+                'alamat_snapshot'   => [
+                    'penerima'       => $alamat->penerima,
+                    'alamat_lengkap' => $alamat->alamat_lengkap,
+                    'province_id'    => $alamat->province_id,
+                    'province_name'  => $alamat->province_name,
+                    'regency_id'     => $alamat->regency_id,
+                    'regency_name'   => $alamat->regency_name,
+                    'district_id'    => $alamat->district_id,
+                    'district_name'  => $alamat->district_name,
+                    'village_id'     => $alamat->village_id,
+                    'village_name'   => $alamat->village_name,
+                    'rt'             => $alamat->rt,
+                    'rw'             => $alamat->rw,
+                    'kode_pos'       => $alamat->kode_pos,
+                ],
+                'created_at'        => $date,
+                'updated_at'        => $date,
+            ]);
+
+            PesananItem::create([
+                'pesanan_id'            => $dummyPesanan->pesanan_id,
+                'produk_id'             => $produk->produk_id,
+                'nama_produk_snapshot'  => $produk->nama_produk,
+                'harga_satuan'          => $produk->harga,
+                'qty'                   => $randomQty,
+                'subtotal'              => $randomSubtotal,
+            ]);
+
+            $orderCounter++;
+        }
     }
 }
 

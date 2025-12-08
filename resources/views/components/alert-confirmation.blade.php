@@ -4,14 +4,11 @@
     'message' => 'Apakah Anda yakin?',
     'confirmText' => 'Ya',
     'cancelText' => 'Batal',
-    // warning | danger | success | info | primary
     'variant' => 'warning',
-    // One of the following to decide confirm action (priority: href > form > action)
     'href' => null,      // navigate to URL on confirm
     'form' => null,      // submit external form by id on confirm
     'action' => null,    // submit internal form action on confirm
     'method' => 'POST',  // method for internal form
-    // Optional: render built-in trigger button
     'showTrigger' => false,
     'triggerText' => null,
     'triggerClass' => 'btn btn-error btn-xs text-white',

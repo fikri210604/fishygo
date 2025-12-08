@@ -91,11 +91,10 @@
                                 </div>
                                 <div class="modal-action">
                                     <button class="btn btn-primary">Simpan</button>
-                                    <form method="dialog"><button class="btn">Batal</button></form>
+                                    <form method="dialog" class="modal-backdrop"><button class="btn">Tutup</button></form>
                                 </div>
                             </form>
                         </div>
-                        <form method="dialog" class="modal-backdrop"><button>Tutup</button></form>
                     </dialog>
                 @empty
                     <tr>

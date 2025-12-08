@@ -115,13 +115,7 @@
                     <div class="text-sm text-gray-500">Belum ada informasi pembayaran.</div>
                 @endif
 
-                @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'midtrans')
-                    <x-midtrans-snap-button
-                        class="w-full mt-4"
-                        :pesanan-id="$pesanan->pesanan_id"
-                        :redirect="route('pesanan.show', $pesanan->pesanan_id)"
-                    />
-                @endif
+                
 
                 {{-- Manual Transfer: Upload bukti pembayaran (DaisyUI modal + preview) --}}
                 @if(in_array($pesanan->status, ['menunggu_pembayaran','menunggu_konfirmasi']) && $pesanan->metode_pembayaran === 'manual')

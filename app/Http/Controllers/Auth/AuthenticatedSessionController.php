@@ -45,8 +45,11 @@ class AuthenticatedSessionController extends Controller
             $displayName = $user->nama ?? $user->username ?? 'Selamat Datang';
             $welcomeMsg = 'Selamat datang, ' . $displayName . '!';
 
-            // Arahkan selalu ke halaman produk (/produk)
-            $resp = redirect()->route('home')->with('success', $welcomeMsg);
+            // Tentukan route tujuan berdasarkan role pengguna
+            $routeName = method_exists($user, 'Route') ? $user->Route() : 'home';
+
+            // Redirect ke dashboard sesuai role (admin/kurir) atau 'home' untuk user biasa
+            $resp = redirect()->route($routeName)->with('success', $welcomeMsg);
             if ($needsProfile) {
                 $resp->with('info', $profileMsg);
             }

@@ -77,7 +77,7 @@ class GoogleAuthController extends Controller
             }
 
             // Tentukan route sesuai role, seperti alur login biasa
-            $route = method_exists($user, 'Route') ? $user->Route() : null;
+            $route = method_exists($user, 'Route') ? $user->Route() : 'home';
             $needsProfile = method_exists($user, 'isProfileComplete') ? !$user->isProfileComplete() : false;
             $profileMsg = 'Lengkapi profil sebelum transaksi: nomor HP dan alamat lengkap (provinsi, kab/kota, kecamatan, kelurahan/desa, alamat lengkap) di menu Profil.';
             try {
@@ -89,8 +89,8 @@ class GoogleAuthController extends Controller
             } catch (\Throwable $e) {
             }
 
-            // Arahkan selalu ke halaman produk (/produk)
-            $resp = redirect()->route('home')
+            // Arahkan ke dashboard/halaman sesuai role
+            $resp = redirect()->route($route)
                 ->with('success', 'Selamat datang, ' . ($user->nama ?? $user->username ?? 'Pengguna') . '!');
             if ($needsProfile) {
                 $resp->with('info', $profileMsg);

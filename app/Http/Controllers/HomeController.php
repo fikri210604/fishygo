@@ -19,7 +19,7 @@ class HomeController extends Controller
             $artikel = Article::select('judul', 'thumbnail', 'slug', 'diterbitkan_pada')
                 ->whereNotNull('diterbitkan_pada')
                 ->latest()
-                ->limit(7)
+                ->limit(6)
                 ->get();
 
             $produk = Produk::select('produk_id', 'slug', 'nama_produk', 'harga', 'kategori_produk_id', 'jenis_ikan_id')
@@ -39,7 +39,7 @@ class HomeController extends Controller
 
             $kategori = KategoriProduk::select('kategori_produk_id', 'nama_kategori', 'gambar_kategori')
                 ->orderBy('nama_kategori')
-                ->paginate(8, ['*'], 'page_kategori')
+                ->paginate(6, ['*'], 'page_kategori')
                 ->withQueryString();
 
             $jenis_ikan = JenisIkan::select('jenis_ikan_id', 'jenis_ikan', 'gambar_jenis_ikan')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\KategoriProduk;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -88,6 +89,20 @@ class KategoriProdukController extends Controller
     public function destroy(KategoriProduk $kategori)
     {
         try {
+            // Blokir jika ada produk (termasuk yang soft-deleted) yang terkait dengan pesanan
+            $hasPesanan = DB::table('produk')
+                ->join('pesanan_item', 'pesanan_item.produk_id', '=', 'produk.produk_id')
+                ->where('produk.kategori_produk_id', $kategori->kategori_produk_id)
+                ->exists();
+            if ($hasPesanan) {
+                return back()->with('error', 'Kategori tidak dapat dihapus karena terdapat produk yang sudah terkait dengan pesanan (termasuk yang sudah dihapus sementara). Pindahkan produk ke kategori lain atau biarkan kategori ini sebagai arsip.');
+            }
+
+            // Blokir jika masih ada produk (aktif atau soft-deleted) di kategori ini
+            $anyProduk = DB::table('produk')->where('kategori_produk_id', $kategori->kategori_produk_id)->exists();
+            if ($anyProduk) {
+                return back()->with('error', 'Kategori masih memiliki produk (termasuk yang dihapus sementara). Pindahkan produk ke kategori lain atau hapus permanen produk yang tidak terikat pesanan.');
+            }
             if (!empty($kategori->gambar_kategori)) {
                 try {
                     Storage::disk('public')->delete($kategori->gambar_kategori);

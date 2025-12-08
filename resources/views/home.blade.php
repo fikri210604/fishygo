@@ -14,7 +14,7 @@
             <div class="font-semibold">Berhasil</div>
             <div class="text-sm">{{ session('success') }}</div>
         </div>
-        <button type="button" class="btn btn-ghost btn-sm ml-auto" @click="show = false" aria-label="Tutup">×</button>
+        <button type="button" class="btn btn-ghost btn-sm ml-auto" @click="show = false" aria-label="Tutup">ï¿½</button>
     </div>
 @endif
 
@@ -39,12 +39,12 @@
 
     {{-- Kategori --}}
     <h2 class="text-xl font-bold mb-4">Kategori Produk</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         @forelse($kategori as $k)
             <a href="{{ route('home', ['kategori' => $k->kategori_produk_id] + request()->only('q', 'jenis')) }}"
                 class="block" data-load-products>
                 <div class="card bg-white shadow-sm hover:shadow-md transition p-3">
-                    <figure class="h-28 w-full overflow-hidden rounded relative">
+                    <figure class="h-48 w-full overflow-hidden rounded relative">
                         <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
                         <img src="{{ $k->gambar_kategori ? asset('storage/' . $k->gambar_kategori) : '' }}"
                             alt="{{ $k->nama_kategori }}" class="absolute inset-0 w-full h-full object-cover opacity-0"
@@ -89,7 +89,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($artikel as $a)
             <a href="{{ route('articles.show', $a->slug) }}" class="block card shadow-sm hover:shadow-md transition">
-                <figure class="h-40 overflow-hidden relative">
+                <figure class="h-48 overflow-hidden relative">
                     <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
                     <img src="{{ $a->thumbnail ? asset('storage/' . $a->thumbnail) : '' }}" alt="{{ $a->judul }}"
                         class="absolute inset-0 w-full h-full object-cover opacity-0" loading="lazy" decoding="async"
@@ -110,10 +110,10 @@
 <div class="mb-16 flex justify-center">
     <div class="join">
         <a href="{{ $kategori->previousPageUrl() ?: '#' }}"
-            class="join-item btn btn-sm {{ $kategori->onFirstPage() ? 'btn-disabled' : '' }}">«</a>
+            class="join-item btn btn-sm {{ $kategori->onFirstPage() ? 'btn-disabled' : '' }}">ï¿½</a>
         <button class="join-item btn btn-sm">Page {{ $kategori->currentPage() }} / {{ $kategori->lastPage() }}</button>
         <a href="{{ $kategori->nextPageUrl() ?: '#' }}"
-            class="join-item btn btn-sm {{ $kategori->hasMorePages() ? '' : 'btn-disabled' }}">»</a>
+            class="join-item btn btn-sm {{ $kategori->hasMorePages() ? '' : 'btn-disabled' }}">ï¿½</a>
     </div>
 </div>
 

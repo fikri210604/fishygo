@@ -16,7 +16,7 @@
 
 @php($labelDefault = $labelDefault ?: $label)
 
-<button id="{{ $btnId }}" {{ $attributes->merge(['class' => 'btn btn-primary']) }}>
+<button id="{{ $btnId }}" type="button" {{ $attributes->merge(['class' => 'btn btn-primary']) }}>
     {{ $labelDefault }}
     </button>
 
@@ -35,6 +35,7 @@
 
         const btn = document.getElementById(btnId);
         if(!btn) return;
+        if (btn.dataset.snapBound === '1') return; // avoid double-binding
         const tokenMeta = document.querySelector('meta[name="csrf-token"]');
         const csrf = tokenMeta ? tokenMeta.getAttribute('content') : null;
 
@@ -165,6 +166,7 @@
             return { ok: true };
         }
 
+        btn.dataset.snapBound = '1';
         btn.addEventListener('click', async function(){
             try {
                 setBusy(true);

@@ -112,16 +112,16 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::post('pesanan/{pesanan:pesanan_id}/status', [PesananManajementController::class, 'updateStatus'])
             ->whereUuid('pesanan')->name('pesanan.status.update');
         // Pembayaran COD actions
-        Route::post('pesanan/{pesanan:pesanan_id}/cod/confirm', [\App\Http\Controllers\PembayaranController::class, 'codConfirm'])
+        Route::post('pesanan/{pesanan:pesanan_id}/cod/confirm', [PembayaranController::class, 'codConfirm'])
             ->whereUuid('pesanan')->name('pesanan.cod.confirm');
-        Route::post('pesanan/{pesanan:pesanan_id}/cod/cancel', [\App\Http\Controllers\PembayaranController::class, 'codCancel'])
+        Route::post('pesanan/{pesanan:pesanan_id}/cod/cancel', [PembayaranController::class, 'codCancel'])
             ->whereUuid('pesanan')->name('pesanan.cod.cancel');
         // Pembayaran Manual Transfer actions
-        Route::post('pesanan/{pesanan:pesanan_id}/manual/confirm', [\App\Http\Controllers\PembayaranController::class, 'manualConfirm'])
+        Route::post('pesanan/{pesanan:pesanan_id}/manual/confirm', [PembayaranController::class, 'manualConfirm'])
             ->whereUuid('pesanan')->name('pesanan.manual.confirm');
-        Route::post('pesanan/{pesanan:pesanan_id}/manual/reject', [\App\Http\Controllers\PembayaranController::class, 'manualReject'])
+        Route::post('pesanan/{pesanan:pesanan_id}/manual/reject', [PembayaranController::class, 'manualReject'])
             ->whereUuid('pesanan')->name('pesanan.manual.reject');
-        Route::get('pesanan/{pesanan:pesanan_id}/receipt', [\App\Http\Controllers\PembayaranController::class, 'receipt'])
+        Route::get('pesanan/{pesanan:pesanan_id}/receipt', [PembayaranController::class, 'receipt'])
             ->whereUuid('pesanan')->name('pesanan.receipt');
     });
 });

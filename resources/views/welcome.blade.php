@@ -55,7 +55,7 @@
                 Berasal dari kolam budidaya terbaik — rasa lebih lembut dan cocok untuk olahan rumahan.            
             </p>
 
-            <a href="#produk" class="btn btn-neutral mt-6 px-8">Lihat Produk</a>
+            <a href="#produk" class="btn btn-primary mt-6 px-8">Lihat Produk</a>
         </div>
     </section>
 
@@ -72,13 +72,13 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-3 gap-8 sm:grid-cols-3">
                 @foreach ([
                     ['img'=>'produk1.jpg','title'=>'Ikan Segar'],
                     ['img'=>'produk2.jpg','title'=>'Ikan Berkualitas Tinggi'],
                     ['img'=>'produk3.jpg','title'=>'Bumbu Rempah Berkualitas'],
                 ] as $item)
-                    <div class="relative group h-[360px] rounded-2xl overflow-hidden shadow-md">
+                    <div class="relative group h-[360px] rounded-2xl overflow-hidden shadow-md sm:h-[240px]">
                         <img src="{{ asset('assets/images/'.$item['img']) }}"
                              class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700">
 
@@ -104,7 +104,6 @@
                     With 30+ years experience...
                 </p>
             </div>
-
 
                  <div class="relative group h-[360px] rounded-2xl overflow-hidden shadow-md">
                     <img src="{{ asset('assets/images/produks.jpg') }}"
@@ -212,6 +211,8 @@
 
 
     <section id="recent-news" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 sm:max-w-5xl">
+
         <div class="text-center mb-16">
             <span class="text-orange-600 uppercase tracking-widest text-sm">Latest Update</span>
             <h1 class="text-4xl md:text-5xl font-bold mt-2 uppercase">Recent News</h1>
@@ -268,6 +269,7 @@
                 <i class="ri-arrow-right-s-line text-2xl"></i>
             </button>
     
+        </div>
         </div>
     
     </section>

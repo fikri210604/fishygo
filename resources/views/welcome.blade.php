@@ -138,7 +138,7 @@
                 <button type="button"
                         aria-label="Sebelumnya"
                         @click="prev()"
-                        class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10
+                        class="md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10
                                bg-white shadow w-9 h-9 rounded-full items-center justify-center">
                     <i class="ri-arrow-left-s-line text-xl"></i>
                 </button>
@@ -198,7 +198,7 @@
                 <button type="button"
                         aria-label="Berikutnya"
                         @click="next()"
-                        class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10
+                        class="md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10
                                bg-white shadow w-9 h-9 rounded-full items-center justify-center">
                     <i class="ri-arrow-right-s-line text-xl"></i>
                 </button>
@@ -221,8 +221,9 @@
         <div class="relative overflow-hidden" x-data="centerCarousel()" x-init="init($refs.track)">
 
             <button type="button" aria-label="Sebelumnya" @click="prev()"
-                class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg w-12 h-12 rounded-full
-                       items-center justify-center hover:bg-gray-50">
+                class="flex absolute md:flex top-1/2 -translate-y-1/2 z-30 
+       bg-white shadow-lg w-10 h-10 md:w-12 md:h-12 rounded-full
+       items-center justify-center hover:bg-gray-50">
                 <i class="ri-arrow-left-s-line text-2xl"></i>
             </button>
 
@@ -264,7 +265,7 @@
     
             {{-- BUTTON RIGHT --}}
             <button type="button" aria-label="Berikutnya" @click="next()"
-                class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg w-12 h-12 rounded-full
+                class="md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg w-12 h-12 rounded-full
                        items-center justify-center hover:bg-gray-50">
                 <i class="ri-arrow-right-s-line text-2xl"></i>
             </button>

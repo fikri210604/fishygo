@@ -52,7 +52,7 @@
 
             <h1 class="text-3xl md:text-5xl font-bold text-white drop-shadow-lg">Ikan Segar dan Sehat</h1>
             <p class="mt-3 text-base md:text-lg font-light text-white">
-                Berasal dari kolam budidaya terbaik — rasa lebih lembut dan cocok untuk olahan rumahan.            
+                Berasal dari kolam budidaya terbaik — rasa lebih lembut dan cocok untuk olahan rumahan.
             </p>
 
             <a href="#produk" class="btn btn-primary mt-6 px-8">Lihat Produk</a>
@@ -98,10 +98,10 @@
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
 
             <div>
-                <span class="text-orange-600 uppercase tracking-widest text-sm">Awesome Product</span>
-                <h2 class="text-4xl font-bold mt-3">We’re Leaders in Agriculture</h2>
+                <span class="text-orange-600 uppercase tracking-widest text-sm">Kenali Produk Kami</span>
+                <h2 class="text-4xl font-bold mt-3">Kami Memimpin di Dunia Kuliner Ikan</h2>
                 <p class="text-gray-600 mt-5 leading-relaxed">
-                    With 30+ years experience...
+                    Dengan Pengalaman +5 Tahun
                 </p>
             </div>
 
@@ -121,11 +121,11 @@
             {{-- LEFT CONTENT --}}
             <div>
                 <span class="text-blue-600 uppercase tracking-widest text-sm font-semibold">
-                    Healthy Food
+                    Berbagai Produk Ikan
                 </span>
-                <h2 class="text-4xl font-bold mt-2 text-gray-900">Products</h2>
+                <h2 class="text-4xl font-bold mt-2 text-gray-900">Ikan Air Tawar</h2>
                 <p class="text-gray-600 mt-4 leading-relaxed">
-                    Our greens are tender...
+                    Dengan Kualitas Terbaik
                 </p>
             </div>
 
@@ -152,7 +152,7 @@
 
                         @forelse ($data as $d)
                             {{-- PRODUCT CARD --}}
-                            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden 
+                            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden
                                         w-[300px] flex-shrink-0 transition-all duration-300 cursor-pointer"
                                  :class="Number($el.dataset.idx) === index
                                          ? 'scale-105 z-10'
@@ -232,22 +232,22 @@
                 <div class="flex gap-6 py-2 will-change-transform transition-transform duration-500"
                      x-ref="track"
                      :style="`transform: translateX(${translateX}px);`">
-            
+
                     @forelse($artikel as $a)
                         <a href="{{ route('articles.show', $a->slug) }}" data-idx="{{ $loop->index }}"
                            class="block min-w-[75%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[25%]
                                   bg-white rounded-xl shadow-sm transition flex-shrink-0"
                            :class="Number($el.dataset.idx) === index ? 'scale-105 z-10' : 'scale-95 opacity-80'">
-            
+
                             <figure class="h-60 sm:h-56 md:h-64 overflow-hidden relative rounded-t-xl">
                                 <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
-            
+
                                 <img src="{{ asset('storage/' . $a->thumbnail) }}"
                                      alt="{{ $a->judul }}"
                                      class="absolute inset-0 w-full h-full object-cover opacity-0 transition duration-500"
                                      onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('hidden');">
                             </figure>
-            
+
                             <div class="p-4">
                                 <div class="flex items-center text-sm text-gray-400 mb-2">
                                     <i class="ri-calendar-fill text-lg mr-1"></i>
@@ -257,16 +257,16 @@
                                     {{ $a->judul }}
                                 </h3>
                             </div>
-            
+
                         </a>
-            
+
                     @empty
                         <p class="text-gray-500 text-center">Artikel belum tersedia.</p>
                     @endforelse
-            
+
                 </div>
             </div>
-            
+
 
             {{-- BUTTON RIGHT --}}
             <button type="button" aria-label="Berikutnya" @click="next()"

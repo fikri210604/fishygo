@@ -123,14 +123,14 @@
                 </span>
             </a>
 
-            <a href="#"
+            {{-- <a href="#"
                 class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] text-gray-700 hover:bg-gray-100 transition-colors"
                 :class="{ 'justify-center': $store.layout.sidebarCollapsed }">
                 <span class="material-symbols-outlined text-[20px] text-gray-500 group-hover:text-gray-700">
                     mail
                 </span>
                 <span x-show="!$store.layout.sidebarCollapsed">Inbox</span>
-            </a>
+            </a> --}}
             @endcan
 
             @can('access-kurir')
@@ -212,14 +212,14 @@
 
             @can('access-admin')
             @php($active = request()->routeIs('admin.settings.roles.*') || request()->routeIs('admin.settings.permissions.*'))
-            <a href="{{ route('admin.settings.roles.index') }}"
+            {{-- <a href="{{ route('admin.settings.roles.index') }}"
                 class="group flex items-center gap-3 px-3 py-2 rounded-md text-[15px] transition-colors pl-2
                       {{ $active ? 'bg-indigo-50 text-indigo-700 border-l-4 border-indigo-500 font-semibold' : 'text-gray-700 hover:bg-gray-100' }}">
                 <span class="material-symbols-outlined text-[20px] text-gray-500 group-hover:text-gray-700">
                     admin_panel_settings
                 </span>
                 <span>Role & Permission</span>
-            </a>
+            </a> --}}
             @endcan
 
             <x-alert-confirmation modal-id="confirm-logout-sidebar" title="Keluar akun?"

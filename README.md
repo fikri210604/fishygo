@@ -165,7 +165,7 @@ Integrasi utama mencakup:
 
 | Layer          | Teknologi                                       |
 | -------------- | ----------------------------------------------- |
-| Backend        | Laravel 10, PHP 8.1                             |
+| Backend        | Laravel 10, PHP 8.3                             |
 | Frontend       | Blade, Tailwind CSS, DaisyUI, Remix Icon        |
 | Build Tools    | Vite + Node.js                                  |
 | Database       | PostgreSQL                                      |

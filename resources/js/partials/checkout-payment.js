@@ -7,17 +7,14 @@
 
     if (!container || !hidden) return;
 
-    // === Update Payment Selection ===
     function update(el){
         const val = el.dataset.value;
         hidden.value = val;
 
-        // Toggle checkbox
         container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             cb.checked = (cb === el);
         });
 
-        // COD options
         if (val === 'cod') codOptions.classList.remove('hidden');
         else {
             codOptions.classList.add('hidden');

@@ -24,7 +24,7 @@ class WelcomeController extends Controller
         // Info pelengkap lain jika diperlukan di landing
         $review = ReviewProduk::query()->latest()->take(5)->get();
         $jenis = JenisIkan::orderBy('jenis_ikan')->get();
-        $artikel = Article::paginate(4);
+        $artikel = Article::all();
 
         return view('welcome', compact('data','review','jenis','artikel'));
     }

@@ -210,41 +210,44 @@
 
 
 
-    <section id="recent-news" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6 sm:max-w-5xl">
+<section id="recent-news" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6 sm:max-w-5xl">
 
         <div class="text-center mb-16">
             <span class="text-orange-600 uppercase tracking-widest text-sm">Latest Update</span>
             <h1 class="text-4xl md:text-5xl font-bold mt-2 uppercase">Recent News</h1>
         </div>
-    
+
         <div class="relative overflow-hidden" x-data="centerCarousel()" x-init="init($refs.track)">
 
+            {{-- BUTTON LEFT --}}
             <button type="button" aria-label="Sebelumnya" @click="prev()"
-                class="flex absolute md:flex top-1/2 -translate-y-1/2 z-30 
-       bg-white shadow-lg w-10 h-10 md:w-12 md:h-12 rounded-full
-       items-center justify-center hover:bg-gray-50">
+                class="flex absolute left-2 top-1/2 -translate-y-1/2 z-30
+                       bg-white shadow-lg w-10 h-10 md:w-12 md:h-12 rounded-full
+                       items-center justify-center hover:bg-gray-50">
                 <i class="ri-arrow-left-s-line text-2xl"></i>
             </button>
 
             <div class="overflow-x-auto scrollbar-hide">
-                <div class="flex gap-6 min-w-max py-2 will-change-transform transition-transform duration-500" x-ref="track" :style="`transform: translateX(${translateX}px);`">
-    
+                <div class="flex gap-6 py-2 will-change-transform transition-transform duration-500"
+                     x-ref="track"
+                     :style="`transform: translateX(${translateX}px);`">
+            
                     @forelse($artikel as $a)
                         <a href="{{ route('articles.show', $a->slug) }}" data-idx="{{ $loop->index }}"
-                            class="block min-w-[75%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[25%]
-                                   bg-white rounded-xl shadow-sm transition flex-shrink-0"
-                            :class="Number($el.dataset.idx) === index ? 'scale-105 z-10' : 'scale-95 opacity-80'">
-    
-                            <figure class="h-48 sm:h-56 md:h-64 overflow-hidden relative rounded-t-xl">
+                           class="block min-w-[75%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[25%]
+                                  bg-white rounded-xl shadow-sm transition flex-shrink-0"
+                           :class="Number($el.dataset.idx) === index ? 'scale-105 z-10' : 'scale-95 opacity-80'">
+            
+                            <figure class="h-60 sm:h-56 md:h-64 overflow-hidden relative rounded-t-xl">
                                 <div class="skeleton absolute inset-0 bg-gray-200 animate-pulse"></div>
-    
+            
                                 <img src="{{ asset('storage/' . $a->thumbnail) }}"
-                                    alt="{{ $a->judul }}"
-                                    class="absolute inset-0 w-full h-full object-cover opacity-0 transition duration-500"
-                                    onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('hidden');">
+                                     alt="{{ $a->judul }}"
+                                     class="absolute inset-0 w-full h-full object-cover opacity-0 transition duration-500"
+                                     onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('hidden');">
                             </figure>
-    
+            
                             <div class="p-4">
                                 <div class="flex items-center text-sm text-gray-400 mb-2">
                                     <i class="ri-calendar-fill text-lg mr-1"></i>
@@ -254,28 +257,28 @@
                                     {{ $a->judul }}
                                 </h3>
                             </div>
-    
+            
                         </a>
+            
                     @empty
                         <p class="text-gray-500 text-center">Artikel belum tersedia.</p>
                     @endforelse
-    
+            
                 </div>
             </div>
-    
+            
+
             {{-- BUTTON RIGHT --}}
             <button type="button" aria-label="Berikutnya" @click="next()"
-                class="md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg w-12 h-12 rounded-full
+                class="flex absolute right-2 top-1/2 -translate-y-1/2 z-30
+                       bg-white shadow-lg w-10 h-10 md:w-12 md:h-12 rounded-full
                        items-center justify-center hover:bg-gray-50">
                 <i class="ri-arrow-right-s-line text-2xl"></i>
             </button>
-    
-        </div>
-        </div>
-    
-    </section>
-    
 
+        </div>
+    </div>
+</section>
 
     {{-- FOOTER --}}
     @include('layouts.footer')

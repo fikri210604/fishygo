@@ -7,6 +7,19 @@ define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
+| Vercel Environment Setup
+|--------------------------------------------------------------------------
+|
+| Adjust variables to work with Vercel's serverless environment.
+|
+*/
+if (isset($_SERVER['vercel_env'])) {
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/index.php';
+}
+
+/*
+|--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
 |--------------------------------------------------------------------------
 |
@@ -16,7 +29,7 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
@@ -31,7 +44,7 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +57,7 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 

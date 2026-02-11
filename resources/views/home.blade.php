@@ -32,8 +32,8 @@
     <form method="GET" class="flex justify-center mb-8">
         <div class="relative w-full max-w-xl">
             <i class="ri-search-line absolute left-3 top-2.5 text-gray-400 text-lg"></i>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Produk..."
-                class="input input-bordered w-full pl-10" />
+            <input type="text" id="searchInput" name="q" value="{{ request('q') }}" placeholder="Cari Produk..."
+                class="input input-bordered w-full pl-10" autocomplete="off" />
         </div>
     </form>
 
@@ -65,13 +65,15 @@
     <div class="mb-8 overflow-x-auto scrollbar-hide mt-4">
         <div class="flex gap-2 w-max">
             @php($active = request('jenis') === null)
-            <a href="{{ route('home', request()->except('jenis')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
+            <a href="{{ route('home', request()->except('jenis')) }}"
+                class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
                {{ $active ? 'bg-[#6A453B] border-[#6A453B] text-white' : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
                 Semua
             </a>
             @foreach($jenis_ikan as $j)
             @php($active = (string) request('jenis') === (string) $j->jenis_ikan_id)
-            <a href="{{ route('home', ['jenis' => $j->jenis_ikan_id] + request()->except('page')) }}" class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
+            <a href="{{ route('home', ['jenis' => $j->jenis_ikan_id] + request()->except('page')) }}"
+                class="px-4 py-1.5 text-sm whitespace-nowrap rounded-full border transition-all duration-200
                  {{ $active ? 'bg-[#6A453B] border-[#6A453B] text-white' : 'bg-[#E6E6E6] border-[#046DBD] text-[#046DBD] hover:bg-[#d2d2d2]' }}">
                 {{ $j->jenis_ikan }}
             </a>

@@ -2,7 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const forms = require('@tailwindcss/forms');
 
 module.exports = {
-  darkMode: false,   
+  // darkMode: 'media', // or 'class' or remove it entirely as per Tailwind 3.x defaults
 
   content: [
     "./resources/**/*.blade.php",

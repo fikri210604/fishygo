@@ -13,7 +13,7 @@ define('LARAVEL_START', microtime(true));
 | Adjust variables to work with Vercel's serverless environment.
 |
 */
-if (isset($_SERVER['vercel_env'])) {
+if (isset($_SERVER['VERCEL_ENV'])) {
     $_SERVER['SCRIPT_NAME'] = '/index.php';
     $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/index.php';
 }
